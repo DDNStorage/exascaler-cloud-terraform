@@ -82,14 +82,14 @@ Make sure to store the key file `credentials.json` securely, because it can be u
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/1.0.0.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.0.zip) and extract tarball:
 ```
-$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/1.0.0.tar.gz | tar xz
+$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.0.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```
-$ cd exascaler-cloud-terraform-scripts-1.0.0/gcp
+$ cd exascaler-cloud-terraform-scripts-2.0.0/gcp
 $ vi terraform.tfvars
 ```
 
