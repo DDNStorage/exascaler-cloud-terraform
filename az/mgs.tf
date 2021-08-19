@@ -1,8 +1,8 @@
 resource "azurerm_public_ip" "mgs" {
   count               = var.mgs.public_ip ? var.mgs.node_count : 0
-  zones               = local.zones
   name                = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "public-ip")
   domain_name_label   = format("%s-%s%d", local.prefix, "mgs", count.index)
+  availability_zone   = local.availability_zone
   location            = local.resource_group.location
   resource_group_name = local.resource_group.name
   allocation_method   = "Static"
@@ -18,7 +18,7 @@ resource "azurerm_public_ip" "mgs" {
 
 resource "azurerm_network_interface" "mgs" {
   count                         = var.mgs.node_count
-  name                          = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "network-interfrace")
+  name                          = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "network-interface")
   location                      = local.resource_group.location
   resource_group_name           = local.resource_group.name
   enable_accelerated_networking = var.mgs.accelerated_network
@@ -38,15 +38,26 @@ resource "azurerm_network_interface" "mgs" {
 }
 
 resource "azurerm_network_interface_application_security_group_association" "mgs" {
-  count                         = var.security.enable_ssh && var.mgs.public_ip ? var.mgs.node_count : 0
+  count                         = var.mgs.public_ip && (var.ssh.enable || var.http.enable) ? var.mgs.node_count : 0
   network_interface_id          = azurerm_network_interface.mgs[count.index].id
-  application_security_group_id = azurerm_application_security_group.ssh.0.id
+  application_security_group_id = azurerm_application_security_group.management.0.id
 }
 
-resource "azurerm_network_interface_application_security_group_association" "http" {
-  count                         = var.mgs.public_ip && var.security.enable_http ? var.mgs.node_count : 0
-  network_interface_id          = azurerm_network_interface.mgs[count.index].id
-  application_security_group_id = azurerm_application_security_group.http.0.id
+resource "azurerm_network_interface_security_group_association" "mgs" {
+  count                     = var.mgs.public_ip && (var.ssh.enable || var.http.enable) ? var.mgs.node_count : 0
+  network_interface_id      = azurerm_network_interface.mgs[count.index].id
+  network_security_group_id = azurerm_network_security_group.management.0.id
+}
+
+resource "azurerm_availability_set" "mgs" {
+  count                        = local.nodes.mgs.availability ? 1 : 0
+  name                         = format("%s-%s-%s", local.prefix, "mgs", "availability-set")
+  location                     = local.resource_group.location
+  resource_group_name          = local.resource_group.name
+  proximity_placement_group_id = local.proximity_placement_group.id
+  platform_update_domain_count = min(var.mgs.node_count, 20)
+  managed                      = true
+  tags                         = local.tags
 }
 
 resource "azurerm_linux_virtual_machine" "mgs" {
@@ -57,6 +68,7 @@ resource "azurerm_linux_virtual_machine" "mgs" {
   location                     = local.resource_group.location
   resource_group_name          = local.resource_group.name
   proximity_placement_group_id = local.proximity_placement_group.id
+  availability_set_id          = local.nodes.mgs.availability ? azurerm_availability_set.mgs.0.id : null
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.exa.primary_blob_endpoint
   }
@@ -80,7 +92,6 @@ resource "azurerm_linux_virtual_machine" "mgs" {
     sku       = var.image.sku
     version   = var.image.version
   }
-  custom_data                     = local.script
   computer_name                   = format("%s-%s%d", local.prefix, "mgs", count.index)
   disable_password_authentication = true
   admin_username                  = var.admin.username
@@ -89,7 +100,10 @@ resource "azurerm_linux_virtual_machine" "mgs" {
     public_key = local.sshkey
   }
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.exa.id
+    ]
   }
   tags = merge(
     local.tags,
@@ -98,13 +112,6 @@ resource "azurerm_linux_virtual_machine" "mgs" {
       lustre_index = count.index
     }
   )
-}
-
-resource "azurerm_role_assignment" "mgs" {
-  count                = var.mgs.node_count
-  scope                = local.resource_group.id
-  principal_id         = azurerm_linux_virtual_machine.mgs[count.index].identity.0.principal_id
-  role_definition_name = "Contributor"
 }
 
 resource "azurerm_managed_disk" "mgt" {
@@ -141,7 +148,7 @@ resource "azurerm_managed_disk" "mnt" {
     {
       name                = each.value.name,
       lustre_target_host  = each.value.host,
-      lustre_target_role  = "master",
+      lustre_target_role  = each.value.role,
       lustre_target_index = each.value.index
     }
   )
@@ -161,4 +168,32 @@ resource "azurerm_virtual_machine_data_disk_attachment" "mnt" {
   virtual_machine_id = azurerm_linux_virtual_machine.mgs[each.value.node].id
   lun                = var.mgt.disk_count + each.value.disk
   caching            = each.value.cache
+}
+
+resource "azurerm_virtual_machine_extension" "mgs" {
+  count                      = var.mgs.node_count
+  name                       = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "virtual-machine-extension")
+  virtual_machine_id         = azurerm_linux_virtual_machine.mgs[count.index].id
+  protected_settings         = local.settings
+  auto_upgrade_minor_version = true
+  publisher                  = "Microsoft.Azure.Extensions"
+  type                       = "CustomScript"
+  type_handler_version       = "2.1"
+  depends_on = [
+    azurerm_role_assignment.exa,
+    azurerm_app_configuration.fs_config,
+    azurerm_app_configuration.role_config,
+    azurerm_virtual_machine_data_disk_attachment.mgt,
+    azurerm_virtual_machine_data_disk_attachment.mnt
+  ]
+  timeouts {
+    create = local.timeout
+  }
+  tags = merge(
+    local.tags,
+    {
+      lustre_type  = "mgs",
+      lustre_index = count.index
+    }
+  )
 }

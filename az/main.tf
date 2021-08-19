@@ -1,8 +1,16 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 1.0.0"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = ">= 2.63.0"
+    }
+  }
 }
 
 provider "azurerm" {
+  subscription_id = var.subscription
+  partner_id      = "e798abf8-8847-4da5-9f28-5cc3ebbfdfcf"
   features {
     virtual_machine {
       delete_os_disk_on_deletion = var.boot.auto_delete
@@ -25,13 +33,14 @@ data "azurerm_proximity_placement_group" "exa" {
   resource_group_name = local.resource_group.name
 }
 
-data "template_file" "exa" {
+data "template_file" "script" {
   template = file(format("%s/%s/%s", path.module, local.templates, "startup-script.sh"))
   vars = {
     deployment     = local.prefix
     capacity       = local.capacity
-    profile        = local.profile
+    logdir         = local.logdir
     zone           = local.resource_group.location
+    profile        = var.profile
     fsname         = var.fsname
     mnt_disk_type  = var.mnt.disk_type
     mnt_disk_size  = var.mnt.disk_size
@@ -41,10 +50,33 @@ data "template_file" "exa" {
     mdt_disk_count = var.mdt.disk_count
     mdt_disk_type  = var.mdt.disk_type
     mdt_disk_size  = var.mdt.disk_size
+    mdt_disk_raid  = var.mdt.disk_raid
     oss_node_count = var.oss.node_count
     ost_disk_count = var.ost.disk_count
     ost_disk_type  = var.ost.disk_type
     ost_disk_size  = var.ost.disk_size
+    ost_disk_raid  = var.ost.disk_raid
+  }
+}
+
+data "template_file" "dashboard" {
+  template = file(format("%s/%s/%s", path.module, local.templates, "dashboard.json"))
+  vars = {
+    subscription_name = data.azurerm_subscription.exa.display_name
+    subscription_id   = data.azurerm_subscription.exa.subscription_id
+    location          = local.resource_group.location
+    resourcegroup     = local.resource_group.name
+    network           = local.network.name
+    management        = azurerm_network_interface.mgs.0.private_ip_address
+    http              = format("http://%s", local.http)
+    ssh               = format("ssh -A %s@%s", var.admin.username, local.ssh)
+    deployment        = local.prefix
+    profile           = var.profile
+    fsname            = var.fsname
+    piblic            = length(local.public) == 0 ? "disabled" : join(", ", local.public)
+    remote            = length(local.remote) == 0 ? "disabled" : join(" and ", local.remote)
+    image             = local.image
+    loci              = local.loci
   }
 }
 
@@ -93,21 +125,96 @@ resource "azurerm_app_configuration" "fs_config" {
   tags                = local.tags
 }
 
+resource "azurerm_user_assigned_identity" "exa" {
+  name                = format("%s-%s", local.prefix, "user-assigned-identity")
+  location            = local.resource_group.location
+  resource_group_name = local.resource_group.name
+  tags                = local.tags
+}
+
+resource "azurerm_role_definition" "exa" {
+  name  = format("%s-%s", local.prefix, "role-definition")
+  scope = local.resource_group.id
+  permissions {
+    actions = [
+      "Microsoft.AppConfiguration/checkNameAvailability/read",
+      "Microsoft.AppConfiguration/configurationStores/ListKeys/action",
+      "Microsoft.AppConfiguration/configurationStores/ListKeyValue/action",
+      "Microsoft.AppConfiguration/configurationStores/read",
+      "Microsoft.Compute/disks/read",
+      "Microsoft.Compute/virtualMachines/read",
+      "Microsoft.Network/networkInterfaces/read",
+      "Microsoft.Network/networkInterfaces/ipconfigurations/read",
+      "Microsoft.Network/publicIPAddresses/read",
+      "Microsoft.Resources/subscriptions/read",
+      "Microsoft.Resources/subscriptions/resourcegroups/resources/read"
+    ]
+    data_actions = [
+      "Microsoft.AppConfiguration/configurationStores/keyValues/read",
+      "Microsoft.AppConfiguration/configurationStores/keyValues/write",
+      "Microsoft.AppConfiguration/configurationStores/keyValues/delete"
+    ]
+  }
+}
+
+resource "azurerm_role_assignment" "exa" {
+  scope              = local.resource_group.id
+  principal_id       = azurerm_user_assigned_identity.exa.principal_id
+  role_definition_id = azurerm_role_definition.exa.role_definition_resource_id
+}
+
+resource "azurerm_marketplace_agreement" "exa" {
+  count     = var.image.accept ? 1 : 0
+  publisher = var.image.publisher
+  offer     = var.image.offer
+  plan      = var.image.sku
+}
+
+resource "azurerm_dashboard" "exa" {
+  name                 = format("%s-%s", local.prefix, "dashboard")
+  resource_group_name  = local.resource_group.name
+  location             = local.resource_group.location
+  dashboard_properties = data.template_file.dashboard.rendered
+  tags = merge(
+    local.tags,
+    {
+      hidden-title = format("%s %s", local.product, random_id.exa.hex)
+    }
+  )
+  depends_on = [
+    azurerm_virtual_machine_extension.cls
+  ]
+}
+
 locals {
-  product   = "exascaler-cloud"
-  profile   = "Custom configuration profile"
+  loci      = "1.9.0"
+  logdir    = "/var/log"
+  product   = "EXAScaler Cloud"
   templates = "templates"
-  prefix    = format("%s-%s", local.product, random_id.exa.hex)
+  label     = lower(replace(local.product, " ", "-"))
+  prefix    = format("%s-%s", local.label, random_id.exa.hex)
   sshkey    = file(var.admin.ssh_public_key)
-  script    = base64encode(data.template_file.exa.rendered)
-  zone      = var.zone == 0 ? null : var.zone
-  zones     = var.zone == 0 ? null : [var.zone]
-  capacity  = var.oss.node_count * var.ost.disk_count * var.ost.disk_size
+  zone      = var.availability.type == "zone" ? var.availability.zone : null
+  zones     = var.availability.type == "zone" ? [var.availability.zone] : null
+  targets   = var.oss.node_count * var.ost.disk_count
+  timeout   = format("%dm", 10 * local.targets)
+  capacity  = local.targets * var.ost.disk_size
+  settings  = jsonencode(local.script)
+
+  availability_zone = var.availability.type == "zone" ? var.availability.zone : "No-Zone"
+
+  image = format("%s:%s", var.image.sku, var.image.version)
+  http  = var.mgs.public_ip && var.http.enable ? azurerm_public_ip.mgs.0.fqdn : azurerm_network_interface.mgs.0.private_ip_address
+  ssh   = var.mgs.public_ip && var.ssh.enable ? azurerm_public_ip.mgs.0.ip_address : azurerm_network_interface.mgs.0.private_ip_address
+
+  script = {
+    script = base64gzip(data.template_file.script.rendered)
+  }
 
   tags = {
-    "product"    = "EXAScaler Cloud"
-    "version"    = var.image.version
-    "deployment" = local.prefix
+    deployment = local.prefix
+    product    = local.product
+    version    = var.image.version
   }
 
   resource_group = var.resource_group.new ? {
@@ -204,4 +311,48 @@ locals {
       }
     }
   }
+
+  nodes = {
+    mgs = {
+      public       = var.mgs.public_ip,
+      description  = "management server",
+      availability = var.availability == "set" && var.mgs.node_count > 1
+    },
+    mds = {
+      public       = var.mds.public_ip,
+      description  = "metadata server",
+      availability = var.availability == "set" && var.mds.node_count > 1
+    }
+    oss = {
+      public       = var.oss.public_ip,
+      description  = "storage servers",
+      availability = var.availability == "set" && var.oss.node_count > 1
+    }
+    cls = {
+      public       = var.cls.public_ip,
+      description  = "compute clients",
+      availability = var.availability == "set" && var.cls.node_count > 1
+    }
+  }
+
+  public = [
+    for node, data in local.nodes :
+    data.description if data.public
+  ]
+
+  protocols = {
+    ssh = {
+      enabled     = length(local.public) > 0 && var.ssh.enable
+      description = "SSH"
+    }
+    http = {
+      enabled     = var.mgs.public_ip && var.http.enable
+      description = "HTTP"
+    }
+  }
+
+  remote = [
+    for protocol, data in local.protocols :
+    data.description if data.enabled
+  ]
 }

@@ -1,0 +1,700 @@
+{
+    "lenses": {
+        "0": {
+            "order": 0,
+            "parts": {
+                "0": {
+                    "position": {
+                        "x": 0,
+                        "y": 0,
+                        "colSpan": 6,
+                        "rowSpan": 6
+                    },
+                    "metadata": {
+                        "inputs": [],
+                        "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                        "settings": {
+                            "content": {
+                                "settings": {
+                                    "title": "Deployment details",
+                                    "subtitle": "Deployment name: ${deployment}",
+                                    "content": "__Summary__\n\n- Configuration profile: **${profile}**\n- Base image: ${image}\n- Public IP address: ${piblic}\n- Remote access: ${remote}\n- HTTP Console: [${http}](${http})\n- SSH Console: `${ssh}`\n- Mount Command: `mount -t lustre ${management}@tcp:/${fsname} /mnt/${fsname}`\n\n__Support__\n\n- EXAScaler Cloud includes self-help support with access to publicly available documents and videos.\n- Premium support includes 24x7x365 access to DDN's experts, along with support community access, automated notifications of updates and other premium support features.\n- Go to [DDN support](https://www.ddn.com/support/cloud-support)\n\n"
+                                }
+                            }
+                        }
+                    }
+                },
+                "1": {
+                    "position": {
+                        "x": 6,
+                        "y": 0,
+                        "colSpan": 6,
+                        "rowSpan": 6
+                    },
+                    "metadata": {
+                        "inputs": [],
+                        "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                        "settings": {
+                            "content": {
+                                "settings": {
+                                    "title": "Get started with EXAScaler Cloud",
+                                    "subtitle": "Suggested next steps",
+                                    "content": "__Install new EXAScaler Cloud clients__\n- New EXAScaler Cloud client instances must be in the same location **${location}** and connected to the virtual network **${network}**.\n\n- To configure EXAScaler Cloud filesystem on a new client instance save the following text in a file named `/etc/esc-client.cfg`:\n\n``` json\n{\n    \"Version\": \"${loci}\",\n    \"MountConfig\": {\n        \"ClientDevice\": \"${management}@tcp:/${fsname}\",\n        \"Mountpoint\": \"/mnt/${fsname}\",\n        \"PackageSource\": \"http://${management}/client-packages\"\n    }\n}\n```\n\n- To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:\n\n``` bash\n# curl http://${management}/client-setup-tool -o /usr/sbin/esc-client\n# chmod +x /usr/sbin/esc-client\n# esc-client auto setup --config /etc/esc-client.cfg\n```\n"
+                                }
+                            }
+                        }
+                    }
+                },
+                "2": {
+                    "position": {
+                        "x": 0,
+                        "y": 6,
+                        "colSpan": 12,
+                        "rowSpan": 6
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "partTitle",
+                                "value": "Virtual machines"
+                            },
+                            {
+                                "name": "query",
+                                "value": "Resources\n| where type =~ 'microsoft.compute/virtualmachines' and location =~ '${location}' and resourceGroup =~ '${resourcegroup}'\n| extend nics=array_length(properties.networkProfile.networkInterfaces) \n| mv-expand nic=properties.networkProfile.networkInterfaces \n| where nics == 1 or nic.properties.primary =~ 'true' or isempty(nic) \n| project vmId = id, vmName = name, vmSize=tostring(properties.hardwareProfile.vmSize), nicId = tostring(nic.id), vmType = tostring(tags['lustre_type'])\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/networkinterfaces'\n    | extend ipConfigsCount=array_length(properties.ipConfigurations) \n    | mv-expand ipconfig=properties.ipConfigurations \n    | where ipConfigsCount == 1 or ipconfig.properties.primary =~ 'true'\n    | project nicId = id, publicIpId = tostring(ipconfig.properties.publicIPAddress.id), privateIpAddreess = tostring(ipconfig.properties.privateIPAddress))\non nicId\n| project-away nicId1\n| summarize by vmId, vmName, vmType, vmSize, nicId, publicIpId, privateIpAddreess\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/publicipaddresses'\n    | project publicIpId = id, publicIpAddress = properties.ipAddress)\non publicIpId\n| project-away publicIpId, publicIpId1, nicId, vmId\n| order by vmName asc"
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/ArgQueryGridTile"
+                    }
+                },
+                "3": {
+                    "position": {
+                        "x": 0,
+                        "y": 12,
+                        "colSpan": 12,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "Percentage CPU",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "Percentage CPU",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average Percentage CPU",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "4": {
+                    "position": {
+                        "x": 0,
+                        "y": 16,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "Data Disk Read Bytes/sec",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "Data Disk Read Bytes/Sec",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average Data Disk Read Bytes/Sec",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "filterCollection": {
+                                            "filters": [
+                                                {
+                                                    "key": "Microsoft.ResourceGroupName",
+                                                    "operator": 0,
+                                                    "values": [
+                                                        "${resourcegroup}"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "5": {
+                    "position": {
+                        "x": 6,
+                        "y": 16,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "Disk Read Operations/Sec",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "Disk Read Operations/Sec",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average Disk Read Operations/Sec",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "filterCollection": {
+                                            "filters": [
+                                                {
+                                                    "key": "Microsoft.ResourceGroupName",
+                                                    "operator": 0,
+                                                    "values": [
+                                                        "${resourcegroup}"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "6": {
+                    "position": {
+                        "x": 0,
+                        "y": 20,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "Data Disk Write Bytes/sec",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "Data Disk Write Bytes/Sec",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average Data Disk Write Bytes/Sec",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "7": {
+                    "position": {
+                        "x": 6,
+                        "y": 20,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "Disk Write Operations/Sec",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "Disk Write Operations/Sec",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average Disk Write Operations/Sec",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "8": {
+                    "position": {
+                        "x": 0,
+                        "y": 24,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "VM Uncached Bandwidth Consumed Percentage",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "VM Uncached Bandwidth Consumed Percentage",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average VM Uncached Bandwidth Consumed Percentage",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "filterCollection": {
+                                            "filters": [
+                                                {
+                                                    "key": "Microsoft.ResourceGroupName",
+                                                    "operator": 0,
+                                                    "values": [
+                                                        "${resourcegroup}"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "9": {
+                    "position": {
+                        "x": 6,
+                        "y": 24,
+                        "colSpan": 6,
+                        "rowSpan": 4
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "options",
+                                "isOptional": true
+                            },
+                            {
+                                "name": "sharedTimeRange",
+                                "isOptional": true
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                        "settings": {
+                            "content": {
+                                "options": {
+                                    "chart": {
+                                        "metrics": [
+                                            {
+                                                "resourceMetadata": {
+                                                    "region": "${location}",
+                                                    "resourceType": "microsoft.compute/virtualmachines",
+                                                    "subscription": {
+                                                        "subscriptionId": "${subscription_id}",
+                                                        "displayName": "${subscription_name}",
+                                                        "uniqueDisplayName": "${subscription_name}"
+                                                    }
+                                                },
+                                                "name": "VM Uncached IOPS Consumed Percentage",
+                                                "aggregationType": 4,
+                                                "namespace": "microsoft.compute/virtualmachines",
+                                                "metricVisualization": {
+                                                    "displayName": "VM Uncached IOPS Consumed Percentage",
+                                                    "resourceDisplayName": "${subscription_name}"
+                                                }
+                                            }
+                                        ],
+                                        "title": "Average VM Uncached IOPS Consumed Percentage",
+                                        "titleKind": 2,
+                                        "visualization": {
+                                            "chartType": 2,
+                                            "legendVisualization": {
+                                                "isVisible": true,
+                                                "position": 2,
+                                                "hideSubtitle": false
+                                            },
+                                            "axisVisualization": {
+                                                "x": {
+                                                    "isVisible": true,
+                                                    "axisType": 2
+                                                },
+                                                "y": {
+                                                    "isVisible": true,
+                                                    "axisType": 1
+                                                }
+                                            },
+                                            "disablePinning": true
+                                        },
+                                        "filterCollection": {
+                                            "filters": [
+                                                {
+                                                    "key": "Microsoft.ResourceGroupName",
+                                                    "operator": 0,
+                                                    "values": [
+                                                        "${resourcegroup}"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "grouping": {
+                                            "dimension": "Microsoft.ResourceId"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "filters": {
+                            "Microsoft.ResourceGroupName": {
+                                "model": {
+                                    "operator": "equals",
+                                    "values": [
+                                        "${resourcegroup}"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "metadata": {
+        "model": {}
+    }
+}

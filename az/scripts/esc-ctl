@@ -1,0 +1,203 @@
+#!/usr/bin/env bash
+
+set +o xtrace
+set -o nounset
+set -o errexit
+set -o pipefail
+set -o noglob
+
+export LC_ALL=C LANG=C
+
+function get_vm_kind {
+	local VM_TYPE="$1"
+	local VM_KIND
+
+	case "$VM_TYPE" in
+	mgt)
+		VM_KIND='management server'
+		;;
+	mdt)
+		VM_KIND='metadata server'
+		;;
+	ost)
+		VM_KIND='storage server'
+		;;
+	clt)
+		VM_KIND='compute client'
+		;;
+	worker)
+		VM_KIND='compute client'
+		;;
+	*)
+		VM_KIND='unknown'
+		;;
+	esac
+
+	echo "$VM_KIND"
+}
+
+function usage {
+	cat <<-EOF
+
+	Usage:
+
+	List resource groups : $0 list
+	List deployments     : $0 <resource_group> list
+	List instances       : $0 <resource_group> <deployment> list
+	Stop instances       : $0 <resource_group> <deployment> stop
+	Start instances      : $0 <resource_group> <deployment> start
+	Umount filesystem    : $0 <resource_group> <deployment> umount
+
+	EOF
+
+	exit 1
+}
+
+function list_resource_groups {
+	az group list \
+		--output table \
+		--query "[].{name:name,location:location,status:properties.provisioningState}"
+}
+
+function list_deployments {
+	local RESOURCE_GROUP="$1"
+
+	az appconfig list \
+		--output table \
+		--resource-group "$RESOURCE_GROUP" \
+		--query "[?ends_with(name, '-fs-config')].{name:name,created:creationDate,status:provisioningState}" | \
+		sed 's|-fs-config|          |'
+}
+
+function list_instances {
+	local RESOURCE_GROUP="$1"
+	local DEPLOYMENT="$2"
+
+	az vm list \
+		--show-details \
+		--output table \
+		--resource-group "$RESOURCE_GROUP" \
+		--query "[?starts_with(name, '$DEPLOYMENT') && tags.lustre_type != null].{name:name,size:hardwareProfile.vmSize,role:tags.lustre_type,version:storageProfile.imageReference.exactVersion,privateIP:privateIps,publicIP:publicIps,status:powerState}"
+}
+
+function stop_instances {
+	local RESOURCE_GROUP="$1"
+	local DEPLOYMENT="$2"
+	local VM_TYPE
+	local VM_NAME
+	local VM_KIND
+
+	for VM_TYPE in worker clt ost mdt mgt; do
+		az vm list \
+			--show-details \
+			--output tsv \
+			--resource-group "$RESOURCE_GROUP" \
+			--query "[?starts_with(name, '$DEPLOYMENT') && tags.lustre_type == '$VM_TYPE' && powerState != 'VM deallocated'].{name:name}" | \
+		while read -r VM_NAME; do
+			VM_KIND=$(get_vm_kind "$VM_TYPE")
+			echo "Stop $VM_KIND $VM_NAME"
+			az vm deallocate --resource-group "$RESOURCE_GROUP" --name "$VM_NAME"
+		done
+	done
+}
+
+function start_instances {
+	local RESOURCE_GROUP="$1"
+	local DEPLOYMENT="$2"
+	local VM_TYPE
+	local VM_NAME
+	local VM_KIND
+
+	for VM_TYPE in mgt mdt ost clt worker; do
+		az vm list \
+			--show-details \
+			--output tsv \
+			--resource-group "$RESOURCE_GROUP" \
+			--query "[?starts_with(name, '$DEPLOYMENT') && tags.lustre_type == '$VM_TYPE' && powerState != 'VM running'].{name:name}" | \
+		while read -r VM_NAME; do
+			VM_KIND=$(get_vm_kind "$VM_TYPE")
+			echo "Start $VM_KIND $VM_NAME"
+			az vm start --resource-group "$RESOURCE_GROUP" --name "$VM_NAME"
+		done
+	done
+}
+
+function umount_filesystem {
+	local RESOURCE_GROUP="$1"
+	local DEPLOYMENT="$2"
+	local VM_TYPE
+	local VM_NAME
+	local VM_KIND
+
+	for VM_TYPE in worker clt ost mdt mgt; do
+		az vm list \
+			--show-details \
+			--output tsv \
+			--resource-group "$RESOURCE_GROUP" \
+			--query "[?starts_with(name, '$DEPLOYMENT') && tags.lustre_type == '$VM_TYPE' && powerState == 'VM running'].{name:name}" | \
+		while read -r VM_NAME; do
+			VM_KIND=$(get_vm_kind "$VM_TYPE")
+			echo "Umount $VM_KIND $VM_NAME"
+			az vm run-command invoke \
+				--output none \
+				--resource-group "$RESOURCE_GROUP" \
+				--name "$VM_NAME" \
+				--command-id 'RunShellScript' \
+				--scripts 'umount -f -a -t lustre'
+		done
+	done
+}
+
+case "$#" in
+1)
+	ACTION="$1"
+
+	case "$ACTION" in
+	list)
+		list_resource_groups
+		;;
+	*)
+		usage
+		;;
+	esac
+	;;
+2)
+	RESOURCE_GROUP="$1"
+	ACTION="$2"
+
+	case "$ACTION" in
+	list)
+		list_deployments "$RESOURCE_GROUP"
+		;;
+	*)
+		usage
+		;;
+	esac
+	;;
+3)
+	RESOURCE_GROUP="$1"
+	DEPLOYMENT="$2"
+	ACTION="$3"
+
+	case "$ACTION" in
+	list)
+		list_instances "$RESOURCE_GROUP" "$DEPLOYMENT"
+		;;
+	stop)
+		stop_instances "$RESOURCE_GROUP" "$DEPLOYMENT"
+		;;
+	start)
+		start_instances "$RESOURCE_GROUP" "$DEPLOYMENT"
+		;;
+	umount)
+		umount_filesystem "$RESOURCE_GROUP" "$DEPLOYMENT"
+		;;
+	*)
+		usage
+		;;
+	esac
+	;;
+*)
+	usage
+	;;
+esac

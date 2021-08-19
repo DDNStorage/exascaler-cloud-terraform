@@ -1,4 +1,8 @@
-# EXAScaler filesystem name:
+# Configuration profile name
+# small, medium or custom
+profile = "custom"
+
+# EXAScaler filesystem name
 # only alphanumeric characters are allowed,
 # and the value must be 1-8 characters long
 fsname = "exacloud"
@@ -10,13 +14,22 @@ subscription = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 # The Azure region to manage resources
 # https://azure.microsoft.com/global-infrastructure/geographies
 # This option only has effect when used together with the resource_group.new = true
-location = "West US"
+location = "East US"
 
+# Azure offers a range of options for managing availability and resiliency.
+# https://docs.microsoft.com/azure/virtual-machines/availability
+# Availability type:
+# none - no infrastructure redundancy required,
+# set - to create an availability set and automatically distribute resources across multiple fault domains
+# zone - to physically separate resources within an Azure region
 # Availability zone: unique physical locations within a region
 # https://docs.microsoft.com/azure/availability-zones
 # 1, 2, 3 to explicitly specify the availability zone
-# or 0 to auto select the availability zone
-zone = 0
+# This option only has effect when used together with the availability.type = "zone"
+availability = {
+  type = "none"
+  zone = 1
+}
 
 # Resource group options
 # https://docs.microsoft.com/azure/azure-resource-manager/management/manage-resource-groups-portal
@@ -44,7 +57,7 @@ proximity_placement_group = {
 # name: existing virtual network name, will be using if new is false
 # new = false only has effect when used together with the resource_group.new = false
 # and use case is existing resource group with existing virtual network
-# address: valid CIDR range of the form x.x.x.x/x for the new virtual network
+# address: valid IP address in CIDR notation for the new virtual network
 network = {
   new     = true
   name    = "existing-network"
@@ -57,7 +70,7 @@ network = {
 # name: existing subnet name, will be using if new is false
 # new = false only has effect when used together with the network.new = false
 # and use case is existing virtual network with existing subnet
-# address: valid CIDR range of the form x.x.x.x/x for the new subnet
+# address: valid IP address in CIDR notation for the new subnet
 subnet = {
   new     = true
   name    = "existing-subnet"
@@ -66,22 +79,26 @@ subnet = {
 
 # Authentication options for remote SSH access
 # username: remote user name
-# ssh_public_key: path local SSH public key
+# ssh_public_key: path to SSH public key
 admin = {
   username       = "stack"
   ssh_public_key = "~/.ssh/id_rsa.pub"
 }
 
-# Security options
-# Enable/disable remote SSH access: true or false
-# Source IP for remote SSH access: valid CIDR range of the form x.x.x.x/x
-# Enable/disable remote HTTP console: true or false
-# Source IP for remote HTTP access valid CIDR range of the form x.x.x.x/x
-security = {
-  enable_ssh        = true
-  ssh_source_range  = "0.0.0.0/0"
-  enable_http       = true
-  http_source_range = "0.0.0.0/0"
+# SSH options
+# Enable remote SSH access: true or false
+# Source IP range for remote SSH access in CIDR notation
+ssh = {
+  enable = true
+  source = "0.0.0.0/0"
+}
+
+# HTTP options
+# Enable remote HTTP access: true or false
+# Source IP range for remote HTTP access in CIDR notation
+http = {
+  enable = true
+  source = "0.0.0.0/0"
 }
 
 # Boot disk options
@@ -105,11 +122,13 @@ boot = {
 # offer: the offer of the image used to create the virtual machine
 # sku: the SKU of the image used to create the virtual machine
 # version: the version of the image used to create the virtual machine
+# accept: true or false, allows accepting the legal terms for a Marketplace image
 image = {
   publisher = "ddn-whamcloud-5345716"
   offer     = "exascaler_cloud"
-  sku       = "exascaler_520"
-  version   = "5.2.0"
+  sku       = "exascaler_cloud_523_centos"
+  version   = "5.2.3"
+  accept    = false
 }
 
 # Storage account options
@@ -120,7 +139,7 @@ image = {
 storage_account = {
   kind        = "StorageV2"
   tier        = "Standard"
-  replication = "GRS"
+  replication = "LRS"
 }
 
 # Management server options
@@ -129,10 +148,10 @@ storage_account = {
 # accelerated_network: true or false
 # https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell
 mgs = {
-  node_type           = "Standard_D1_v2"
+  node_type           = "Standard_F4s"
   node_count          = 1
   public_ip           = true
-  accelerated_network = false
+  accelerated_network = true
 }
 
 # Management target options
@@ -144,7 +163,7 @@ mgs = {
 mgt = {
   disk_type  = "StandardSSD_LRS"
   disk_cache = "None"
-  disk_size  = 256
+  disk_size  = 128
   disk_count = 1
 }
 
@@ -157,7 +176,7 @@ mgt = {
 mnt = {
   disk_type  = "StandardSSD_LRS"
   disk_cache = "None"
-  disk_size  = 32
+  disk_size  = 64
   disk_count = 1
 }
 
@@ -168,10 +187,10 @@ mnt = {
 # accelerated_network: true or false
 # https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell
 mds = {
-  node_type           = "Standard_D1_v2"
+  node_type           = "Standard_E8s_v3"
   node_count          = 1
   public_ip           = false
-  accelerated_network = false
+  accelerated_network = true
 }
 
 # Metadata target options
@@ -180,53 +199,59 @@ mds = {
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the metadata target
 # disk_size in GB
+# disk_raid: true or false
+# enables striped volume
 mdt = {
-  disk_type  = "StandardSSD_LRS"
+  disk_type  = "Premium_LRS"
   disk_cache = "None"
-  disk_size  = 256
+  disk_size  = 512
   disk_count = 1
+  disk_raid  = false
 }
 
-# Object Storage server options
+# Storage server options
 # node_type: https://docs.microsoft.com/azure/cloud-services/cloud-services-sizes-specs
 # node_count: number of instances
 # public_ip: true or false
 # accelerated_network: true or false
 # https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell
 oss = {
-  node_type           = "Standard_D1_v2"
-  node_count          = 1
+  node_type           = "Standard_D16s_v3"
+  node_count          = 4
   public_ip           = false
-  accelerated_network = false
+  accelerated_network = true
 }
 
-# Object Storage target options
+# Storage target options
 # https://docs.microsoft.com/azure/virtual-machines/disks-types
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the object storage target
 # disk_size in GB
+# disk_raid: true or false
+# enables striped volume
 ost = {
   disk_type  = "Standard_LRS"
   disk_cache = "None"
-  disk_size  = 256
-  disk_count = 1
+  disk_size  = 512
+  disk_count = 6
+  disk_raid  = false
 }
 
-# Compute client instance options
+# Compute client options
 # node_type: https://docs.microsoft.com/azure/cloud-services/cloud-services-sizes-specs
 # node_count: number of instances
 # public_ip: true or false
 # accelerated_network: true or false
 # https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell
 cls = {
-  node_type           = "Standard_A1_v2"
-  node_count          = 1
+  node_type           = "Standard_D16s_v3"
+  node_count          = 4
   public_ip           = false
-  accelerated_network = false
+  accelerated_network = true
 }
 
-# Compute client target options
+# Compute target options
 # https://docs.microsoft.com/azure/virtual-machines/disks-types
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
