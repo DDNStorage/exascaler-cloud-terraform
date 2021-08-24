@@ -32,51 +32,82 @@ resource "azurerm_subnet" "exa" {
   ]
 }
 
-resource "azurerm_network_security_group" "exa" {
-  name                = format("%s-%s", local.prefix, "network-security-group")
+resource "azurerm_network_security_group" "management" {
+  count               = var.mgs.public_ip && (var.ssh.enable || var.http.enable) ? 1 : 0
+  name                = format("%s-%s", local.prefix, "management-network-security-group")
   location            = local.resource_group.location
   resource_group_name = local.resource_group.name
   tags                = local.tags
 }
 
-resource "azurerm_application_security_group" "http" {
-  count               = var.security.enable_http ? 1 : 0
-  name                = format("%s-%s", local.prefix, "http-application-security-group")
+resource "azurerm_network_security_group" "servers" {
+  count               = (var.mds.public_ip || var.oss.public_ip || var.cls.public_ip) && var.ssh.enable ? 1 : 0
+  name                = format("%s-%s", local.prefix, "servers-network-security-group")
   location            = local.resource_group.location
   resource_group_name = local.resource_group.name
   tags                = local.tags
 }
 
-resource "azurerm_application_security_group" "ssh" {
-  count               = var.security.enable_ssh ? 1 : 0
-  name                = format("%s-%s", local.prefix, "ssh-application-security-group")
+resource "azurerm_application_security_group" "management" {
+  count               = var.mgs.public_ip && (var.ssh.enable || var.http.enable) ? 1 : 0
+  name                = format("%s-%s", local.prefix, "management-application-security-group")
   location            = local.resource_group.location
   resource_group_name = local.resource_group.name
   tags                = local.tags
 }
 
-resource "azurerm_network_security_rule" "http" {
-  count                  = var.security.enable_http ? 1 : 0
-  name                   = format("%s-%s", local.prefix, "network-security-rule-allow-http")
+resource "azurerm_application_security_group" "servers" {
+  count               = (var.mds.public_ip || var.oss.public_ip || var.cls.public_ip) && var.ssh.enable ? 1 : 0
+  name                = format("%s-%s", local.prefix, "servers-application-security-group")
+  location            = local.resource_group.location
+  resource_group_name = local.resource_group.name
+  tags                = local.tags
+}
+
+resource "azurerm_network_security_rule" "management_ssh" {
+  count                  = var.mgs.public_ip && var.ssh.enable ? 1 : 0
+  name                   = format("%s-%s", local.prefix, "ssh-network-security-rule")
+  description            = "Allow remote SSH access to the management server"
   priority               = 100
+  direction              = "Inbound"
+  access                 = "Allow"
+  protocol               = "Tcp"
+  source_port_range      = "*"
+  destination_port_range = "22"
+  source_address_prefixes = [
+    var.ssh.source
+  ]
+  destination_application_security_group_ids = [
+    azurerm_application_security_group.management.0.id
+  ]
+  resource_group_name         = local.resource_group.name
+  network_security_group_name = azurerm_network_security_group.management.0.name
+}
+
+resource "azurerm_network_security_rule" "management_http" {
+  count                  = var.mgs.public_ip && var.http.enable ? 1 : 0
+  name                   = format("%s-%s", local.prefix, "http-network-security-rule")
+  description            = "Allow remote HTTP access to the management server"
+  priority               = 300
   direction              = "Inbound"
   access                 = "Allow"
   protocol               = "Tcp"
   source_port_range      = "*"
   destination_port_range = "80"
   source_address_prefixes = [
-    var.security.http_source_range
+    var.http.source
   ]
   destination_application_security_group_ids = [
-    azurerm_application_security_group.http.0.id
+    azurerm_application_security_group.management.0.id
   ]
   resource_group_name         = local.resource_group.name
-  network_security_group_name = azurerm_network_security_group.exa.name
+  network_security_group_name = azurerm_network_security_group.management.0.name
 }
 
-resource "azurerm_network_security_rule" "ssh" {
-  count                  = var.security.enable_ssh ? 1 : 0
-  name                   = format("%s-%s", local.prefix, "network-security-rule-allow-ssh")
+resource "azurerm_network_security_rule" "servers_ssh" {
+  count                  = (var.mds.public_ip || var.oss.public_ip || var.cls.public_ip) && var.ssh.enable ? 1 : 0
+  name                   = format("%s-%s", local.prefix, "ssh-network-security-rule")
+  description            = "Allow remote SSH access to all servers"
   priority               = 200
   direction              = "Inbound"
   access                 = "Allow"
@@ -84,17 +115,11 @@ resource "azurerm_network_security_rule" "ssh" {
   source_port_range      = "*"
   destination_port_range = "22"
   source_address_prefixes = [
-    var.security.ssh_source_range
+    var.ssh.source
   ]
   destination_application_security_group_ids = [
-    azurerm_application_security_group.ssh.0.id
+    azurerm_application_security_group.servers.0.id
   ]
   resource_group_name         = local.resource_group.name
-  network_security_group_name = azurerm_network_security_group.exa.name
-}
-
-resource "azurerm_subnet_network_security_group_association" "exa" {
-  count                     = var.subnet.new ? 1 : 0
-  subnet_id                 = local.subnet.id
-  network_security_group_id = azurerm_network_security_group.exa.id
+  network_security_group_name = azurerm_network_security_group.servers.0.name
 }
