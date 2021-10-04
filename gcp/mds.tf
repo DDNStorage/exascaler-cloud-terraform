@@ -52,7 +52,6 @@ resource "google_compute_instance" "mds" {
   }
 
   service_account {
-    email = data.google_service_account.service_account.email
     scopes = [
       "cloud-platform"
     ]
