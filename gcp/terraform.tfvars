@@ -11,14 +11,6 @@ zone = "us-central1-f"
 # https://cloud.google.com/resource-manager/docs/creating-managing-projects
 project = "ecd85a78"
 
-# Path to credentials file
-# https://cloud.google.com/docs/authentication/getting-started
-credentials = "~/credentials.json"
-
-# Service account name used by deploy application
-# https://cloud.google.com/iam/docs/service-accounts
-service_account = "default"
-
 # User for remote SSH access
 # username: remote user name
 # ssh_public_key: path local SSH public key

@@ -1,4 +1,4 @@
-# EXAScaler Cloud Terraform scripts for Google Cloud Platform
+# Terraform scripts for EXAScaler Cloud on Google Cloud Platform
 
 The steps below will show how to create a EXAScaler Cloud environment on Google Cloud Platform using Terraform.
 
@@ -7,44 +7,25 @@ The steps below will show how to create a EXAScaler Cloud environment on Google 
 * You need a [Google](https://cloud.google.com) account
 * Your system needs the [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) as well as [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
 
-Before deploy Terraform code for Google Cloud Platform, you will need to create and configure a Service Account and Project to create our Service Account. Important notes about a Service Account:
-* A Service Account is a special kind of account used by Terraform to make authorized Google Cloud API calls
-* A Service Account is identified by its email address, which is unique to the account
-* A Service Accounts don’t have password, and cannot log in via browser
-* A Service Accounts is associated with private/public RSA key-pairs that are used for authentication to Google Cloud API
+## Authentication
 
-You will use a Service Account and its key to allow Terraform to deploy resources.
+Before deploy Terraform code for Google Cloud Platform, you need to authenticate using [User Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). The easiest way to do this is to run `gcloud auth application-default login` command:
+```
+$ gcloud auth application-default login
+```
+Output:
+```
+Your browser has been opened to visit:
 
-## Steps to create a Project and a Service Account
+    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=XXX
 
-Obtains access credentials for your user account via a web-based authorization flow. When this command completes successfully, it sets the active account in the current configuration to the account specified. [Learn more](https://cloud.google.com/sdk/gcloud/reference/auth/login).
+Credentials saved to file: [/Users/user/.config/gcloud/application_default_credentials.json]
 ```
-$ gcloud auth login
-```
+[Learn more.](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started)
 
-Create a Project. [Learn more](https://cloud.google.com/sdk/gcloud/reference/projects/create).
-```
-gcloud projects create ecd85a78
-```
+## Enable Google Cloud API Services
 
-Set the Project as default. [Learn more](https://cloud.google.com/sdk/gcloud/reference/config/set).
-```
-$ gcloud config set project ecd85a78
-```
-
-Get list of Billing Accounts. [Learn more](https://cloud.google.com/sdk/gcloud/reference/alpha/billing/accounts/list).
-```
-$ gcloud alpha billing accounts list
-ACCOUNT_ID            NAME                OPEN  MASTER_ACCOUNT_ID
-XXXXXX-XXXXXX-XXXXXX  My Billing Account  True
-```
-
-Associate a Billing Account with the Project (using some Billing Account ID from the previous step). [Learn more](https://cloud.google.com/sdk/gcloud/reference/alpha/billing/projects/link).
-```
-$ gcloud alpha billing projects link ecd85a78 --billing-account XXXXXX-XXXXXX-XXXXXX
-```
-
-Enable required Google Cloud API services for the Project. [Learn more](https://cloud.google.com/sdk/gcloud/reference/services/enable).
+Any actions that Terraform performs require that the API be enabled to do so. Terraform requires the following Google Cloud API Services:
 ```
 $ gcloud services enable cloudbilling.googleapis.com
 $ gcloud services enable apigateway.googleapis.com
@@ -55,41 +36,18 @@ $ gcloud services enable runtimeconfig.googleapis.com
 $ gcloud services enable deploymentmanager.googleapis.com
 $ gcloud services enable cloudresourcemanager.googleapis.com
 ```
+For a list of services available, visit the [API library page](https://console.cloud.google.com/apis/library) or run gcloud services list --available. [Learn more](https://cloud.google.com/sdk/gcloud/reference/services/enable).
 
-Create a Service Account. [Learn more](https://cloud.google.com/sdk/gcloud/reference/iam/service-accounts/create).
-```
-$ gcloud iam service-accounts create ecd85a78 --display-name "Terraform Account"
-```
+## Configure Terraform
 
-Get a list of service accounts. [Learn more](https://cloud.google.com/sdk/gcloud/reference/iam/service-accounts/list).
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.2.zip) and extract tarball:
 ```
-$ gcloud iam service-accounts list
-DISPLAY NAME                            EMAIL                                               DISABLED
-Terraform Account                       ecd85a78@ecd85a78.iam.gserviceaccount.com           False
-```
-
-Bind the created Service Account to the Project. [Learn more](https://cloud.google.com/sdk/gcloud/reference/projects/add-iam-policy-binding).
-```
-$ gcloud projects add-iam-policy-binding ecd85a78 --member serviceAccount:ecd85a78@ecd85a78.iam.gserviceaccount.com --role roles/owner
-```
-
-Create a key for the Service Account. [Lear more](https://cloud.google.com/sdk/gcloud/reference/iam/service-accounts/keys/create).
-```
-$ gcloud iam service-accounts keys create credentials.json --iam-account ecd85a78@ecd85a78.iam.gserviceaccount.com
-```
-
-Make sure to store the key file `credentials.json` securely, because it can be used to authenticate as your service account. You can move and rename this file however you would like.
-
-## Steps to configure Terraform
-
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.0.zip) and extract tarball:
-```
-$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.0.tar.gz | tar xz
+$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.2.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```
-$ cd exascaler-cloud-terraform-scripts-2.0.0/gcp
+$ cd exascaler-cloud-terraform-scripts-2.0.2/gcp
 $ vi terraform.tfvars
 ```
 
@@ -101,8 +59,6 @@ $ vi terraform.tfvars
 | `fsname` | `exacloud` | EXAScaler filesystem name        |
 | `zone` | `us-central1-f` | Zone name to manage resources |
 | `project` | `ecd85a78` | Project ID - please use ID of created project |
-| `credentials` | `~/credentials.json` | Path to the [service account key file](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) in JSON format - please use created key |
-| `service_account` | `default` | Service account name used by deploy application |
 
 #### Authentication options
 | Variable | Default Value | Description |

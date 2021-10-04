@@ -3,17 +3,15 @@ terraform {
 }
 
 provider "google" {
-  credentials = file(var.credentials)
-  project     = var.project
-  region      = local.region
-  zone        = var.zone
+  project = var.project
+  region  = local.region
+  zone    = var.zone
 }
 
 provider "google-beta" {
-  credentials = file(var.credentials)
-  project     = var.project
-  region      = local.region
-  zone        = var.zone
+  project = var.project
+  region  = local.region
+  zone    = var.zone
 }
 
 resource "random_id" "exa" {
@@ -44,10 +42,6 @@ resource "google_deployment_manager_deployment" "exa" {
 data "google_compute_image" "exa" {
   name    = var.image.name
   project = var.image.project
-}
-
-data "google_service_account" "service_account" {
-  account_id = var.service_account
 }
 
 data "template_file" "startup_waiter" {

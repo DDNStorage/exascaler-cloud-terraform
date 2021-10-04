@@ -6,14 +6,6 @@ variable "project" {
   type = string
 }
 
-variable "service_account" {
-  type = string
-}
-
-variable "credentials" {
-  type = string
-}
-
 variable "zone" {
   type = string
 }
