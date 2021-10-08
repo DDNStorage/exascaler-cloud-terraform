@@ -10,6 +10,13 @@ variable "zone" {
   type = string
 }
 
+variable "service_account" {
+  type = object({
+    new  = bool
+    name = string
+  })
+}
+
 variable "admin" {
   type = object({
     username       = string

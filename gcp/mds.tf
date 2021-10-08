@@ -52,6 +52,7 @@ resource "google_compute_instance" "mds" {
   }
 
   service_account {
+    email = local.service_account.email
     scopes = [
       "cloud-platform"
     ]

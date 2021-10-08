@@ -9,7 +9,9 @@ The steps below will show how to create a EXAScaler Cloud environment on Google 
 
 ## Authentication
 
-Before deploy Terraform code for Google Cloud Platform, you need to authenticate using [User Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default). The easiest way to do this is to run `gcloud auth application-default login` command:
+Before deploy Terraform code for Google Cloud Platform, you need to authenticate using Google Cloud SDK.
+
+If you are running Terraform on your workstation, you can authenticate using [User Application Default Credentials](https://cloud.google.com/sdk/gcloud/reference/auth/application-default):
 ```
 $ gcloud auth application-default login
 ```
@@ -17,11 +19,13 @@ Output:
 ```
 Your browser has been opened to visit:
 
-    https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=XXX
+    https://accounts.google.com/o/oauth2/auth?response_type=code
 
 Credentials saved to file: [/Users/user/.config/gcloud/application_default_credentials.json]
 ```
-[Learn more.](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started)
+If you are running Terraform on Google Cloud, you can configure that instance or cluster to use a [Google Service Account](https://cloud.google.com/compute/docs/authentication). This will allow Terraform to authenticate to Google Cloud without having to store a separate credential file.
+
+[Learn more](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#authentication).
 
 ## Enable Google Cloud API Services
 
@@ -40,25 +44,37 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.2.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.3.zip) and extract tarball:
 ```
-$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.2.tar.gz | tar xz
+$ curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.3.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```
-$ cd exascaler-cloud-terraform-scripts-2.0.2/gcp
+$ cd exascaler-cloud-terraform-scripts-2.0.3/gcp
 $ vi terraform.tfvars
 ```
 
 ### List of available variables
 
 #### Common options
-| Variable | Default Value | Description |
-| -------- | ------------- | ----------- |
-| `fsname` | `exacloud` | EXAScaler filesystem name        |
-| `zone` | `us-central1-f` | Zone name to manage resources |
-| `project` | `ecd85a78` | Project ID - please use ID of created project |
+| Variable  | Default Value   | Description |
+| --------- | --------------- | ----------- |
+| `fsname`  | `exacloud`      | EXAScaler Cloud filesystem name.        |
+| `zone`    | `us-central1-f` | Zone name to manage resources. [Learn more](https://cloud.google.com/compute/docs/regions-zones). |
+| `project` | `ecd85a78`      | Project ID to manage resources. [Learn more](https://cloud.google.com/resource-manager/docs/creating-managing-projects). |
+
+### Service account
+A service account is a special account that can be used by services and applications running on Google Compute Engine instances to interact with other Google Cloud Platform APIs. [Learn more](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances). EXAScaler Cloud deployments use service account credentials to authorize themselves to a set of APIs and perform actions within the permissions granted to the service account and virtual machine instances. All projects are created with the Compute Engine default service account and this account is assigned the editor role. Google recommends that each instance that needs to call a Google API should run as a service account with the minimum required permissions. Three options are available for EXAScaler Cloud deployment:
+
+* Use the Compute Engine default service account
+* Use an existing custom service account (consider the [list of required permissions](main.tf#L54-L67))
+* Create a new custom service account and assign it the minimum required privileges 
+
+| Variable               | Default Value | Description |
+| ---------------------- | ------------- | ----------- |
+| `service_account.new`  | `false`       | Create a new custom service account, or use an existing one: `true` or `false` |
+| `service_account.name` | `default`     | Existing service account name, will be using if `service_account.new` is `false` |
 
 #### Authentication options
 | Variable | Default Value | Description |
@@ -77,22 +93,22 @@ $ vi terraform.tfvars
 #### Network options
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
-| `network.routing` | `REGIONAL` | Network-wide routing mode: `REGIONAL` or `GLOBAL`. [Learn more](https://cloud.google.com/vpc/docs/vpc) |
-| `network.tier` | `STANDARD` | Networking tier for network interfaces: `STANDARD` or `PREMIUM`. [Learn more](https://cloud.google.com/vpc/docs/vpc) |
+| `network.routing` | `REGIONAL` | Network-wide routing mode: `REGIONAL` or `GLOBAL`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
+| `network.tier` | `STANDARD` | Networking tier for network interfaces: `STANDARD` or `PREMIUM`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
 | `network.name` | `default` | Existing network name, will be using only if `new` option is `false` |
 | `network.auto` | `false` | Create subnets in each region automatically: `true` or `false` |
 | `network.mtu` | `1500` | Maximum transmission unit in bytes: 1460 - 1500 |
 | `network.new` | `true` | Create a new network, or use an existing one: `true` or `false` |
 | `network.nat` | `true` | Allow instances without external IP to communicate with the outside world: `true` or `false` |
 | `subnetwork.address` | `10.0.0.0/16` | IP range of internal addresses for a new subnetwork |
-| `subnetwork.private` | `true` | When enabled VMs in this subnetwork without external IP addresses can access Google APIs and services by using Private Google Access: `true` or `false`. [Learn more](https://cloud.google.com/vpc/docs/configure-private-google-access) |
+| `subnetwork.private` | `true` | When enabled VMs in this subnetwork without external IP addresses can access Google APIs and services by using Private Google Access: `true` or `false`. [Learn more](https://cloud.google.com/vpc/docs/configure-private-google-access). |
 | `subnetwork.name` | `default` | Existing subnetwork name, will be using only if `new` option is `false` |
 | `subnetwork.new` | `true` | Create a new subnetwork, or use an existing one: `true` or `false` |
 
 #### Boot disk options
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
-| `boot.disk_type` | `pd-standard` | Boot disk type: `pd-standard`, `pd-ssd` or `pd-balanced`. [Learn more](https://cloud.google.com/compute/docs/disks) |
+| `boot.disk_type` | `pd-standard` | Boot disk type: `pd-standard`, `pd-ssd` or `pd-balanced`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `boot.auto_delete` | `true` | When `auto-delete` is `true`, the boot disk is deleted when the instance it is attached to is deleted |
 
 #### Boot image options
@@ -104,9 +120,9 @@ $ vi terraform.tfvars
 #### Virtual machines options
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
-| `{mgs,mds,oss,cls}.node_type` | `n2-standard-2` | Virtual machine type. [Learn more](https://cloud.google.com/compute/docs/machine-types) |
-| `{mgs,mds,oss,cls}.node_cpu` | `Intel Cascade Lake` | CPU platform [Learn more](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform) |
-| `{mgs,mds,oss,cls}.nic_type` |  `GVNIC` | Type of network interfac: `GVNIC` or `VIRTIO_NET`. [Learn more](https://cloud.google.com/compute/docs/networking/using-gvnic)|
+| `{mgs,mds,oss,cls}.node_type` | `n2-standard-2` | Virtual machine type. [Learn more](https://cloud.google.com/compute/docs/machine-types). |
+| `{mgs,mds,oss,cls}.node_cpu` | `Intel Cascade Lake` | CPU platform [Learn more](https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform). |
+| `{mgs,mds,oss,cls}.nic_type` |  `GVNIC` | Type of network interfac: `GVNIC` or `VIRTIO_NET`. [Learn more](https://cloud.google.com/compute/docs/networking/using-gvnic). |
 | `{mgs,mds,oss,cls}.public_ip` | `true` (`mgs`), `false` (`mds`, `oss`, `cls`) | Assign an external IP address: `true` or `false` |
 | `{mgs,mds,oss,cls}.node_count` | `1`   | Number of instances (`1` for `mgs` and `mds` instances) |
 
@@ -114,9 +130,9 @@ $ vi terraform.tfvars
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
 | `{mgt,mnt,mdt,ost,clt}.disk_bus` | `SCSI` | `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only) |
-| `{mgt,mnt,mdt,ost,clt}.disk_type` | `pd-standard` | `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks) |
+| `{mgt,mnt,mdt,ost,clt}.disk_type` | `pd-standard` | `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `{mgt,mnt,mdt,ost,clt}.disk_size` | `512` | Disk size in GB (ignored for `scratch` disks: local SSD size is 375GB) |
-| `{mgt,mnt,mdt,ost,clt}.disk_count` | `1`   | Number of target disks: `1-128` (`1` for `mgt` and `mnt`). [Learn more](https://cloud.google.com/compute/docs/disks) |
+| `{mgt,mnt,mdt,ost,clt}.disk_count` | `1`   | Number of target disks: `1-128` (`1` for `mgt` and `mnt`). [Learn more](https://cloud.google.com/compute/docs/disks). |
 
 Initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times:
 ```
