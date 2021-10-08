@@ -11,6 +11,15 @@ zone = "us-central1-f"
 # https://cloud.google.com/resource-manager/docs/creating-managing-projects
 project = "ecd85a78"
 
+# Service account name used by deploy application
+# https://cloud.google.com/iam/docs/service-accounts
+# new: create a new custom service account, or use an existing one: true or false
+# name: existing service account name, will be using if new is false
+service_account = {
+  new  = false
+  name = "default"
+}
+
 # User for remote SSH access
 # username: remote user name
 # ssh_public_key: path local SSH public key

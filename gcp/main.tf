@@ -39,6 +39,47 @@ resource "google_deployment_manager_deployment" "exa" {
   }
 }
 
+resource "google_service_account" "exa" {
+  count        = var.service_account.new ? 1 : 0
+  account_id   = local.prefix
+  display_name = local.prefix
+  description  = format("%s %s", local.product, "Compute Service Account")
+}
+
+resource "google_project_iam_custom_role" "exa" {
+  count       = var.service_account.new ? 1 : 0
+  role_id     = replace(local.prefix, "-", ".")
+  title       = format("%s %s %s", local.product, random_id.exa.hex, "Custom Role")
+  description = format("%s %s", local.prefix, "custom role")
+  permissions = [
+    "compute.disks.get",
+    "compute.disks.list",
+    "compute.instances.get",
+    "compute.instances.list",
+    "compute.zones.list",
+    "runtimeconfig.configs.get",
+    "runtimeconfig.configs.list",
+    "runtimeconfig.variables.get",
+    "runtimeconfig.variables.list",
+    "runtimeconfig.variables.create",
+    "runtimeconfig.variables.delete",
+    "runtimeconfig.variables.update"
+  ]
+}
+
+resource "google_project_iam_binding" "exa" {
+  count = var.service_account.new ? 1 : 0
+  role  = format("%s/%s/%s/%s", "projects", var.project, "roles", google_project_iam_custom_role.exa.0.role_id)
+  members = [
+    format("%s:%s", "serviceAccount", google_service_account.exa.0.email)
+  ]
+}
+
+data "google_service_account" "exa" {
+  count      = var.service_account.new ? 0 : 1
+  account_id = var.service_account.name
+}
+
 data "google_compute_image" "exa" {
   name    = var.image.name
   project = var.image.project
@@ -79,16 +120,23 @@ data "template_file" "startup_script" {
 }
 
 locals {
-  product    = "exascaler-cloud"
+  product    = "EXAScaler Cloud"
   profile    = "Custom configuration profile"
   templates  = "templates"
   timeout    = 300
+  label      = lower(replace(local.product, " ", "-"))
   region     = join("-", slice(split("-", var.zone), 0, 2))
-  prefix     = format("%s-%s", local.product, random_id.exa.hex)
+  prefix     = format("%s-%s", local.label, random_id.exa.hex)
   ssh_key    = format("%s:%s", var.admin.username, file(var.admin.ssh_public_key))
   http_tag   = format("%s-%s", local.prefix, "http-server")
   node_count = var.mgs.node_count + var.mds.node_count + var.oss.node_count + var.cls.node_count
   capacity   = var.oss.node_count * var.ost.disk_count * var.ost.disk_size
+
+  service_account = var.service_account.new ? {
+    email = google_service_account.exa.0.email
+    } : {
+    email = data.google_service_account.exa.0.email
+  }
 
   network = var.network.new ? {
     name = google_compute_network.exa.0.name
