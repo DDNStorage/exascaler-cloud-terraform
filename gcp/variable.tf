@@ -17,6 +17,10 @@ variable "service_account" {
   })
 }
 
+variable "waiter" {
+  type = string
+}
+
 variable "admin" {
   type = object({
     username       = string
@@ -61,6 +65,7 @@ variable "subnetwork" {
 
 variable "security" {
   type = object({
+    enable_local      = bool
     enable_ssh        = bool
     ssh_source_range  = string
     enable_http       = bool

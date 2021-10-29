@@ -8,12 +8,6 @@ provider "google" {
   zone    = var.zone
 }
 
-provider "google-beta" {
-  project = var.project
-  region  = local.region
-  zone    = var.zone
-}
-
 resource "random_id" "exa" {
   byte_length = 2
 }
@@ -31,12 +25,44 @@ resource "google_runtimeconfig_config" "startup_config" {
 }
 
 resource "google_deployment_manager_deployment" "exa" {
-  name = format("%s-%s", local.prefix, "deployment")
+  count = var.waiter == "deploymentmanager" ? 1 : 0
+  name = format("%s-%d-%s-%s", local.prefix, local.node_count, "nodes", "deployment")
   target {
     config {
-      content = data.template_file.startup_waiter.rendered
+      content = data.template_file.startup_waiter.0.rendered
     }
   }
+}
+
+resource "null_resource" "waiter" {
+  count = var.waiter == "sdk" ? 1 : 0
+  triggers = {
+    deployment = local.prefix
+    count      = local.node_count
+    timeout    = local.timeout
+    project    = var.project
+    zone       = var.zone
+  }
+  provisioner "local-exec" {
+    when    = create
+    command = format("%s/%s/%s", path.module, local.scripts, "startup-waiter.sh")
+    environment = {
+      config     = google_runtimeconfig_config.startup_config.name
+      waiter     = format("%s-%s", local.prefix, "startup-waiter")
+      count      = local.node_count
+      deployment = local.prefix
+      project    = var.project
+      timeout    = format("%sS", local.node_count * local.timeout)
+      zone       = var.zone
+    }
+  }
+  depends_on = [
+    google_runtimeconfig_config.startup_config,
+    google_compute_instance.mgs,
+    google_compute_instance.mds,
+    google_compute_instance.oss,
+    google_compute_instance.cls
+  ]
 }
 
 resource "google_service_account" "exa" {
@@ -86,6 +112,7 @@ data "google_compute_image" "exa" {
 }
 
 data "template_file" "startup_waiter" {
+  count    = var.waiter == "deploymentmanager" ? 1 : 0
   template = file(format("%s/%s/%s", path.module, local.templates, "startup-waiter.yaml"))
   vars = {
     deployment = local.prefix
@@ -122,6 +149,7 @@ data "template_file" "startup_script" {
 locals {
   product    = "EXAScaler Cloud"
   profile    = "Custom configuration profile"
+  scripts    = "scripts"
   templates  = "templates"
   timeout    = 300
   label      = lower(replace(local.product, " ", "-"))
@@ -149,7 +177,7 @@ locals {
     address = var.subnetwork.address
     } : {
     name    = var.subnetwork.name
-    address = data.google_compute_subnetwork.exa.0.ip_cidr_range
+    address = coalesce(var.subnetwork.address, data.google_compute_subnetwork.exa.0.ip_cidr_range)
   }
 
   labels = merge(

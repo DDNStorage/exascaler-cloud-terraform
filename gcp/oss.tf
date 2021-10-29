@@ -16,7 +16,6 @@ resource "google_compute_disk" "ost" {
 }
 
 resource "google_compute_instance" "oss" {
-  provider         = google-beta
   count            = var.oss.node_count
   name             = format("%s-%s%d", local.prefix, "oss", count.index)
   zone             = var.zone
