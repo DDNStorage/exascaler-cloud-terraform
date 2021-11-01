@@ -16,7 +16,6 @@ resource "google_compute_disk" "mgt" {
 }
 
 resource "google_compute_disk" "mnt" {
-  provider = google-beta
   for_each = local.compute_disk.mnt
   type     = each.value.type
   size     = each.value.size
@@ -34,7 +33,6 @@ resource "google_compute_disk" "mnt" {
 }
 
 resource "google_compute_instance" "mgs" {
-  provider         = google-beta
   count            = var.mgs.node_count
   name             = format("%s-%s%d", local.prefix, "mgs", count.index)
   zone             = var.zone

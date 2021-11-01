@@ -21,7 +21,8 @@ data "google_compute_subnetwork" "exa" {
   region = local.region
 }
 
-resource "google_compute_firewall" "exa_local" {
+resource "google_compute_firewall" "local" {
+  count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-local")
   network   = local.network.name
   direction = "INGRESS"
@@ -36,7 +37,8 @@ resource "google_compute_firewall" "exa_local" {
   }
 }
 
-resource "google_compute_firewall" "exa_lnet" {
+resource "google_compute_firewall" "lnet" {
+  count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-lnet")
   network   = local.network.name
   direction = "INGRESS"
@@ -54,7 +56,8 @@ resource "google_compute_firewall" "exa_lnet" {
   }
 }
 
-resource "google_compute_firewall" "exa_repo" {
+resource "google_compute_firewall" "repo" {
+  count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-repo")
   network   = local.network.name
   direction = "INGRESS"
@@ -72,7 +75,7 @@ resource "google_compute_firewall" "exa_repo" {
   }
 }
 
-resource "google_compute_firewall" "exa_ssh" {
+resource "google_compute_firewall" "ssh" {
   count     = var.security.enable_ssh ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-ssh")
   network   = local.network.name
@@ -91,7 +94,7 @@ resource "google_compute_firewall" "exa_ssh" {
   }
 }
 
-resource "google_compute_firewall" "exa_http" {
+resource "google_compute_firewall" "http" {
   count     = var.security.enable_http ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-http")
   network   = local.network.name

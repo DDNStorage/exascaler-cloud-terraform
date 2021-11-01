@@ -16,7 +16,6 @@ resource "google_compute_disk" "mdt" {
 }
 
 resource "google_compute_instance" "mds" {
-  provider         = google-beta
   count            = var.mds.node_count
   name             = format("%s-%s%d", local.prefix, "mds", count.index)
   zone             = var.zone

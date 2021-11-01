@@ -1,4 +1,4 @@
-# EXAScaler filesystem name
+# EXAScaler Cloud filesystem name
 # only alphanumeric characters are allowed,
 # and the value must be 1-8 characters long
 fsname = "exacloud"
@@ -20,6 +20,16 @@ service_account = {
   name = "default"
 }
 
+# Waiter to check progress and result for deployment.
+# To use Google Deployment Manager:
+# waiter = "deploymentmanager"
+# To use generic Google Cloud SDK command line:
+# waiter = "sdk"
+# If you don’t want to wait until the deployment is complete:
+# waiter = null
+# https://cloud.google.com/deployment-manager/runtime-configurator/creating-a-waiter
+waiter = "deploymentmanager"
+
 # User for remote SSH access
 # username: remote user name
 # ssh_public_key: path local SSH public key
@@ -29,11 +39,14 @@ admin = {
   ssh_public_key = "~/.ssh/id_rsa.pub"
 }
 
-# Enable/disable remote SSH access: true or false
-# Source IP for remote SSH access: valid CIDR range of the form x.x.x.x/x
-# Enable/disable remote HTTP console: true or false
-# Source IP for remote HTTP access valid CIDR range of the form x.x.x.x/x
+# Security options
+# enable_local: true or false, enable or disable firewall rules for local access
+# enable_ssh: true or false, enable or disable remote SSH access
+# ssh_source_range: source IP range for remote SSH access in CIDR notation
+# enable_http: true or false, enable or disable remote HTTP access
+# http_source_range: source IP range for remote HTTP access in CIDR notation
 security = {
+  enable_local      = true
   enable_ssh        = true
   ssh_source_range  = "0.0.0.0/0"
   enable_http       = true
