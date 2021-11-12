@@ -1,4 +1,5 @@
 resource "google_compute_disk" "clt" {
+  provider = google-beta
   for_each = local.compute_disk.clt
   type     = each.value.type
   size     = each.value.size
@@ -7,6 +8,7 @@ resource "google_compute_disk" "clt" {
 }
 
 resource "google_compute_instance" "cls" {
+  provider         = google-beta
   count            = var.cls.node_count
   name             = format("%s-%s%d", local.prefix, "cls", count.index)
   zone             = var.zone

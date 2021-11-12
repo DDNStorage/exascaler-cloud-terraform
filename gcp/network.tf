@@ -1,4 +1,5 @@
 resource "google_compute_network" "exa" {
+  provider                = google-beta
   count                   = var.network.new ? 1 : 0
   name                    = format("%s-%s", local.prefix, "network")
   mtu                     = var.network.mtu
@@ -7,6 +8,7 @@ resource "google_compute_network" "exa" {
 }
 
 resource "google_compute_subnetwork" "exa" {
+  provider                 = google-beta
   count                    = var.subnetwork.new ? 1 : 0
   name                     = format("%s-%s", local.prefix, "subnetwork")
   network                  = local.network.name
@@ -16,12 +18,14 @@ resource "google_compute_subnetwork" "exa" {
 }
 
 data "google_compute_subnetwork" "exa" {
-  count  = var.subnetwork.new ? 0 : 1
-  name   = var.subnetwork.name
-  region = local.region
+  provider = google-beta
+  count    = var.subnetwork.new ? 0 : 1
+  name     = var.subnetwork.name
+  region   = local.region
 }
 
 resource "google_compute_firewall" "local" {
+  provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-local")
   network   = local.network.name
@@ -38,6 +42,7 @@ resource "google_compute_firewall" "local" {
 }
 
 resource "google_compute_firewall" "lnet" {
+  provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-lnet")
   network   = local.network.name
@@ -57,6 +62,7 @@ resource "google_compute_firewall" "lnet" {
 }
 
 resource "google_compute_firewall" "repo" {
+  provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-repo")
   network   = local.network.name
@@ -76,6 +82,7 @@ resource "google_compute_firewall" "repo" {
 }
 
 resource "google_compute_firewall" "ssh" {
+  provider  = google-beta
   count     = var.security.enable_ssh ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-ssh")
   network   = local.network.name
@@ -95,6 +102,7 @@ resource "google_compute_firewall" "ssh" {
 }
 
 resource "google_compute_firewall" "http" {
+  provider  = google-beta
   count     = var.security.enable_http ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-http")
   network   = local.network.name
@@ -114,13 +122,15 @@ resource "google_compute_firewall" "http" {
 }
 
 resource "google_compute_router" "exa" {
-  count   = var.network.nat ? 1 : 0
-  name    = format("%s-%s", local.prefix, "router")
-  region  = local.region
-  network = local.network.name
+  provider = google-beta
+  count    = var.network.nat ? 1 : 0
+  name     = format("%s-%s", local.prefix, "router")
+  region   = local.region
+  network  = local.network.name
 }
 
 resource "google_compute_router_nat" "exa" {
+  provider                           = google-beta
   count                              = var.network.nat ? 1 : 0
   name                               = format("%s-%s", local.prefix, "nat")
   router                             = google_compute_router.exa.0.name

@@ -1,4 +1,5 @@
 resource "google_compute_disk" "ost" {
+  provider = google-beta
   for_each = local.compute_disk.ost
   type     = each.value.type
   size     = each.value.size
@@ -16,6 +17,7 @@ resource "google_compute_disk" "ost" {
 }
 
 resource "google_compute_instance" "oss" {
+  provider         = google-beta
   count            = var.oss.node_count
   name             = format("%s-%s%d", local.prefix, "oss", count.index)
   zone             = var.zone
