@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 0.12"
 }
 
-provider "google" {
+provider "google-beta" {
   project = var.project
   region  = local.region
   zone    = var.zone
@@ -13,20 +13,24 @@ resource "random_id" "exa" {
 }
 
 resource "google_runtimeconfig_config" "fs_config" {
-  name = format("%s-%s", local.prefix, "fs-config")
+  provider = google-beta
+  name     = format("%s-%s", local.prefix, "fs-config")
 }
 
 resource "google_runtimeconfig_config" "role_config" {
-  name = format("%s-%s", local.prefix, "role-config")
+  provider = google-beta
+  name     = format("%s-%s", local.prefix, "role-config")
 }
 
 resource "google_runtimeconfig_config" "startup_config" {
-  name = format("%s-%s", local.prefix, "startup-config")
+  provider = google-beta
+  name     = format("%s-%s", local.prefix, "startup-config")
 }
 
 resource "google_deployment_manager_deployment" "exa" {
-  count = var.waiter == "deploymentmanager" ? 1 : 0
-  name = format("%s-%d-%s-%s", local.prefix, local.node_count, "nodes", "deployment")
+  provider = google-beta
+  count    = var.waiter == "deploymentmanager" ? 1 : 0
+  name     = format("%s-%d-%s-%s", local.prefix, local.node_count, "nodes", "deployment")
   target {
     config {
       content = data.template_file.startup_waiter.0.rendered
@@ -66,6 +70,7 @@ resource "null_resource" "waiter" {
 }
 
 resource "google_service_account" "exa" {
+  provider     = google-beta
   count        = var.service_account.new ? 1 : 0
   account_id   = local.prefix
   display_name = local.prefix
@@ -73,6 +78,7 @@ resource "google_service_account" "exa" {
 }
 
 resource "google_project_iam_custom_role" "exa" {
+  provider    = google-beta
   count       = var.service_account.new ? 1 : 0
   role_id     = replace(local.prefix, "-", ".")
   title       = format("%s %s %s", local.product, random_id.exa.hex, "Custom Role")
@@ -94,21 +100,25 @@ resource "google_project_iam_custom_role" "exa" {
 }
 
 resource "google_project_iam_binding" "exa" {
-  count = var.service_account.new ? 1 : 0
-  role  = format("%s/%s/%s/%s", "projects", var.project, "roles", google_project_iam_custom_role.exa.0.role_id)
+  provider = google-beta
+  count    = var.service_account.new ? 1 : 0
+  role     = format("%s/%s/%s/%s", "projects", var.project, "roles", google_project_iam_custom_role.exa.0.role_id)
+  project  = var.project
   members = [
     format("%s:%s", "serviceAccount", google_service_account.exa.0.email)
   ]
 }
 
 data "google_service_account" "exa" {
+  provider   = google-beta
   count      = var.service_account.new ? 0 : 1
   account_id = var.service_account.name
 }
 
 data "google_compute_image" "exa" {
-  name    = var.image.name
-  project = var.image.project
+  provider = google-beta
+  name     = var.image.name
+  project  = var.image.project
 }
 
 data "template_file" "startup_waiter" {
