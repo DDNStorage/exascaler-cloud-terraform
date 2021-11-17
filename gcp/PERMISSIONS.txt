@@ -44,10 +44,15 @@ deploymentmanager.deployments.create
 deploymentmanager.deployments.delete
 deploymentmanager.deployments.get
 deploymentmanager.operations.get
+iam.roles.create
+iam.roles.delete
+iam.roles.get
 iam.serviceAccounts.actAs
 iam.serviceAccounts.create
 iam.serviceAccounts.delete
 iam.serviceAccounts.get
+resourcemanager.projects.getIamPolicy
+resourcemanager.projects.setIamPolicy
 runtimeconfig.configs.create
 runtimeconfig.configs.delete
 runtimeconfig.configs.get

@@ -3,13 +3,13 @@
 # and the value must be 1-8 characters long
 fsname = "exacloud"
 
+# Project ID
+# https://cloud.google.com/resource-manager/docs/creating-managing-projects
+project = "project-id"
+
 # Zone name to manage resources
 # https://cloud.google.com/compute/docs/regions-zones
 zone = "us-central1-f"
-
-# Project ID
-# https://cloud.google.com/resource-manager/docs/creating-managing-projects
-project = "ecd85a78"
 
 # Service account name used by deploy application
 # https://cloud.google.com/iam/docs/service-accounts
@@ -30,34 +30,40 @@ service_account = {
 # https://cloud.google.com/deployment-manager/runtime-configurator/creating-a-waiter
 waiter = "deploymentmanager"
 
-# User for remote SSH access
-# username: remote user name
-# ssh_public_key: path local SSH public key
-# https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys
-admin = {
-  username       = "stack"
-  ssh_public_key = "~/.ssh/id_rsa.pub"
-}
-
 # Security options
+# admin: optional user name for remote SSH access
+# Set admin = null to disable creation admin user
+# public_key: path to the SSH public key on the local host
+# Set public_key = null to disable creation admin user
+# block_project_keys: true or false
+# Block project-wide public SSH keys if you want to restrict
+# deployment to only user with deployment-level public SSH key.
+# https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys
 # enable_local: true or false, enable or disable firewall rules for local access
 # enable_ssh: true or false, enable or disable remote SSH access
-# ssh_source_range: source IP range for remote SSH access in CIDR notation
+# ssh_source_ranges: source IP ranges for remote SSH access in CIDR notation
 # enable_http: true or false, enable or disable remote HTTP access
-# http_source_range: source IP range for remote HTTP access in CIDR notation
+# http_source_ranges: source IP ranges for remote HTTP access in CIDR notation
 security = {
-  enable_local      = true
-  enable_ssh        = true
-  ssh_source_range  = "0.0.0.0/0"
-  enable_http       = true
-  http_source_range = "0.0.0.0/0"
+  admin              = "stack"
+  public_key         = "~/.ssh/id_rsa.pub"
+  block_project_keys = false
+  enable_local       = true
+  enable_ssh         = true
+  enable_http        = true
+  ssh_source_ranges = [
+    "0.0.0.0/0"
+  ]
+  http_source_ranges = [
+    "0.0.0.0/0"
+  ]
 }
 
 # Network properties
 # https://cloud.google.com/vpc/docs/vpc
 # routing: network-wide routing mode: REGIONAL or GLOBAL
 # tier: networking tier for VM interfaces: STANDARD or PREMIUM
-# name: existing network name, will be using if new is false
+# id: existing network id, will be using if new is false
 # auto: create subnets in each region automatically: false or true
 # mtu: maximum transmission unit in bytes: 1460 - 1500
 # new: create a new network, or use an existing one: true or false
@@ -65,7 +71,7 @@ security = {
 network = {
   routing = "REGIONAL"
   tier    = "STANDARD"
-  name    = "default"
+  id      = "projects/project-name/global/networks/network-name"
   auto    = false
   mtu     = 1500
   new     = true
@@ -79,22 +85,19 @@ network = {
 # IP addresses can access Google APIs and services by using
 # Private Google Access: true or false
 # https://cloud.google.com/vpc/docs/private-access-options
-# name: existing subnetwork name, will be using if new is false
+# id: existing subnetwork id, will be using if new is false
 # new: create a new subnetwork, or use an existing one: true or false
 subnetwork = {
   address = "10.0.0.0/16"
   private = true
-  name    = "default"
+  id      = "projects/project-name/regions/region-name/subnetworks/subnetwork-name"
   new     = true
 }
 
 # Boot disk properties
 # disk_type: pd-standard, pd-ssd or pd-balanced
-# auto_delete: true or false
-# whether the disk will be auto-deleted when the instance is deleted
 boot = {
-  disk_type   = "pd-standard"
-  auto_delete = true
+  disk_type = "pd-standard"
 }
 
 # Source image properties

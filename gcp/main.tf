@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 1.0.0"
 }
 
 provider "google-beta" {
@@ -165,7 +165,7 @@ locals {
   label      = lower(replace(local.product, " ", "-"))
   region     = join("-", slice(split("-", var.zone), 0, 2))
   prefix     = format("%s-%s", local.label, random_id.exa.hex)
-  ssh_key    = format("%s:%s", var.admin.username, file(var.admin.ssh_public_key))
+  ssh_key    = var.security.admin != null && var.security.public_key != null ? format("%s:%s", var.security.admin, file(var.security.public_key)) : null
   http_tag   = format("%s-%s", local.prefix, "http-server")
   node_count = var.mgs.node_count + var.mds.node_count + var.oss.node_count + var.cls.node_count
   capacity   = var.oss.node_count * var.ost.disk_count * var.ost.disk_size
@@ -177,17 +177,15 @@ locals {
   }
 
   network = var.network.new ? {
-    name = google_compute_network.exa.0.name
+    id = google_compute_network.exa.0.id
     } : {
-    name = var.network.name
+    id = var.network.id
   }
 
   subnetwork = var.subnetwork.new ? {
-    name    = google_compute_subnetwork.exa.0.name
-    address = var.subnetwork.address
+    id = google_compute_subnetwork.exa.0.id
     } : {
-    name    = var.subnetwork.name
-    address = coalesce(var.subnetwork.address, data.google_compute_subnetwork.exa.0.ip_cidr_range)
+    id = var.subnetwork.id
   }
 
   labels = merge(
@@ -245,7 +243,7 @@ locals {
     role => {
       for pair in setproduct(range(data.nodes), range(data.disks)) :
       format("%s%s-%s%s", data.kind, pair[0], role, pair[1]) => {
-        name  = format("%s-%s%s-%s%s", local.prefix, data.kind, pair[0], role, pair[1])
+        name  = format("%s-%s%s-%s%s-%s", local.prefix, data.kind, pair[0], role, pair[1], "disk")
         host  = format("%s-%s%s", local.prefix, data.kind, pair[0])
         node  = pair[0]
         disk  = pair[1]
@@ -270,12 +268,11 @@ locals {
     for role, data in local.roles :
     role => {
       for node in range(data.nodes) :
-      node => {
+      node => [
         for disk in range(data.disks) :
-        format("%s%s-%s%s", data.kind, node, role, disk) =>
-        format("%s-%s%s-%s%s", local.prefix, data.kind, node, role, disk)
+        format("%s%s-%s%s", data.kind, node, role, disk)
         if data.type != "scratch"
-      }
+      ]
     }
   }
 
