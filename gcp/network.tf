@@ -11,24 +11,17 @@ resource "google_compute_subnetwork" "exa" {
   provider                 = google-beta
   count                    = var.subnetwork.new ? 1 : 0
   name                     = format("%s-%s", local.prefix, "subnetwork")
-  network                  = local.network.name
+  network                  = local.network.id
   region                   = local.region
   ip_cidr_range            = var.subnetwork.address
   private_ip_google_access = var.subnetwork.private
-}
-
-data "google_compute_subnetwork" "exa" {
-  provider = google-beta
-  count    = var.subnetwork.new ? 0 : 1
-  name     = var.subnetwork.name
-  region   = local.region
 }
 
 resource "google_compute_firewall" "local" {
   provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-local")
-  network   = local.network.name
+  network   = local.network.id
   direction = "INGRESS"
   source_tags = [
     local.prefix
@@ -45,13 +38,13 @@ resource "google_compute_firewall" "lnet" {
   provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-lnet")
-  network   = local.network.name
+  network   = local.network.id
   direction = "INGRESS"
   target_tags = [
     local.prefix
   ]
   source_ranges = [
-    local.subnetwork.address
+    var.subnetwork.address
   ]
   allow {
     protocol = "tcp"
@@ -65,13 +58,13 @@ resource "google_compute_firewall" "repo" {
   provider  = google-beta
   count     = var.security.enable_local ? 1 : 0
   name      = format("%s-%s", local.prefix, "allow-repo")
-  network   = local.network.name
+  network   = local.network.id
   direction = "INGRESS"
   target_tags = [
     local.http_tag
   ]
   source_ranges = [
-    local.subnetwork.address
+    var.subnetwork.address
   ]
   allow {
     protocol = "tcp"
@@ -82,16 +75,14 @@ resource "google_compute_firewall" "repo" {
 }
 
 resource "google_compute_firewall" "ssh" {
-  provider  = google-beta
-  count     = var.security.enable_ssh ? 1 : 0
-  name      = format("%s-%s", local.prefix, "allow-ssh")
-  network   = local.network.name
-  direction = "INGRESS"
+  provider      = google-beta
+  count         = var.security.enable_ssh ? 1 : 0
+  name          = format("%s-%s", local.prefix, "allow-ssh")
+  network       = local.network.id
+  source_ranges = var.security.ssh_source_ranges
+  direction     = "INGRESS"
   target_tags = [
     local.prefix
-  ]
-  source_ranges = [
-    var.security.ssh_source_range
   ]
   allow {
     protocol = "tcp"
@@ -102,16 +93,14 @@ resource "google_compute_firewall" "ssh" {
 }
 
 resource "google_compute_firewall" "http" {
-  provider  = google-beta
-  count     = var.security.enable_http ? 1 : 0
-  name      = format("%s-%s", local.prefix, "allow-http")
-  network   = local.network.name
-  direction = "INGRESS"
+  provider      = google-beta
+  count         = var.security.enable_http ? 1 : 0
+  name          = format("%s-%s", local.prefix, "allow-http")
+  network       = local.network.id
+  source_ranges = var.security.http_source_ranges
+  direction     = "INGRESS"
   target_tags = [
     local.http_tag
-  ]
-  source_ranges = [
-    var.security.http_source_range
   ]
   allow {
     protocol = "tcp"
@@ -126,7 +115,7 @@ resource "google_compute_router" "exa" {
   count    = var.network.nat ? 1 : 0
   name     = format("%s-%s", local.prefix, "router")
   region   = local.region
-  network  = local.network.name
+  network  = local.network.id
 }
 
 resource "google_compute_router_nat" "exa" {
@@ -138,7 +127,7 @@ resource "google_compute_router_nat" "exa" {
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
   subnetwork {
-    name = local.subnetwork.name
+    name = local.subnetwork.id
     source_ip_ranges_to_nat = [
       "ALL_IP_RANGES"
     ]

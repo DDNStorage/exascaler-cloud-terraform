@@ -51,14 +51,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.5.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.6.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.5.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.0.6.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.0.5/gcp
+cd exascaler-cloud-terraform-scripts-2.0.6/gcp
 vi terraform.tfvars
 ```
 
@@ -68,14 +68,14 @@ vi terraform.tfvars
 | Variable  | Default Value   | Description |
 | --------- | --------------- | ----------- |
 | `fsname`  | `exacloud`      | EXAScaler Cloud filesystem name.        |
+| `project` | `project-id`    | Project ID to manage resources. [Learn more](https://cloud.google.com/resource-manager/docs/creating-managing-projects). |
 | `zone`    | `us-central1-f` | Zone name to manage resources. [Learn more](https://cloud.google.com/compute/docs/regions-zones). |
-| `project` | `ecd85a78`      | Project ID to manage resources. [Learn more](https://cloud.google.com/resource-manager/docs/creating-managing-projects). |
 
-### Service account
+#### Service account
 A service account is a special account that can be used by services and applications running on Google Compute Engine instances to interact with other Google Cloud Platform APIs. [Learn more](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances). EXAScaler Cloud deployments use service account credentials to authorize themselves to a set of APIs and perform actions within the permissions granted to the service account and virtual machine instances. All projects are created with the Compute Engine default service account and this account is assigned the editor role. Google recommends that each instance that needs to call a Google API should run as a service account with the minimum required permissions. Three options are available for EXAScaler Cloud deployment:
 
 * Use the Compute Engine default service account
-* Use an existing custom service account (consider the [list of required permissions](main.tf#L81-L92))
+* Use an existing custom service account (consider the [list of required permissions](main.tf#L87-L98))
 * Create a new custom service account and assign it the minimum required privileges 
 
 | Variable               | Default Value | Description |
@@ -88,41 +88,42 @@ A service account is a special account that can be used by services and applicat
 | -------- | ------------- | ----------- |
 | `waiter` | `deploymentmanager` | Waiter to check progress and result for deployment. To use Google Deployment Manager set `waiter = "deploymentmanager"`. To use generic Google Cloud SDK command line set `waiter = "sdk"`. If you don’t want to wait until the deployment is complete, set `waiter = null`. [Learn more](https://cloud.google.com/deployment-manager/runtime-configurator/creating-a-waiter). |
 
-#### Authentication options
-| Variable | Default Value | Description |
-| -------- | ------------- | ----------- |
-| `admin.username` | `stack` | User name for remote SSH access. |
-| `admin.ssh_public_key` | `~/.ssh/id_rsa.pub` | Path to the local SSH public key. This file will be added to admin home directory as `.ssh/authorized_keys`. |
-
 #### Security options
-| Variable | Default Value | Description |
-| -------- | ------------- | ----------- |
-| `security.enable_local` | `true` | `true` or `false`: enable or disable firewall rules to allow local traffic (TCP/988, TCP/80). |
-| `security.enable_ssh` | `true` | `true` or `false`: enable/disable remote SSH access. |
-| `security.ssh_source_range` | `0.0.0.0/0` | Source IP for remote SSH access. |
-| `security.enable_http` | `true` | `true` or `false`: enable/disable remote HTTP console. |
-| `security.http_source_range` | `0.0.0.0/0` | Source IP for remote HTTP access. |
+| Variable                      | Default Value       | Description |
+| ----------------------------- | ------------------- | ----------- |
+| `security.admin`              | `stack`             | Optional user name for remote SSH access. Set `admin = null` to disable creation admin user. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
+| `security.public_key`         | `~/.ssh/id_rsa.pub` | Path to the SSH public key on the local host. Set `public_key = null` to disable creation admin user. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
+| `security.block_project_keys` | `false`             | Block project-wide public SSH keys if you want to restrict deployment to only user with deployment-level public SSH key. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
+| `security.enable_local`       | `true`              | `true` or `false`: enable or disable firewall rules to allow local traffic (TCP/988, TCP/80). |
+| `security.enable_ssh`         | `true`              | `true` or `false`: enable/disable remote SSH access. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
+| `security.enable_http`        | `true`              | `true` or `false`: enable/disable remote HTTP console. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
+| `security.ssh_source_ranges`  | `[0.0.0.0/0]`       | Source IP ranges for remote SSH access in CIDR notation. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
+| `security.http_source_ranges` | `[0.0.0.0/0]`       | Source IP ranges for remote HTTP access in CIDR notation. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
 
 #### Network options
-| Variable | Default Value | Description |
-| -------- | ------------- | ----------- |
-| `network.routing` | `REGIONAL` | Network-wide routing mode: `REGIONAL` or `GLOBAL`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
-| `network.tier` | `STANDARD` | Networking tier for network interfaces: `STANDARD` or `PREMIUM`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
-| `network.name` | `default` | Existing network name, will be using only if `new` option is `false`. |
-| `network.auto` | `false` | Create subnets in each region automatically: `true` or `false`. |
-| `network.mtu` | `1500` | Maximum transmission unit in bytes: 1460 - 1500. |
-| `network.new` | `true` | Create a new network, or use an existing one: `true` or `false`. |
-| `network.nat` | `true` | Allow instances without external IP to communicate with the outside world: `true` or `false`. |
+| Variable             | Default Value | Description |
+| -------------------- | ------------- | ----------- |
+| `network.routing`    | `REGIONAL`    | Network-wide routing mode: `REGIONAL` or `GLOBAL`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
+| `network.tier`       | `STANDARD`    | Networking tier for network interfaces: `STANDARD` or `PREMIUM`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
+| `network.id`         | `projects/project-name/global/networks/network-name` | Existing network id, will be using only if `new` option is `false`. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
+| `network.auto`       | `false` | Create subnets in each region automatically: `true` or `false`. [Learn more](https://cloud.google.com/vpc/docs/vpc).|
+| `network.mtu`        | `1500` | Maximum transmission unit in bytes: 1460 - 1500. [Learn more](https://cloud.google.com/vpc/docs/vpc). |
+| `network.new`        | `true` | Create a new network, or use an existing one: `true` or `false`. |
+| `network.nat`        | `true` | Allow instances without external IP to communicate with the outside world: `true` or `false`. [Learn more](https://cloud.google.com/nat/docs/overview). |
 | `subnetwork.address` | `10.0.0.0/16` | IP address range in CIDR notation of internal addresses for a new or existing subnetwork. |
 | `subnetwork.private` | `true` | When enabled VMs in this subnetwork without external IP addresses can access Google APIs and services by using Private Google Access: `true` or `false`. [Learn more](https://cloud.google.com/vpc/docs/configure-private-google-access). |
-| `subnetwork.name` | `default` | Existing subnetwork name, will be using only if `new` option is `false`. |
-| `subnetwork.new` | `true` | Create a new subnetwork, or use an existing one: `true` or `false`. |
+| `subnetwork.id`      | `projects/project-name/regions/region-name/subnetworks/subnetwork-name` | Existing subnetwork name, will be using only if `new` option is `false`. |
+| `subnetwork.new`     | `true` | Create a new subnetwork, or use an existing one: `true` or `false`. |
+
+Note: to provide access to the Google Cloud API, one of the following conditions must be met:
+* the subnetwork must be configured with enabled Private Google Access
+* all VM instances must have external IP addresses
+* NAT option must be enabled
 
 #### Boot disk options
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
 | `boot.disk_type` | `pd-standard` | Boot disk type: `pd-standard`, `pd-ssd` or `pd-balanced`. [Learn more](https://cloud.google.com/compute/docs/disks). |
-| `boot.auto_delete` | `true` | When `auto-delete` is `true`, the boot disk is deleted when the instance it is attached to is deleted. |
 
 #### Boot image options
 | Variable | Default Value | Description |
@@ -142,9 +143,9 @@ A service account is a special account that can be used by services and applicat
 #### Target disks options
 | Variable | Default Value | Description |
 | -------- | ------------- | ----------- |
-| `{mgt,mnt,mdt,ost,clt}.disk_bus` | `SCSI` | `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only) |
+| `{mgt,mnt,mdt,ost,clt}.disk_bus` | `SCSI` | `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `{mgt,mnt,mdt,ost,clt}.disk_type` | `pd-standard` | `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
-| `{mgt,mnt,mdt,ost,clt}.disk_size` | `512` | Disk size in GB (ignored for `scratch` disks: local SSD size is 375GB) |
+| `{mgt,mnt,mdt,ost,clt}.disk_size` | `512` | Disk size in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `{mgt,mnt,mdt,ost,clt}.disk_count` | `1`   | Number of target disks: `1-128` (`1` for `mgt` and `mnt`). [Learn more](https://cloud.google.com/compute/docs/disks). |
 
 Initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times:
@@ -188,7 +189,7 @@ ssh_console = {
   "exascaler-cloud-7e04-mgs0" = "ssh -A stack@35.209.72.61"
 }
 
-web_console = "http://35.209.72.61"
+http_console = "http://35.209.72.61"
 ```
 
 Now you can access the EXAScaler Cloud environment:
