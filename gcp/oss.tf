@@ -116,8 +116,8 @@ resource "google_compute_instance" "oss" {
   )
 
   depends_on = [
+    google_compute_instance.mds,
     google_runtimeconfig_config.fs_config,
-    google_runtimeconfig_config.role_config,
     google_runtimeconfig_config.startup_config
   ]
 }

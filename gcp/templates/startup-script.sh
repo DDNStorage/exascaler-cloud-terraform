@@ -1,35 +1,35 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-cat >>/etc/loci.conf<<EOF
-key_dir: ~/.ssh
-HaEnabled: True
-EnableIPSec: False
-EnableMdtRaid0: False
-EnableOstRaid0: False
-LustreAZ: ${zone}
-FsName: ${fsname}
-FilesystemCapacity: ${capacity}
-ConfigurationProfile: ${profile}
+cat >/etc/loci.conf<<EOF
+[default]
+Version: ${loci}
 Deployment: ${deployment}
-MgtVolumeSize: ${mgt_disk_size}
-MgtVolumeType: ${mgt_disk_type}
-MgtVolumePiops: 0
-GangliaVolumeSize: ${mnt_disk_size}
-GangliaVolumeType: ${mnt_disk_type}
-GangliaVolumePiops: 0
-MdsCount: ${mds_node_count}
-MdtVolumeSize: ${mdt_disk_size}
-MdtVolumeType: ${mdt_disk_type}
-MdtVolumeCount: ${mdt_disk_count}
-MdtVolumePiops: 0
-OssCount: ${oss_node_count}
-OstVolumeSize: ${ost_disk_size}
-OstVolumeType: ${ost_disk_type}
-OstVolumeCount: ${ost_disk_count}
-OstVolumePiops: 0
-RolesTable: ${deployment}-role-config
 FilesystemTable: ${deployment}-fs-config
 StartupTable: ${deployment}-startup-config
+Profile: ${profile}
+FsName: ${fsname}
+MgsType: ${mgs_type}
+MgsCount: ${mgs_count}
+MgtType: ${mgt_type}
+MgtSize: ${mgt_size}
+MgtCount: ${mgt_count}
+MgtRaid: ${mgt_raid}
+MntType: ${mnt_type}
+MntSize: ${mnt_size}
+MntCount: ${mnt_count}
+MntRaid: ${mnt_raid}
+MdsType: ${mds_type}
+MdsCount: ${mds_count}
+MdtType: ${mdt_type}
+MdtSize: ${mdt_size}
+MdtCount: ${mdt_count}
+MdtRaid: ${mdt_raid}
+OssType: ${oss_type}
+OssCount: ${oss_count}
+OstType: ${ost_type}
+OstSize: ${ost_size}
+OstCount: ${ost_count}
+OstRaid: ${ost_raid}
 EOF
 
 loci init

@@ -118,14 +118,24 @@ resource "google_compute_router" "exa" {
   network  = local.network.id
 }
 
+resource "google_compute_address" "nat" {
+  provider     = google-beta
+  count        = var.network.nat ? 1 : 0
+  name         = format("%s-%s", local.prefix, "nat-external-address")
+  region       = local.region
+  network_tier = "PREMIUM"
+  address_type = "EXTERNAL"
+}
+
 resource "google_compute_router_nat" "exa" {
   provider                           = google-beta
   count                              = var.network.nat ? 1 : 0
   name                               = format("%s-%s", local.prefix, "nat")
   router                             = google_compute_router.exa.0.name
   region                             = local.region
-  nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  nat_ips                            = google_compute_address.nat.*.self_link
   subnetwork {
     name = local.subnetwork.id
     source_ip_ranges_to_nat = [

@@ -17,11 +17,6 @@ resource "google_runtimeconfig_config" "fs_config" {
   name     = format("%s-%s", local.prefix, "fs-config")
 }
 
-resource "google_runtimeconfig_config" "role_config" {
-  provider = google-beta
-  name     = format("%s-%s", local.prefix, "role-config")
-}
-
 resource "google_runtimeconfig_config" "startup_config" {
   provider = google-beta
   name     = format("%s-%s", local.prefix, "startup-config")
@@ -88,7 +83,6 @@ resource "google_project_iam_custom_role" "exa" {
     "compute.disks.list",
     "compute.instances.get",
     "compute.instances.list",
-    "compute.zones.list",
     "runtimeconfig.configs.get",
     "runtimeconfig.configs.list",
     "runtimeconfig.variables.get",
@@ -107,12 +101,6 @@ resource "google_project_iam_binding" "exa" {
   members = [
     format("%s:%s", "serviceAccount", google_service_account.exa.0.email)
   ]
-}
-
-data "google_service_account" "exa" {
-  provider   = google-beta
-  count      = var.service_account.new ? 0 : 1
-  account_id = var.service_account.name
 }
 
 data "google_compute_image" "exa" {
@@ -136,29 +124,39 @@ data "template_file" "startup_waiter" {
 data "template_file" "startup_script" {
   template = file(format("%s/%s/%s", path.module, local.templates, "startup-script.sh"))
   vars = {
-    deployment     = local.prefix
-    capacity       = local.capacity
-    profile        = local.profile
-    zone           = var.zone
-    fsname         = var.fsname
-    mgt_disk_type  = var.mgt.disk_type
-    mgt_disk_size  = var.mgt.disk_size
-    mnt_disk_type  = var.mnt.disk_type
-    mnt_disk_size  = var.mnt.disk_size
-    mds_node_count = var.mds.node_count
-    mdt_disk_count = var.mdt.disk_count
-    mdt_disk_type  = var.mdt.disk_type
-    mdt_disk_size  = var.mdt.disk_size
-    oss_node_count = var.oss.node_count
-    ost_disk_count = var.ost.disk_count
-    ost_disk_type  = var.ost.disk_type
-    ost_disk_size  = var.ost.disk_size
+    loci       = local.loci
+    deployment = local.prefix
+    profile    = local.profile
+    fsname     = var.fsname
+    mgs_type   = var.mgs.node_type
+    mgs_count  = var.mgs.node_count
+    mgt_type   = var.mgt.disk_type
+    mgt_size   = var.mgt.disk_size
+    mgt_count  = var.mgt.disk_count
+    mgt_raid   = var.mgt.disk_raid
+    mnt_type   = var.mnt.disk_type
+    mnt_size   = var.mnt.disk_size
+    mnt_count  = var.mnt.disk_count
+    mnt_raid   = var.mnt.disk_raid
+    mds_type   = var.mds.node_type
+    mds_count  = var.mds.node_count
+    mdt_type   = var.mdt.disk_type
+    mdt_size   = var.mdt.disk_size
+    mdt_count  = var.mdt.disk_count
+    mdt_raid   = var.mdt.disk_raid
+    oss_type   = var.oss.node_type
+    oss_count  = var.oss.node_count
+    ost_type   = var.ost.disk_type
+    ost_size   = var.ost.disk_size
+    ost_count  = var.ost.disk_count
+    ost_raid   = var.ost.disk_raid
   }
 }
 
 locals {
+  loci       = "1.9.1"
   product    = "EXAScaler Cloud"
-  profile    = "Custom configuration profile"
+  profile    = "custom"
   scripts    = "scripts"
   templates  = "templates"
   timeout    = 300
@@ -168,12 +166,11 @@ locals {
   ssh_key    = var.security.admin != null && var.security.public_key != null ? format("%s:%s", var.security.admin, file(var.security.public_key)) : null
   http_tag   = format("%s-%s", local.prefix, "http-server")
   node_count = var.mgs.node_count + var.mds.node_count + var.oss.node_count + var.cls.node_count
-  capacity   = var.oss.node_count * var.ost.disk_count * var.ost.disk_size
 
   service_account = var.service_account.new ? {
     email = google_service_account.exa.0.email
     } : {
-    email = data.google_service_account.exa.0.email
+    email = var.service_account.email
   }
 
   network = var.network.new ? {

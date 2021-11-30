@@ -33,13 +33,13 @@ variable "zone" {
 
 variable "service_account" {
   type = object({
-    new  = bool
-    name = string
+    new   = bool
+    email = string
   })
 
   default = {
-    new  = false
-    name = "default"
+    new   = false
+    email = null
   }
 
   description = "Service account used by deploy application."
@@ -50,8 +50,8 @@ variable "service_account" {
   }
 
   validation {
-    condition     = can(regex("[a-z][0-9a-z-]{4,28}[0-9a-z]", var.service_account.name))
-    error_message = "The service_account.name value must be 6 to 30 characters in length."
+    condition     = var.service_account.email == null ? true : can(regex("[a-z][0-9a-z-]{4,28}[0-9a-z]@[a-z][0-9a-z-]{4,28}[0-9a-z].iam.gserviceaccount.com", var.service_account.email))
+    error_message = "The service_account.email value must be a valid email address in the format: service_account_id@project_id.iam.gserviceaccount.com, service_account_id value must be 6 to 30 characters in length and project_id value must be 6 to 30 characters in length."
   }
 }
 
@@ -78,8 +78,6 @@ variable "security" {
     http_source_ranges = list(string)
   })
 
-  description = "Security options"
-
   default = {
     admin              = "stack"
     public_key         = "~/.ssh/id_rsa.pub"
@@ -94,6 +92,8 @@ variable "security" {
       "0.0.0.0/0"
     ]
   }
+
+  description = "Security options"
 
   validation {
     condition     = var.security.admin == null ? true : can(regex("^[a-z][0-9a-z_-]{1,30}[0-9a-z]$", var.security.admin))
@@ -341,6 +341,7 @@ variable "mgt" {
     disk_type  = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -348,6 +349,7 @@ variable "mgt" {
     disk_type  = "pd-standard"
     disk_size  = 128
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Management target options"
@@ -378,8 +380,8 @@ variable "mgt" {
   }
 
   validation {
-    condition     = var.mgt.disk_count == 1
-    error_message = "The mgt.disk_count value must be 1."
+    condition     = var.mgt.disk_count > 0 && var.mgt.disk_count <= 128
+    error_message = "The mgt.disk_count value must be between 1 and 128."
   }
 
   validation {
@@ -391,6 +393,11 @@ variable "mgt" {
     condition     = floor(var.mgt.disk_count) == ceil(var.mgt.disk_count)
     error_message = "The mgt.disk_count value must be an integer."
   }
+
+  validation {
+    condition     = contains([false, true], var.mgt.disk_raid)
+    error_message = "The mgt.disk_raid value must be false or true."
+  }
 }
 
 variable "mnt" {
@@ -399,6 +406,7 @@ variable "mnt" {
     disk_type  = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -406,6 +414,7 @@ variable "mnt" {
     disk_type  = "pd-standard"
     disk_size  = 128
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Monitoring target options"
@@ -436,8 +445,8 @@ variable "mnt" {
   }
 
   validation {
-    condition     = var.mnt.disk_count == 1
-    error_message = "The mnt.disk_count value must be 1."
+    condition     = var.mnt.disk_count > 0 && var.mnt.disk_count <= 128
+    error_message = "The mnt.disk_count value must be between 1 and 128."
   }
 
   validation {
@@ -448,6 +457,11 @@ variable "mnt" {
   validation {
     condition     = floor(var.mnt.disk_count) == ceil(var.mnt.disk_count)
     error_message = "The mnt.disk_count value must be an integer."
+  }
+
+  validation {
+    condition     = contains([false, true], var.mnt.disk_raid)
+    error_message = "The mnt.disk_raid value must be false or true."
   }
 }
 
@@ -491,8 +505,8 @@ variable "mds" {
   }
 
   validation {
-    condition     = var.mds.node_count >= 1 && var.mds.node_count <= 128
-    error_message = "The mds.node_count value must be between 1 and 128."
+    condition     = var.mds.node_count >= 1 && var.mds.node_count <= 32
+    error_message = "The mds.node_count value must be between 1 and 32."
   }
 
   validation {
@@ -512,6 +526,7 @@ variable "mdt" {
     disk_type  = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -519,6 +534,7 @@ variable "mdt" {
     disk_type  = "pd-ssd"
     disk_size  = 256
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Metadata target options"
@@ -562,6 +578,11 @@ variable "mdt" {
     condition     = floor(var.mdt.disk_count) == ceil(var.mdt.disk_count)
     error_message = "The mdt.disk_count value must be an integer."
   }
+
+  validation {
+    condition     = contains([false, true], var.mdt.disk_raid)
+    error_message = "The mdt.disk_raid value must be false or true."
+  }
 }
 
 variable "oss" {
@@ -604,8 +625,8 @@ variable "oss" {
   }
 
   validation {
-    condition     = var.oss.node_count > 0
-    error_message = "The oss.node_count value must be greater than 0."
+    condition     = var.oss.node_count >= 1 && var.oss.node_count <= 2000
+    error_message = "The oss.node_count value must be between 1 and 2000."
   }
 
   validation {
@@ -625,6 +646,7 @@ variable "ost" {
     disk_type  = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -632,6 +654,7 @@ variable "ost" {
     disk_type  = "pd-standard"
     disk_size  = 512
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Storage target options"
@@ -674,6 +697,11 @@ variable "ost" {
   validation {
     condition     = floor(var.ost.disk_count) == ceil(var.ost.disk_count)
     error_message = "The ost.disk_count value must be an integer."
+  }
+
+  validation {
+    condition     = contains([false, true], var.ost.disk_raid)
+    error_message = "The ost.disk_raid value must be false or true."
   }
 }
 
