@@ -151,7 +151,6 @@ resource "google_compute_instance" "mgs" {
 
   depends_on = [
     google_runtimeconfig_config.fs_config,
-    google_runtimeconfig_config.role_config,
     google_runtimeconfig_config.startup_config
   ]
 }
