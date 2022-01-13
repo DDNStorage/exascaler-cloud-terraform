@@ -52,14 +52,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.0.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.0.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.0/gcp
+cd exascaler-cloud-terraform-scripts-2.1.1/gcp
 vi terraform.tfvars
 ```
 
@@ -95,6 +95,7 @@ A service account is a special account that can be used by services and applicat
 | `security.admin`              | `string` | `stack`  | Optional user name for remote SSH access. Set `admin = null` to disable creation admin user. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
 | `security.public_key`         | `string` | `~/.ssh/id_rsa.pub` | Path to the SSH public key on the local host. Set `public_key = null` to disable creation admin user. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
 | `security.block_project_keys` | `bool`   | `true`              | Block project-wide public SSH keys if you want to restrict deployment to only user with deployment-level public SSH key. [Learn more](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys). |
+| `security.enable_os_login`    | `bool`   | `false`             | `true` or `false`: enable or disable OS Login. Please note, enabling this option disables other security options: `security.admin`, `security.public_key` and `security.block_project_keys`.  [Learn more](https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin). |
 | `security.enable_local`       | `bool`   | `true`              | `true` or `false`: enable or disable firewall rules to allow local traffic (TCP/988 and TCP/80). |
 | `security.enable_ssh`         | `bool`   | `true`              | `true` or `false`: enable/disable remote SSH access. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
 | `security.enable_http`        | `bool`   | `true`              | `true` or `false`: enable/disable remote HTTP console. [Learn more](https://cloud.google.com/vpc/docs/firewalls). |
@@ -444,8 +445,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.0.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.0/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.1/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:
