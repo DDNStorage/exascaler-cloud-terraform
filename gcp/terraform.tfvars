@@ -40,6 +40,11 @@ waiter = "deploymentmanager"
 # Block project-wide public SSH keys if you want to restrict
 # deployment to only user with deployment-level public SSH key.
 # https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys
+# enable_os_login: true or false
+# Enable or disable OS Login feature.
+# Please note, enabling this option disables other security options:
+# admin, public_key and block_project_keys.
+# https://cloud.google.com/compute/docs/instances/managing-instance-access#enable_oslogin
 # enable_local: true or false, enable or disable firewall rules for local access
 # enable_ssh: true or false, enable or disable remote SSH access
 # ssh_source_ranges: source IP ranges for remote SSH access in CIDR notation
@@ -49,6 +54,7 @@ security = {
   admin              = "stack"
   public_key         = "~/.ssh/id_rsa.pub"
   block_project_keys = true
+  enable_os_login    = false
   enable_local       = true
   enable_ssh         = true
   enable_http        = true

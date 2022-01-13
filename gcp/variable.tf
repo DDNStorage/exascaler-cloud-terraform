@@ -71,6 +71,7 @@ variable "security" {
     admin              = string
     public_key         = string
     block_project_keys = bool
+    enable_os_login    = bool
     enable_local       = bool
     enable_ssh         = bool
     enable_http        = bool
@@ -82,6 +83,7 @@ variable "security" {
     admin              = "stack"
     public_key         = "~/.ssh/id_rsa.pub"
     block_project_keys = false
+    enable_os_login    = false
     enable_local       = true
     enable_ssh         = true
     enable_http        = true
@@ -108,6 +110,11 @@ variable "security" {
   validation {
     condition     = contains([false, true], var.security.block_project_keys)
     error_message = "The security.block_project_keys value must be false or true."
+  }
+
+  validation {
+    condition     = contains([false, true], var.security.enable_os_login)
+    error_message = "The security.enable_os_login value must be false or true."
   }
 
   validation {
