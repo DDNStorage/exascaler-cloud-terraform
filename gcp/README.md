@@ -52,14 +52,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.1/gcp
+cd exascaler-cloud-terraform-scripts-2.1.2/gcp
 vi terraform.tfvars
 ```
 
@@ -68,6 +68,8 @@ vi terraform.tfvars
 #### Common options
 | Variable  | Type     | Default         | Description |
 | --------: | -------: | --------------: | ----------- |
+| `prefix`  | `string` | `null`          | EXAScaler Cloud custom deployment prefix. Set this option to add a custom prefix to all created objects. |
+| `labels`  | `map`    | `{}`            | EXAScaler Cloud custom deployment labels. Set this option to add a custom labels to all created objects. |
 | `fsname`  | `string` | `exacloud`      | EXAScaler Cloud filesystem name. |
 | `project` | `string` | `project-id`    | Project ID to manage resources. [Learn more](https://cloud.google.com/resource-manager/docs/creating-managing-projects). |
 | `zone`    | `string` | `us-central1-f` | Zone name to manage resources. [Learn more](https://cloud.google.com/compute/docs/regions-zones). |
@@ -445,8 +447,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.1.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.1/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.2/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:

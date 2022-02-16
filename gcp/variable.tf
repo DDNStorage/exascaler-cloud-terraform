@@ -1,3 +1,41 @@
+variable "prefix" {
+  type        = string
+  default     = ""
+  description = "EXAScaler Cloud deployment prefix"
+
+  validation {
+    condition     = var.prefix == null ? true : can(regex("^[a-z][0-9a-z_-]{0,31}$", var.prefix))
+    error_message = "The prefix value can contain only lowercase letters, numeric characters, underscores, dashes, must start with a lowercase letter and have a length of 1-32 characters."
+  }
+}
+
+variable "labels" {
+  type        = map(any)
+  default     = {}
+  description = "EXAScaler Cloud deployment labels"
+
+  validation {
+    condition     = length(var.labels) <= 64
+    error_message = "The number of labels must be less than or equal to 64."
+  }
+
+  validation {
+    condition = alltrue([
+      for name, value in var.labels :
+      can(regex("^\\p{Ll}[\\p{Ll}\\p{Nd}_-]{0,62}$", name))
+    ])
+    error_message = "The labels keys can contain only lowercase letters, numeric characters, underscores, dashes, must start with a lowercase letter and have a length of 1-63 characters."
+  }
+
+  validation {
+    condition = alltrue([
+      for name, value in var.labels :
+      can(regex("^[\\p{Ll}\\p{Nd}_-]{0,63}$", value))
+    ])
+    error_message = "The labels values can contain only lowercase letters, numeric characters, underscores, dashes and have a length of 0-63 characters."
+  }
+}
+
 variable "fsname" {
   type        = string
   default     = "exacloud"
@@ -174,7 +212,7 @@ variable "image" {
 
   default = {
     project = "ddn-public"
-    name    = "exascaler-cloud-v522-centos7"
+    name    = "exascaler-cloud-v523-centos7"
   }
 
   description = "Source image options"

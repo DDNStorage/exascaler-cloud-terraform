@@ -162,7 +162,7 @@ locals {
   timeout    = 300
   label      = lower(replace(local.product, " ", "-"))
   region     = join("-", slice(split("-", var.zone), 0, 2))
-  prefix     = format("%s-%s", local.label, random_id.exa.hex)
+  prefix     = coalesce(var.prefix, format("%s-%s", local.label, random_id.exa.hex))
   ssh_key    = var.security.admin != null && var.security.public_key != null ? format("%s:%s", var.security.admin, file(var.security.public_key)) : null
   http_tag   = format("%s-%s", local.prefix, "http-server")
   node_count = var.mgs.node_count + var.mds.node_count + var.oss.node_count + var.cls.node_count
@@ -186,6 +186,7 @@ locals {
   }
 
   labels = merge(
+    var.labels,
     data.google_compute_image.exa.labels,
     {
       deployment = local.prefix
