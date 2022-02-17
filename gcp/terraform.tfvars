@@ -1,3 +1,16 @@
+# EXAScaler Cloud custom deployment prefix
+# set this option to add a custom prefix to all created objects
+# only lowercase alphanumeric characters are allowed,
+# and the value must be 1-32 characters long
+# keep this value blank to use the default setting
+# set prefix = null to use the default value (exascaler-cloud-XXXX)
+prefix = null
+
+# EXAScaler Cloud custom deployment labels
+# set this option to add a custom labels to all created objects
+# https://cloud.google.com/resource-manager/docs/creating-managing-labels
+labels = {}
+
 # EXAScaler Cloud filesystem name
 # only alphanumeric characters are allowed,
 # and the value must be 1-8 characters long
