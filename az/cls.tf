@@ -2,9 +2,9 @@ resource "azurerm_public_ip" "cls" {
   count               = var.cls.public_ip ? var.cls.node_count : 0
   name                = format("%s-%s%d-%s", local.prefix, "cls", count.index, "public-ip")
   domain_name_label   = format("%s-%s%d", local.prefix, "cls", count.index)
-  availability_zone   = local.availability_zone
   location            = local.resource_group.location
   resource_group_name = local.resource_group.name
+  zones               = local.zones
   allocation_method   = "Static"
   sku                 = "Standard"
   tags = merge(
@@ -38,13 +38,13 @@ resource "azurerm_network_interface" "cls" {
 }
 
 resource "azurerm_network_interface_application_security_group_association" "cls" {
-  count                         = var.cls.public_ip && var.ssh.enable ? var.cls.node_count : 0
+  count                         = var.cls.public_ip && var.security.enable_ssh ? var.cls.node_count : 0
   network_interface_id          = azurerm_network_interface.cls[count.index].id
   application_security_group_id = azurerm_application_security_group.servers.0.id
 }
 
 resource "azurerm_network_interface_security_group_association" "cls" {
-  count                     = var.cls.public_ip && var.ssh.enable ? var.cls.node_count : 0
+  count                     = var.cls.public_ip && var.security.enable_ssh ? var.cls.node_count : 0
   network_interface_id      = azurerm_network_interface.cls[count.index].id
   network_security_group_id = azurerm_network_security_group.servers.0.id
 }
@@ -82,9 +82,9 @@ resource "azurerm_linux_virtual_machine" "cls" {
     caching              = var.boot.disk_cache
   }
   plan {
-    name      = var.image.sku
-    product   = var.image.offer
     publisher = var.image.publisher
+    product   = var.image.offer
+    name      = var.image.sku
   }
   source_image_reference {
     publisher = var.image.publisher
@@ -94,9 +94,9 @@ resource "azurerm_linux_virtual_machine" "cls" {
   }
   computer_name                   = format("%s-%s%d", local.prefix, "cls", count.index)
   disable_password_authentication = true
-  admin_username                  = var.admin.username
+  admin_username                  = var.security.user_name
   admin_ssh_key {
-    username   = var.admin.username
+    username   = var.security.user_name
     public_key = local.sshkey
   }
   identity {
@@ -116,7 +116,7 @@ resource "azurerm_linux_virtual_machine" "cls" {
 
 resource "azurerm_managed_disk" "clt" {
   for_each             = local.disks.clt
-  zones                = local.zones
+  zone                 = local.zone
   name                 = each.value.name
   resource_group_name  = local.resource_group.name
   location             = local.resource_group.location
@@ -154,7 +154,6 @@ resource "azurerm_virtual_machine_extension" "cls" {
   depends_on = [
     azurerm_role_assignment.exa,
     azurerm_app_configuration.fs_config,
-    azurerm_app_configuration.role_config,
     azurerm_virtual_machine_extension.mgs,
     azurerm_virtual_machine_extension.mds,
     azurerm_virtual_machine_extension.oss,
@@ -164,6 +163,9 @@ resource "azurerm_virtual_machine_extension" "cls" {
     azurerm_virtual_machine_data_disk_attachment.ost,
     azurerm_virtual_machine_data_disk_attachment.clt
   ]
+  timeouts {
+    create = local.timeout
+  }
   tags = merge(
     local.tags,
     {

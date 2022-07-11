@@ -1,6 +1,15 @@
-# Configuration profile name
-# small, medium or custom
-profile = "custom"
+# EXAScaler Cloud custom deployment prefix
+# set this option to add a custom prefix to all created objects
+# only lowercase alphanumeric characters are allowed,
+# and the value must be 1-32 characters long
+# keep this value blank to use the default setting
+# set prefix = null to use the default value (exascaler-cloud-XXXX)
+prefix = null
+
+# EXAScaler Cloud custom deployment tags
+# set this option to add a custom tags to all created objects
+# https://docs.microsoft.com/azure/azure-resource-manager/management/tag-resources
+tags = {}
 
 # EXAScaler filesystem name
 # only alphanumeric characters are allowed,
@@ -9,7 +18,8 @@ fsname = "exacloud"
 
 # Subscription ID
 # https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade
-subscription = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+#subscription = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+subscription = "9978cd1b-936a-4296-8061-67c9d963dd40"
 
 # The Azure region to manage resources
 # https://azure.microsoft.com/global-infrastructure/geographies
@@ -77,28 +87,24 @@ subnet = {
   address = "10.0.0.0/24"
 }
 
-# Authentication options for remote SSH access
-# username: remote user name
-# ssh_public_key: path to SSH public key
-admin = {
-  username       = "stack"
+# Security options
+# user_name: user name for remote SSH access
+# ssh_public_key: path to the SSH public key on the local host
+# enable_ssh: true or false, enable or disable remote SSH access
+# enable_http: true or false, enable or disable remote HTTP access
+# ssh_source_ranges: source IP ranges for remote SSH access in CIDR notation
+# http_source_ranges: source IP ranges for remote HTTP access in CIDR notation
+security = {
+  user_name      = "stack"
   ssh_public_key = "~/.ssh/id_rsa.pub"
-}
-
-# SSH options
-# Enable remote SSH access: true or false
-# Source IP range for remote SSH access in CIDR notation
-ssh = {
-  enable = true
-  source = "0.0.0.0/0"
-}
-
-# HTTP options
-# Enable remote HTTP access: true or false
-# Source IP range for remote HTTP access in CIDR notation
-http = {
-  enable = true
-  source = "0.0.0.0/0"
+  enable_ssh     = true
+  enable_http    = true
+  ssh_source_ranges = [
+    "0.0.0.0/0"
+  ]
+  http_source_ranges = [
+    "0.0.0.0/0"
+  ]
 }
 
 # Boot disk options
@@ -126,8 +132,8 @@ boot = {
 image = {
   publisher = "ddn-whamcloud-5345716"
   offer     = "exascaler_cloud"
-  sku       = "exascaler_cloud_523_centos"
-  version   = "5.2.3"
+  sku       = "exascaler_cloud_6_1_centos"
+  version   = "latest"
   accept    = false
 }
 
@@ -159,12 +165,15 @@ mgs = {
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the management target
-# disk_size in GB
+# disk_size: size of management target in GB
+# disk_count: number of management targets
+# disk_raid: create striped management target, true or false
 mgt = {
   disk_type  = "StandardSSD_LRS"
   disk_cache = "None"
-  disk_size  = 128
+  disk_size  = 256
   disk_count = 1
+  disk_raid  = false
 }
 
 # Monitoring target options
@@ -172,12 +181,15 @@ mgt = {
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the monitoring target
-# disk_size in GB
+# disk_size: size of monitoring target in GB
+# disk_count: number of monitoring targets
+# disk_raid: create striped monitoring target, true or false
 mnt = {
   disk_type  = "StandardSSD_LRS"
   disk_cache = "None"
-  disk_size  = 64
+  disk_size  = 128
   disk_count = 1
+  disk_raid  = false
 }
 
 # Metadata server options
@@ -198,9 +210,9 @@ mds = {
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the metadata target
-# disk_size in GB
-# disk_raid: true or false
-# enables striped volume
+# disk_size: size of metadata target in GB
+# disk_count: number of metadata targets
+# disk_raid: create striped metadata target, true or false
 mdt = {
   disk_type  = "Premium_LRS"
   disk_cache = "None"
@@ -227,9 +239,9 @@ oss = {
 # disk_type: Standard_LRS, Premium_LRS or StandardSSD_LRS
 # disk_cache: None, ReadOnly or ReadWrite
 # Specifies the caching requirements for the object storage target
-# disk_size in GB
-# disk_raid: true or false
-# enables striped volume
+# disk_size: size of storage target in GB
+# disk_count: number of storage targets
+# disk_raid: create striped storage target, true or false
 ost = {
   disk_type  = "Standard_LRS"
   disk_cache = "None"

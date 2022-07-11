@@ -143,7 +143,7 @@ function umount_filesystem {
 				--resource-group "$RESOURCE_GROUP" \
 				--name "$VM_NAME" \
 				--command-id 'RunShellScript' \
-				--scripts 'umount -f -a -t lustre'
+				--scripts 'umount -a -t lustre'
 		done
 	done
 }
