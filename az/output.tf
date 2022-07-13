@@ -16,7 +16,7 @@ output "ssh_console" {
       var.mds.public_ip ? azurerm_public_ip.mds : [],
       var.oss.public_ip ? azurerm_public_ip.oss : [],
       var.cls.public_ip ? azurerm_public_ip.cls : []
-    ) : pip.domain_name_label => format("ssh -A %s@%s", var.admin.username, pip.fqdn)
+    ) : pip.domain_name_label => format("ssh -A %s@%s", var.security.user_name, pip.fqdn)
   } : null
 }
 
@@ -44,4 +44,8 @@ output "azure_dashboard" {
     local.resource_group.name,
     local.prefix
   )
+}
+
+output "client_config" {
+  value = data.template_file.client_script.rendered
 }

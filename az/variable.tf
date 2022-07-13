@@ -1,11 +1,38 @@
-variable "profile" {
+variable "prefix" {
   type        = string
-  default     = "custom"
-  description = "Configuration profile name"
+  default     = ""
+  description = "EXAScaler Cloud deployment prefix"
 
   validation {
-    condition     = contains(["custom", "small", "medium"], var.profile)
-    error_message = "The profile value should be custom, small or medium."
+    condition     = var.prefix == null ? true : can(regex("^[a-z][0-9a-z_-]{0,31}$", var.prefix))
+    error_message = "The prefix value can contain only lowercase letters, numeric characters, underscores, dashes, must start with a lowercase letter and have a length of 1-32 characters."
+  }
+}
+
+variable "tags" {
+  type        = map(any)
+  default     = {}
+  description = "EXAScaler Cloud deployment tags"
+
+  validation {
+    condition     = length(var.tags) <= 64
+    error_message = "The number of tags must be less than or equal to 64."
+  }
+
+  validation {
+    condition = alltrue([
+      for name, value in var.tags :
+      can(regex("^\\p{Ll}[\\p{Ll}\\p{Nd}_-]{0,62}$", name))
+    ])
+    error_message = "The tags keys can contain only lowercase letters, numeric characters, underscores, dashes, must start with a lowercase letter and have a length of 1-63 characters."
+  }
+
+  validation {
+    condition = alltrue([
+      for name, value in var.tags :
+      can(regex("^[\\p{Ll}\\p{Nd}_-]{0,63}$", value))
+    ])
+    error_message = "The tags values can contain only lowercase letters, numeric characters, underscores, dashes and have a length of 0-63 characters."
   }
 }
 
@@ -144,22 +171,65 @@ variable "proximity_placement_group" {
   }
 }
 
-variable "admin" {
+variable "security" {
   type = object({
-    username       = string
-    ssh_public_key = string
+    user_name          = string
+    ssh_public_key     = string
+    enable_ssh         = bool
+    enable_http        = bool
+    ssh_source_ranges  = list(string)
+    http_source_ranges = list(string)
   })
 
-  description = "Authentication options for remote SSH access"
+  default = {
+    user_name      = "stack"
+    ssh_public_key = "~/.ssh/id_rsa.pub"
+    enable_ssh     = true
+    enable_http    = true
+    ssh_source_ranges = [
+      "0.0.0.0/0"
+    ]
+    http_source_ranges = [
+      "0.0.0.0/0"
+    ]
+  }
+
+  description = "Security options"
 
   validation {
-    condition     = can(regex("^[a-z][0-9a-z_-]{1,32}$", var.admin.username))
-    error_message = "The admin.username value should be alphanumeric and must only contain letters, numbers, hyphens, and underscores and may not start with a hyphen or number."
+    condition     = can(regex("^[a-z][0-9a-z_-]{1,32}$", var.security.user_name))
+    error_message = "The security.user_name value should be alphanumeric and must only contain letters, numbers, hyphens, and underscores and may not start with a hyphen or number."
   }
 
   validation {
-    condition     = fileexists(var.admin.ssh_public_key)
-    error_message = "The admin.ssh_public_key value should be a path to the SSH public key."
+    condition     = fileexists(var.security.ssh_public_key)
+    error_message = "The security.ssh_public_key value should be a path to the SSH public key."
+  }
+
+  validation {
+    condition     = contains([false, true], var.security.enable_ssh)
+    error_message = "The security.enable_ssh value must be false or true."
+  }
+
+  validation {
+    condition     = contains([false, true], var.security.enable_http)
+    error_message = "The security.enable_http value must be false or true."
+  }
+
+  validation {
+    condition = alltrue([
+      for range in var.security.ssh_source_ranges :
+      can(cidrhost(range, 0)) && can(cidrnetmask(range))
+    ])
+    error_message = "The security.ssh_source_ranges value must be a list of IP addresses in CIDR notation."
+  }
+
+  validation {
+    condition = alltrue([
+      for range in var.security.http_source_ranges :
+      can(cidrhost(range, 0)) && can(cidrnetmask(range))
+    ])
+    error_message = "The security.http_source_ranges value must be a list of IP addresses in CIDR notation."
   }
 }
 
@@ -191,8 +261,8 @@ variable "boot" {
   }
 
   validation {
-    condition     = var.boot.disk_size > 63 && var.boot.disk_size < 4096
-    error_message = "The boot.disk_size value should be between 64 and 4095."
+    condition     = var.boot.disk_size >= 64 && var.boot.disk_size <= 4096
+    error_message = "The boot.disk_size value should be between 64 and 4096."
   }
 
   validation {
@@ -223,8 +293,8 @@ variable "image" {
   default = {
     publisher = "ddn-whamcloud-5345716"
     offer     = "exascaler_cloud"
-    sku       = "exascaler_cloud_523_centos"
-    version   = "5.2.3"
+    sku       = "exascaler_cloud_6_1_centos"
+    version   = "latest"
     accept    = false
   }
 
@@ -241,13 +311,8 @@ variable "image" {
   }
 
   validation {
-    condition     = contains(["exascaler_cloud_523_centos", "exascaler_cloud_523_redhat"], var.image.sku)
-    error_message = "The image.sku value should be exascaler_cloud_523_centos or exascaler_cloud_523_redhat."
-  }
-
-  validation {
-    condition     = contains(["5.2.3"], var.image.version)
-    error_message = "The image.version value should be 5.2.3."
+    condition     = contains(["exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat"], var.image.sku)
+    error_message = "The image.sku value should be exascaler_cloud_6_1_centos or exascaler_cloud_6_1_redhat."
   }
 
   validation {
@@ -318,54 +383,6 @@ variable "subnet" {
   }
 }
 
-variable "ssh" {
-  type = object({
-    enable = bool
-    source = string
-  })
-
-  default = {
-    enable = true
-    source = "0.0.0.0/0"
-  }
-
-  description = "SSH options"
-
-  validation {
-    condition     = contains([false, true], var.ssh.enable)
-    error_message = "The ssh.enable value should be false or true."
-  }
-
-  validation {
-    condition     = can(cidrhost(var.ssh.source, 0)) && can(cidrnetmask(var.ssh.source))
-    error_message = "The ssh.source value should be an IP address in CIDR notation."
-  }
-}
-
-variable "http" {
-  type = object({
-    enable = bool
-    source = string
-  })
-
-  default = {
-    enable = true
-    source = "0.0.0.0/0"
-  }
-
-  description = "HTTP options"
-
-  validation {
-    condition     = contains([false, true], var.http.enable)
-    error_message = "The http.enable value should be false or true."
-  }
-
-  validation {
-    condition     = can(cidrhost(var.http.source, 0)) && can(cidrnetmask(var.http.source))
-    error_message = "The http.source value should be an IP address in CIDR notation."
-  }
-}
-
 variable "mgs" {
   type = object({
     node_type           = string
@@ -410,6 +427,7 @@ variable "mgt" {
     disk_cache = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -417,6 +435,7 @@ variable "mgt" {
     disk_cache = "None"
     disk_size  = 128
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Management target options"
@@ -432,8 +451,8 @@ variable "mgt" {
   }
 
   validation {
-    condition     = var.mgt.disk_size > 7 && var.mgt.disk_size < 32768
-    error_message = "The mgt.disk_size value should be between 8 and 32767."
+    condition     = var.mgt.disk_size >= 4 && var.mgt.disk_size <= 32767
+    error_message = "The mgt.disk_size value should be between 4 and 32767."
   }
 
   validation {
@@ -460,6 +479,11 @@ variable "mgt" {
     condition     = floor(var.mgt.disk_count) == ceil(var.mgt.disk_count)
     error_message = "The mgt.disk_count must be an integer."
   }
+
+  validation {
+    condition     = contains([false, true], var.mgt.disk_raid)
+    error_message = "The mgt.disk_raid value must be false or true."
+  }
 }
 
 variable "mnt" {
@@ -468,6 +492,7 @@ variable "mnt" {
     disk_cache = string
     disk_size  = number
     disk_count = number
+    disk_raid  = bool
   })
 
   default = {
@@ -475,6 +500,7 @@ variable "mnt" {
     disk_cache = "None"
     disk_size  = 64
     disk_count = 1
+    disk_raid  = false
   }
 
   description = "Monitoring target options"
@@ -490,8 +516,8 @@ variable "mnt" {
   }
 
   validation {
-    condition     = var.mnt.disk_size > 7 && var.mnt.disk_size < 32768
-    error_message = "The mnt.disk_size value should be between 8 and 32767."
+    condition     = var.mnt.disk_size >= 4 && var.mnt.disk_size <= 32767
+    error_message = "The mnt.disk_size value should be between 4 and 32767."
   }
 
   validation {
@@ -518,6 +544,11 @@ variable "mnt" {
     condition     = floor(var.mnt.disk_count) == ceil(var.mnt.disk_count)
     error_message = "The mnt.disk_count must be an integer."
   }
+
+  validation {
+    condition     = contains([false, true], var.mnt.disk_raid)
+    error_message = "The mnt.disk_raid value must be false or true."
+  }
 }
 
 variable "mds" {
@@ -543,8 +574,8 @@ variable "mds" {
   }
 
   validation {
-    condition     = var.mds.node_count == 1
-    error_message = "The mds.node_count value should be 1."
+    condition     = var.mds.node_count >= 1 && var.mds.node_count <= 128
+    error_message = "The mds.node_count value should be between 1 and 128."
   }
 
   validation {
@@ -588,8 +619,8 @@ variable "mdt" {
   }
 
   validation {
-    condition     = var.mdt.disk_size > 7 && var.mdt.disk_size < 32768
-    error_message = "The mdt.disk_size value should be between 8 and 32767."
+    condition     = var.mdt.disk_size >= 4 && var.mdt.disk_size <= 32767
+    error_message = "The mdt.disk_size value should be between 4 and 32767."
   }
 
   validation {
@@ -646,8 +677,8 @@ variable "oss" {
   }
 
   validation {
-    condition     = var.oss.node_count > 0
-    error_message = "The oss.node_count must be greater than 0."
+    condition     = var.oss.node_count >= 1 && var.oss.node_count <= 2000
+    error_message = "The oss.node_count must be should be between 1 and 2000."
   }
 
   validation {
@@ -701,8 +732,8 @@ variable "ost" {
   }
 
   validation {
-    condition     = var.ost.disk_size > 7 && var.ost.disk_size < 32768
-    error_message = "The ost.disk_size value should be between 8 and 32767."
+    condition     = var.ost.disk_size >= 4 && var.ost.disk_size <= 32767
+    error_message = "The ost.disk_size value should be between 4 and 32767."
   }
 
   validation {
@@ -807,8 +838,8 @@ variable "clt" {
   }
 
   validation {
-    condition     = var.clt.disk_size > 7 && var.clt.disk_size < 32768
-    error_message = "The clt.disk_size value should be between 8 and 32767."
+    condition     = var.clt.disk_size >= 4 && var.clt.disk_size < 32767
+    error_message = "The clt.disk_size value should be between 4 and 32767."
   }
 
   validation {

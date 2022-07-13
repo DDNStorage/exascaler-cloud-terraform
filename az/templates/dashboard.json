@@ -18,7 +18,7 @@
                                 "settings": {
                                     "title": "Deployment details",
                                     "subtitle": "Deployment name: ${deployment}",
-                                    "content": "__Summary__\n\n- Configuration profile: **${profile}**\n- Base image: ${image}\n- Public IP address: ${piblic}\n- Remote access: ${remote}\n- HTTP Console: [${http}](${http})\n- SSH Console: `${ssh}`\n- Mount Command: `mount -t lustre ${management}@tcp:/${fsname} /mnt/${fsname}`\n\n__Support__\n\n- EXAScaler Cloud includes self-help support with access to publicly available documents and videos.\n- Premium support includes 24x7x365 access to DDN's experts, along with support community access, automated notifications of updates and other premium support features.\n- Go to [DDN support](https://www.ddn.com/support/cloud-support)\n\n"
+                                    "content": "__Summary__\n\n- Configuration profile: **${profile}**\n- Storage capacity: ${capacity}GB\n- Base image: ${image}\n- Public IP address: ${piblic}\n- Remote access: ${remote}\n- HTTP console: [${http}](${http})\n- SSH console: `${ssh}`\n- Mount command: `mount -t lustre ${management}@tcp:/${fsname} /mnt/${fsname}`\n\n__Support__\n\n- EXAScaler Cloud includes self-help support with access to publicly available documents and videos.\n- Premium support includes 24x7x365 access to DDN's experts, along with support community access, automated notifications of updates and other premium support features.\n- Go to [DDN support](https://www.ddn.com/support/cloud-support)\n\n"
                                 }
                             }
                         }
@@ -39,7 +39,7 @@
                                 "settings": {
                                     "title": "Get started with EXAScaler Cloud",
                                     "subtitle": "Suggested next steps",
-                                    "content": "__Install new EXAScaler Cloud clients__\n- New EXAScaler Cloud client instances must be in the same location **${location}** and connected to the virtual network **${network}**.\n\n- To configure EXAScaler Cloud filesystem on a new client instance save the following text in a file named `/etc/esc-client.cfg`:\n\n``` json\n{\n    \"Version\": \"${loci}\",\n    \"MountConfig\": {\n        \"ClientDevice\": \"${management}@tcp:/${fsname}\",\n        \"Mountpoint\": \"/mnt/${fsname}\",\n        \"PackageSource\": \"http://${management}/client-packages\"\n    }\n}\n```\n\n- To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:\n\n``` bash\n# curl http://${management}/client-setup-tool -o /usr/sbin/esc-client\n# chmod +x /usr/sbin/esc-client\n# esc-client auto setup --config /etc/esc-client.cfg\n```\n"
+                                    "content": "__Install new EXAScaler Cloud clients__\n- New EXAScaler Cloud client instances must be in the same location **${location}** and connected to the virtual network **${network}**.\n\n- To configure EXAScaler Cloud filesystem on a new client instance save the following text in a file named `/etc/esc-client.cfg`:\n\n``` json\n{\n    \"Version\": \"${loci}\",\n    \"MountConfig\": {\n        \"ClientDevice\": \"${management}@tcp:/${fsname}\",\n        \"Mountpoint\": \"/mnt/${fsname}\",\n        \"PackageSource\": \"http://${management}/client-packages\"\n    }\n}\n```\n\n- To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:\n\n``` bash\n# curl -fsSL http://${management}/client-setup-tool -o /usr/sbin/esc-client\n# chmod +x /usr/sbin/esc-client\n# esc-client auto setup --config /etc/esc-client.cfg\n```\n"
                                 }
                             }
                         }
@@ -60,7 +60,7 @@
                             },
                             {
                                 "name": "query",
-                                "value": "Resources\n| where type =~ 'microsoft.compute/virtualmachines' and location =~ '${location}' and resourceGroup =~ '${resourcegroup}'\n| extend nics=array_length(properties.networkProfile.networkInterfaces) \n| mv-expand nic=properties.networkProfile.networkInterfaces \n| where nics == 1 or nic.properties.primary =~ 'true' or isempty(nic) \n| project vmId = id, vmName = name, vmSize=tostring(properties.hardwareProfile.vmSize), nicId = tostring(nic.id), vmType = tostring(tags['lustre_type'])\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/networkinterfaces'\n    | extend ipConfigsCount=array_length(properties.ipConfigurations) \n    | mv-expand ipconfig=properties.ipConfigurations \n    | where ipConfigsCount == 1 or ipconfig.properties.primary =~ 'true'\n    | project nicId = id, publicIpId = tostring(ipconfig.properties.publicIPAddress.id), privateIpAddreess = tostring(ipconfig.properties.privateIPAddress))\non nicId\n| project-away nicId1\n| summarize by vmId, vmName, vmType, vmSize, nicId, publicIpId, privateIpAddreess\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/publicipaddresses'\n    | project publicIpId = id, publicIpAddress = properties.ipAddress)\non publicIpId\n| project-away publicIpId, publicIpId1, nicId, vmId\n| order by vmName asc"
+                                "value": "Resources\n| where type =~ 'microsoft.compute/virtualmachines' and location =~ '${location}' and resourceGroup =~ '${resourcegroup}' and tags contains 'deployment' and tostring(tags['deployment']) =~ '${deployment}'\n| extend nics=array_length(properties.networkProfile.networkInterfaces) \n| mv-expand nic=properties.networkProfile.networkInterfaces \n| where nics == 1 or nic.properties.primary =~ 'true' or isempty(nic) \n| project vmId = id, name = name, size=tostring(properties.hardwareProfile.vmSize), nicId = tostring(nic.id), role = tostring(tags['lustre_type'])\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/networkinterfaces'\n    | extend ipConfigsCount=array_length(properties.ipConfigurations) \n    | mv-expand ipconfig=properties.ipConfigurations \n    | where ipConfigsCount == 1 or ipconfig.properties.primary =~ 'true'\n    | project nicId = id, publicIpId = tostring(ipconfig.properties.publicIPAddress.id), ['private IP address'] = tostring(ipconfig.properties.privateIPAddress))\non nicId\n| project-away nicId1\n| summarize by vmId, name, role, size, nicId, publicIpId, ['private IP address']\n| join kind=leftouter (\n    Resources\n    | where type =~ 'microsoft.network/publicipaddresses'\n    | project publicIpId = id, ['public IP address'] = properties.ipAddress)\non publicIpId\n| project-away publicIpId, publicIpId1, nicId, vmId\n| order by name asc"
                             }
                         ],
                         "type": "Extension/HubsExtension/PartType/ArgQueryGridTile"
@@ -70,6 +70,29 @@
                     "position": {
                         "x": 0,
                         "y": 12,
+                        "colSpan": 12,
+                        "rowSpan": 6
+                    },
+                    "metadata": {
+                        "inputs": [
+                            {
+                                "name": "partTitle",
+                                "value": "Disks"
+                            },
+                            {
+                                "name": "query",
+                                "value": "Resources\n| where type =~ 'microsoft.compute/disks' and location =~ '${location}' and resourceGroup =~ '${resourcegroup}' and tags contains 'deployment' and tostring(tags['deployment']) =~ '${deployment}' and tags contains 'lustre_target_role' and tags contains 'lustre_target_index'\n| project name = name, role = tostring(tags['lustre_target_role']), index = tostring(tags['lustre_target_index']), ['size, GB'] = tostring(properties['diskSizeGB']), type = tostring(sku['name'])\n| order by role asc, index asc"
+                            }
+                        ],
+                        "type": "Extension/HubsExtension/PartType/ArgQueryGridTile"
+                    }
+                },
+
+
+                "4": {
+                    "position": {
+                        "x": 0,
+                        "y": 18,
                         "colSpan": 12,
                         "rowSpan": 4
                     },
@@ -149,10 +172,10 @@
                         }
                     }
                 },
-                "4": {
+                "5": {
                     "position": {
                         "x": 0,
-                        "y": 16,
+                        "y": 22,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
@@ -243,10 +266,10 @@
                         }
                     }
                 },
-                "5": {
+                "6": {
                     "position": {
                         "x": 6,
-                        "y": 16,
+                        "y": 22,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
@@ -337,10 +360,10 @@
                         }
                     }
                 },
-                "6": {
+                "7": {
                     "position": {
                         "x": 0,
-                        "y": 20,
+                        "y": 26,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
@@ -420,10 +443,10 @@
                         }
                     }
                 },
-                "7": {
+                "8": {
                     "position": {
                         "x": 6,
-                        "y": 20,
+                        "y": 26,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
@@ -503,10 +526,10 @@
                         }
                     }
                 },
-                "8": {
+                "9": {
                     "position": {
                         "x": 0,
-                        "y": 24,
+                        "y": 30,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
@@ -597,10 +620,10 @@
                         }
                     }
                 },
-                "9": {
+                "10": {
                     "position": {
                         "x": 6,
-                        "y": 24,
+                        "y": 30,
                         "colSpan": 6,
                         "rowSpan": 4
                     },
