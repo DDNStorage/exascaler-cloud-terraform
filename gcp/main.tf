@@ -28,7 +28,7 @@ resource "google_deployment_manager_deployment" "exa" {
   name     = format("%s-%d-%s-%s", local.prefix, local.node_count, "nodes", "deployment")
   target {
     config {
-      content = data.template_file.startup_waiter.0.rendered
+      content = local.waiter
     }
   }
 }
@@ -109,49 +109,7 @@ data "google_compute_image" "exa" {
   project  = var.image.project
 }
 
-data "template_file" "startup_waiter" {
-  count    = var.waiter == "deploymentmanager" ? 1 : 0
-  template = file(format("%s/%s/%s", path.module, local.templates, "startup-waiter.yaml"))
-  vars = {
-    deployment = local.prefix
-    number     = local.node_count
-    timeout    = format("%ss", local.node_count * local.timeout)
-    waiter     = format("%s-%s", local.prefix, "startup-waiter")
-    parent     = google_runtimeconfig_config.startup_config.id
-  }
-}
 
-data "template_file" "startup_script" {
-  template = file(format("%s/%s/%s", path.module, local.templates, "startup-script.sh"))
-  vars = {
-    loci       = local.loci
-    deployment = local.prefix
-    profile    = local.profile
-    fsname     = var.fsname
-    mgs_type   = var.mgs.node_type
-    mgs_count  = var.mgs.node_count
-    mgt_type   = var.mgt.disk_type
-    mgt_size   = var.mgt.disk_size
-    mgt_count  = var.mgt.disk_count
-    mgt_raid   = var.mgt.disk_raid
-    mnt_type   = var.mnt.disk_type
-    mnt_size   = var.mnt.disk_size
-    mnt_count  = var.mnt.disk_count
-    mnt_raid   = var.mnt.disk_raid
-    mds_type   = var.mds.node_type
-    mds_count  = var.mds.node_count
-    mdt_type   = var.mdt.disk_type
-    mdt_size   = var.mdt.disk_size
-    mdt_count  = var.mdt.disk_count
-    mdt_raid   = var.mdt.disk_raid
-    oss_type   = var.oss.node_type
-    oss_count  = var.oss.node_count
-    ost_type   = var.ost.disk_type
-    ost_size   = var.ost.disk_size
-    ost_count  = var.ost.disk_count
-    ost_raid   = var.ost.disk_raid
-  }
-}
 
 locals {
   loci       = "1.9.1"
@@ -184,6 +142,49 @@ locals {
     } : {
     id = var.subnetwork.id
   }
+
+  script = templatefile(
+    format("%s/%s/%s", path.module, local.templates, "startup-script.tftpl"),
+    {
+      loci       = local.loci
+      deployment = local.prefix
+      profile    = local.profile
+      fsname     = var.fsname
+      mgs_type   = var.mgs.node_type
+      mgs_count  = var.mgs.node_count
+      mgt_type   = var.mgt.disk_type
+      mgt_size   = var.mgt.disk_size
+      mgt_count  = var.mgt.disk_count
+      mgt_raid   = var.mgt.disk_raid
+      mnt_type   = var.mnt.disk_type
+      mnt_size   = var.mnt.disk_size
+      mnt_count  = var.mnt.disk_count
+      mnt_raid   = var.mnt.disk_raid
+      mds_type   = var.mds.node_type
+      mds_count  = var.mds.node_count
+      mdt_type   = var.mdt.disk_type
+      mdt_size   = var.mdt.disk_size
+      mdt_count  = var.mdt.disk_count
+      mdt_raid   = var.mdt.disk_raid
+      oss_type   = var.oss.node_type
+      oss_count  = var.oss.node_count
+      ost_type   = var.ost.disk_type
+      ost_size   = var.ost.disk_size
+      ost_count  = var.ost.disk_count
+      ost_raid   = var.ost.disk_raid
+    }
+  )
+
+  waiter = templatefile(
+    format("%s/%s/%s", path.module, local.templates, "startup-waiter.tftpl"),
+    {
+      deployment = local.prefix
+      number     = local.node_count
+      timeout    = format("%ss", local.node_count * local.timeout)
+      waiter     = format("%s-%s", local.prefix, "startup-waiter")
+      parent     = google_runtimeconfig_config.startup_config.id
+    }
+  )
 
   labels = merge(
     var.labels,

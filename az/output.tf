@@ -47,5 +47,5 @@ output "azure_dashboard" {
 }
 
 output "client_config" {
-  value = data.template_file.client_script.rendered
+  value = local.client
 }

@@ -33,71 +33,6 @@ data "azurerm_proximity_placement_group" "exa" {
   resource_group_name = local.resource_group.name
 }
 
-data "template_file" "script" {
-  template = file(format("%s/%s/%s", path.module, local.templates, "startup-script.sh"))
-  vars = {
-    loci       = local.loci
-    deployment = local.prefix
-    profile    = local.profile
-    fsname     = var.fsname
-    mgstype    = var.mgs.node_type
-    mgscount   = var.mgs.node_count
-    mgttype    = var.mgt.disk_type
-    mgtsize    = var.mgt.disk_size
-    mgtcount   = var.mgt.disk_count
-    mgtraid    = var.mgt.disk_raid
-    mnttype    = var.mnt.disk_type
-    mntsize    = var.mnt.disk_size
-    mntcount   = var.mnt.disk_count
-    mntraid    = var.mnt.disk_raid
-    mdstype    = var.mds.node_type
-    mdscount   = var.mds.node_count
-    mdttype    = var.mdt.disk_type
-    mdtsize    = var.mdt.disk_size
-    mdtcount   = var.mdt.disk_count
-    mdtraid    = var.mdt.disk_raid
-    osstype    = var.oss.node_type
-    osscount   = var.oss.node_count
-    osttype    = var.ost.disk_type
-    ostsize    = var.ost.disk_size
-    ostcount   = var.ost.disk_count
-    ostraid    = var.ost.disk_raid
-  }
-}
-
-data "template_file" "dashboard" {
-  template = file(format("%s/%s/%s", path.module, local.templates, "dashboard.json"))
-  vars = {
-    subscription_name = data.azurerm_subscription.exa.display_name
-    subscription_id   = data.azurerm_subscription.exa.subscription_id
-    location          = local.resource_group.location
-    resourcegroup     = local.resource_group.name
-    network           = local.network.name
-    management        = azurerm_network_interface.mgs.0.private_ip_address
-    http              = format("http://%s", local.http)
-    ssh               = format("ssh -A %s@%s", var.security.user_name, local.ssh)
-    deployment        = local.prefix
-    capacity          = local.capacity
-    profile           = local.profile
-    fsname            = var.fsname
-    piblic            = length(local.public) == 0 ? "disabled" : join(", ", local.public)
-    remote            = length(local.remote) == 0 ? "disabled" : join(" and ", local.remote)
-    image             = local.image
-    loci              = local.loci
-  }
-}
-
-data "template_file" "client_script" {
-  template = file(format("%s/%s/%s", path.module, local.templates, "client-script.sh"))
-  vars = {
-    mgs        = azurerm_network_interface.mgs.0.private_ip_address
-    loci       = local.loci
-    fsname     = var.fsname
-    location   = local.resource_group.location
-    network    = local.network.name
-    subnetwork = local.subnet.name
-  }
-}
 
 resource "random_id" "exa" {
   byte_length = 2
@@ -186,7 +121,7 @@ resource "azurerm_portal_dashboard" "exa" {
   name                 = format("%s-%s", local.prefix, "dashboard")
   resource_group_name  = local.resource_group.name
   location             = local.resource_group.location
-  dashboard_properties = data.template_file.dashboard.rendered
+  dashboard_properties = local.dashboard
   tags = merge(
     local.tags,
     {
@@ -201,7 +136,6 @@ resource "azurerm_portal_dashboard" "exa" {
 locals {
   loci      = "2.0.0"
   product   = "EXAScaler Cloud"
-  version   = "6.1.0"
   profile   = "custom"
   templates = "templates"
   label     = lower(replace(local.product, " ", "-"))
@@ -218,15 +152,80 @@ locals {
   ssh       = var.mgs.public_ip && var.security.enable_ssh ? azurerm_public_ip.mgs.0.ip_address : azurerm_network_interface.mgs.0.private_ip_address
 
   script = {
-    script = base64gzip(data.template_file.script.rendered)
+    script = base64gzip(
+      templatefile(
+        format("%s/%s/%s", path.module, local.templates, "startup-script.tftpl"),
+        {
+          loci       = local.loci
+          deployment = local.prefix
+          profile    = local.profile
+          fsname     = var.fsname
+          mgstype    = var.mgs.node_type
+          mgscount   = var.mgs.node_count
+          mgttype    = var.mgt.disk_type
+          mgtsize    = var.mgt.disk_size
+          mgtcount   = var.mgt.disk_count
+          mgtraid    = var.mgt.disk_raid
+          mnttype    = var.mnt.disk_type
+          mntsize    = var.mnt.disk_size
+          mntcount   = var.mnt.disk_count
+          mntraid    = var.mnt.disk_raid
+          mdstype    = var.mds.node_type
+          mdscount   = var.mds.node_count
+          mdttype    = var.mdt.disk_type
+          mdtsize    = var.mdt.disk_size
+          mdtcount   = var.mdt.disk_count
+          mdtraid    = var.mdt.disk_raid
+          osstype    = var.oss.node_type
+          osscount   = var.oss.node_count
+          osttype    = var.ost.disk_type
+          ostsize    = var.ost.disk_size
+          ostcount   = var.ost.disk_count
+          ostraid    = var.ost.disk_raid
+        }
+      )
+    )
   }
+
+  client = templatefile(
+    format("%s/%s/%s", path.module, local.templates, "client-script.tftpl"),
+    {
+      mgs        = azurerm_network_interface.mgs.0.private_ip_address
+      loci       = local.loci
+      fsname     = var.fsname
+      location   = local.resource_group.location
+      network    = local.network.name
+      subnetwork = local.subnet.name
+    }
+  )
+
+  dashboard = templatefile(
+    format("%s/%s/%s", path.module, local.templates, "dashboard.tftpl"),
+    {
+      subscription_name = data.azurerm_subscription.exa.display_name
+      subscription_id   = data.azurerm_subscription.exa.subscription_id
+      location          = local.resource_group.location
+      resourcegroup     = local.resource_group.name
+      network           = local.network.name
+      management        = azurerm_network_interface.mgs.0.private_ip_address
+      http              = format("http://%s", local.http)
+      ssh               = format("ssh -A %s@%s", var.security.user_name, local.ssh)
+      deployment        = local.prefix
+      capacity          = local.capacity
+      profile           = local.profile
+      fsname            = var.fsname
+      piblic            = length(local.public) == 0 ? "disabled" : join(", ", local.public)
+      remote            = length(local.remote) == 0 ? "disabled" : join(" and ", local.remote)
+      image             = local.image
+      loci              = local.loci
+    }
+  )
 
   tags = merge(
     var.tags,
     {
       deployment = local.prefix
       product    = local.product
-      version    = local.version
     }
   )
 
