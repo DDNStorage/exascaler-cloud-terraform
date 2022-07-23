@@ -1,5 +1,6 @@
 # Terraform scripts for EXAScaler Cloud on Microsoft Azure
 
+  * [Supported products](#supported-products)
   * [Prerequisites](#prerequisites)
   * [Steps to authenticate via Microsoft account](#steps-to-authenticate-via-microsoft-account)
   * [Steps to accept the terms of use for DDN EXAScaler Cloud images](#steps-to-accept-the-terms-of-use-for-ddn-exascaler-cloud-images)
@@ -35,6 +36,15 @@
   * [Collect inventory and support bundle](#collect-inventory-and-support-bundle)
 
 The steps below will show how to create a EXAScaler Cloud environment on Microsoft Azure using Terraform.
+
+## Supported products
+
+| Product | Version | Base OS | Stock Keeping Unit (`SKU`) |
+| ------- | ------- | ------- | -------------------------- |
+| EXAScaler Cloud | 6.0.1 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_0_redhat` |
+| EXAScaler Cloud | 6.0.1 | CentOS Linux 7.9 | `exascaler_cloud_6_0_centos` |
+| EXAScaler Cloud | 6.1.0 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_1_redhat` |
+| EXAScaler Cloud | 6.1.0 | CentOS Linux 7.9 | `exascaler_cloud_6_1_centos` |
 
 ## Prerequisites
 
@@ -101,58 +111,39 @@ Please use the value of `id` property as an Azure subscription ID for Terraform 
 ## Steps to accept the terms of use for DDN EXAScaler Cloud images
 
 To deploy DDN EXAScaler Cloud, you need to accept the Azure Marketplace image terms so that the image can be used to create a deployment.
-* For EXAScaler Cloud Red Hat Enterprise Linux based image:
+
+* For EXAScaler Cloud 6.0 and CentOS Linux based image:
 ```shell
-az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_redhat:latest
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_0_centos:latest
 ```
 
-Output:
+* For EXAScaler Cloud 6.0 and Red Hat Enterprise Linux based image:
 ```shell
-$ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_redhat:latest
-{
-  "accepted": true,
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/Microsoft.MarketplaceOrdering/offertypes/publishers/ddn-whamcloud-5345716/offers/exascaler_cloud/plans/exascaler_cloud_6_1_redhat/agreements/current",
-  "licenseTextLink": "https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_DDN%253a2DWHAMCLOUD%253a2D5345716%253a24EXASCALER%253a5FCLOUD%253a24EXASCALER%253a5FCLOUD%253a5F523%253a5FREDHAT%253a24RI46C54X4ZEJTZXVGNKQTMOOLKIMCBELLB75XRKMA6KZU63OEITXAF4VOL2MD4M4BTNGHGCYM4NAH2P7REASLOTOHK72WYRNBCHH5WI.txt",
-  "name": "exascaler_cloud_6_1_redhat",
-  "plan": "exascaler_cloud_6_1_redhat",
-  "privacyPolicyLink": "https://www.ddn.com/privacy-policy/",
-  "product": "exascaler_cloud",
-  "publisher": "ddn-whamcloud-5345716",
-  "type": "Microsoft.MarketplaceOrdering/offertypes"
-}
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_0_redhat:latest
 ```
-* For EXAScaler Cloud CentOS Linux based image:
+
+* For EXAScaler Cloud 6.1 and CentOS Linux based image:
 ```shell
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_centos:latest
 ```
 
-Output:
+* For EXAScaler Cloud 6.1 and Red Hat Enterprise Linux based image:
 ```shell
-$ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_centos:latest
-{
-  "accepted": true,
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.MarketplaceOrdering/offerTypes/Microsoft.MarketplaceOrdering/offertypes/publishers/ddn-whamcloud-5345716/offers/exascaler_cloud/plans/exascaler_cloud_6_1_centos/agreements/current",
-  "licenseTextLink": "https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_DDN%253a2DWHAMCLOUD%253a2D5345716%253a24EXASCALER%253a5FCLOUD%253a24EXASCALER%253a5FCLOUD%253a5F523%253a5FCENTOS%253a24RI46C54X4ZEJTZXVGNKQTMOOLKIMCBELLB75XRKMA6KZU63OEITXAF4VOL2MD4M4BTNGHGCYM4NAH2P7REASLOTOHK72WYRNBCHH5WI.txt",
-  "name": "exascaler_cloud_6_1_centos",
-  "plan": "exascaler_cloud_6_1_centos",
-  "privacyPolicyLink": "https://www.ddn.com/privacy-policy/",
-  "product": "exascaler_cloud",
-  "publisher": "ddn-whamcloud-5345716",
-  "type": "Microsoft.MarketplaceOrdering/offertypes"
-}
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_redhat:latest
 ```
+
 [Learn more about the image terms](https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_DDN%253a2DWHAMCLOUD%253a2D5345716%253a24EXASCALER%253a5FCLOUD%253a24EXASCALER%253a5F520%253a24RI46C54X4ZEJTZXVGNKQTMOOLKIMCBELLB75XRKMA6KZU63OEITXAF4VOL2MD4M4BTNGHGCYM4NAH2P7REASLOTOHK72WYRNBCHH5WI.txt).
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.3.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.3.tar.gz):
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz):
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.3.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.3/az
+cd exascaler-cloud-terraform-scripts-2.1.4/az
 vi terraform.tfvars
 ```
 
@@ -164,7 +155,7 @@ vi terraform.tfvars
 | `prefix` | `string` | `null`     | EXAScaler Cloud custom deployment prefix. Set this option to add a custom prefix to all created objects. |
 | `tags`   | `map`    | `{}`       | EXAScaler Cloud custom deployment tags. Set this option to add a custom tags to all created objects. [Learn more about Azure tags](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources). |
 | `fsname` | `string` | `exacloud` | EXAScaler filesystem name. [Learn more about Lustre filesystem](https://github.com/DDNStorage/lustre_manual_markdown/blob/master/03.02-Lustre%20Operations.md#mounting-by-label).|
-| `subscription` | `string` | `XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX` | Subscription ID - please use ID of you active Azure subscription. [Learn more Azure subscriptions](https://docs.microsoft.com/azure/azure-portal/get-subscription-tenant-id). |
+| `subscription` | `string` | `00000000-0000-0000-0000-000000000000` | Subscription ID - please use ID of you active Azure subscription. [Learn more Azure subscriptions](https://docs.microsoft.com/azure/azure-portal/get-subscription-tenant-id). |
 | `location` | `string` | `West US` | Azure region to manage resources. [Learn more about Azure geography](https://azure.microsoft.com/global-infrastructure/geographies). |
 
 #### Availability options
@@ -220,8 +211,8 @@ vi terraform.tfvars
 #### Boot disk options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `boot.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create: `Standard_LRS`, `Premium_LRS` or `StandardSSD_LRS`. |
-| `boot.disk_cache` | `string` | `ReadWrite` | Specifies the caching requirements for the target disk: `None`, `ReadOnly` or `ReadWrite`. |
+| `boot.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create: <ul><li>`Standard_LRS`</li><li>`Premium_LRS`</li><li>`StandardSSD_LRS`</li></ul> |
+| `boot.disk_cache` | `string` | `ReadWrite` | Specifies the caching requirements for the target disk: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `boot.auto_delete` | `bool` | `true` | Delete the boot disk automatically when deleting the virtual machine: `true` or `false`. |
 | `boot.disk_size` | `integer` | `64` | Boot disk size in GB. |
 
@@ -232,7 +223,7 @@ vi terraform.tfvars
 | -------- | ---- | ------- | ----------- |
 | `image.publisher` | `string` | `ddn-whamcloud-5345716` | Specifies the publisher of the image used to create the virtual machine. |
 | `image.offer` | `string` | `exascaler_cloud` | Specifies the offer of the image used to create the virtual machine. |
-| `image.sku` | `string` | `exascaler_cloud_6_1_centos` | Specifies the `SKU` of the image used to create the virtual machine. CentOS based image - `exascaler_cloud_6_1_centos`, Red Hat Enterprise Linux based image - `exascaler_cloud_6_1_redhat`. |
+| `image.sku` | `string` | `exascaler_cloud_6_1_centos` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 6.0 images: <ul><li>`exascaler_cloud_6_0_centos`</li><li>`exascaler_cloud_6_0_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul> |
 | `image.version` | `string` | `latest` | Specifies the version of the image used to create the virtual machine. |
 | `image.accept`  | `bool` | `false` | Allows automatically accepting the legal terms for a Marketplace image. |
 
@@ -241,9 +232,9 @@ vi terraform.tfvars
 #### Storage account options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `storage_account.kind` | `string` | `StorageV2` | Defines the kind of account. Valid options are `BlobStorage`, `BlockBlobStorage`, `FileStorage`, `Storage` and `StorageV2`. |
-| `storage_account.tier` | `string` | `Standard` | Defines the tier to use for this storage account. Valid options are `Standard` and `Premium`. |
-| `storage_account.replication` | `string` | `LRS` | Defines the type of replication to use for this storage account. Valid options are `LRS`, `GRS`, `RAGRS`, `ZRS`, `GZRS` and `RAGZRS`. |
+| `storage_account.kind` | `string` | `StorageV2` | Defines the kind of account. Valid options are: <ul><li>`BlobStorage`</li><li>`BlockBlobStorage`</li><li>`FileStorage`</li><li>`Storage`</li><li>`StorageV2`</li></ul> |
+| `storage_account.tier` | `string` | `Standard` | Defines the tier to use for this storage account. Valid options are: <ul><li>`Standard`</li><li>`Premium`</li></ul> |
+| `storage_account.replication` | `string` | `LRS` | Defines the type of replication to use for this storage account. Valid options are: <ul><li>`LRS`</li><li>`GRS`</li><li>`RAGRS`</li><li>`ZRS`</li><li>`GZRS`</li><li>`RAGZRS`</li></ul> |
 
 [Learn more about Azure storage accounts](https://docs.microsoft.com/azure/storage/common/storage-account-overview).
 
@@ -258,8 +249,8 @@ vi terraform.tfvars
 #### Management target options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `mgt.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create the management target: `Standard_LRS`, `StandardSSD_LRS` or `Premium_LRS`. |
-| `mgt.disk_cache` | `string` | `None` | Specifies the caching requirements for the management target: `None`, `ReadOnly` or `ReadWrite`. |
+| `mgt.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create the management target: <ul><li>`Standard_LRS`</li><li>`StandardSSD_LRS`</li><li>`Premium_LRS`</li></ul> |
+| `mgt.disk_cache` | `string` | `None` | Specifies the caching requirements for the management target: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `mgt.disk_size` | `integer` | `256` | Specifies the size of the management target in GB. |
 | `mgt.disk_count` | `integer` | `1` | Specifies the number of management targets: `1-128`. |
 | `mgt.disk_raid` | `bool` | `false` | Create striped management target: `true` or `false`. |
@@ -269,8 +260,8 @@ vi terraform.tfvars
 #### Monitoring target options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `mnt.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create the monitoring target: `Standard_LRS`, `StandardSSD_LRS` or `Premium_LRS`. |
-| `mnt.disk_cache` | `string` | `None` | Specifies the caching requirements for the monitoring target: `None`, `ReadOnly` or `ReadWrite`. |
+| `mnt.disk_type` | `string` | `StandardSSD_LRS` | Specifies the type of managed disk to create the monitoring target: <ul><li>`Standard_LRS`</li><li>`StandardSSD_LRS`</li><li>`Premium_LRS`</li></ul> |
+| `mnt.disk_cache` | `string` | `None` | Specifies the caching requirements for the monitoring target: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `mnt.disk_size` | `integer` | `128` | Specifies the size of the monitoring target in GB. |
 | `mnt.disk_count` | `integer` | `1` | Specifies the number of monitoring targets: `1-128`. |
 | `mnt.disk_raid` | `bool` | `false` | Create striped monitoring target: `true` or `false`. |
@@ -288,8 +279,8 @@ vi terraform.tfvars
 #### Metadata target options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `mdt.disk_type` | `string` | `Premium_LRS` | Specifies the type of managed disk to create the metadata target: `Standard_LRS`, `StandardSSD_LRS` or `Premium_LRS`. |
-| `mdt.disk_cache` | `string` | `None` | Specifies the caching requirements for the metadata target: `None`, `ReadOnly` or `ReadWrite`. |
+| `mdt.disk_type` | `string` | `Premium_LRS` | Specifies the type of managed disk to create the metadata target: <ul><li>`Standard_LRS`</li><li>`StandardSSD_LRS`</li><li>`Premium_LRS`</li></ul> |
+| `mdt.disk_cache` | `string` | `None` | Specifies the caching requirements for the metadata target: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `mdt.disk_size` | `integer` | `512` | Specifies the size of the metadata target in GB. |
 | `mdt.disk_count` | `integer` | `1` | Specifies the number of metadata targets: `1-128`. |
 | `mdt.disk_raid` | `bool` | `false` | Create striped metadata target: `true` or `false`. |
@@ -307,8 +298,8 @@ vi terraform.tfvars
 #### Object Storage target options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `ost.disk_type` | `string` | `Standard_LRS` | Specifies the type of managed disk to create the object storage target: `Standard_LRS`, `StandardSSD_LRS` or `Premium_LRS`. |
-| `ost.disk_cache` | `string` | `None` | Specifies the caching requirements for the object storage target: `None`, `ReadOnly` or `ReadWrite`. |
+| `ost.disk_type` | `string` | `Standard_LRS` | Specifies the type of managed disk to create the object storage target: <ul><li>`Standard_LRS`</li><li>`StandardSSD_LRS`</li><li>`Premium_LRS`</li></ul> |
+| `ost.disk_cache` | `string` | `None` | Specifies the caching requirements for the object storage target: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `ost.disk_size` | `integer` | `512` | Specifies the size of the object storage target in GB. |
 | `ost.disk_count` | `integer` | `6` | Specifies the number of object storage targets: `1-128`. |
 | `ost.disk_raid` | `bool` | `false` | Create striped object storage target: `true` or `false`. |
@@ -326,8 +317,8 @@ vi terraform.tfvars
 #### Compute client target options
 | Variable | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
-| `clt.disk_type` | `string` | `Standard_LRS` | Specifies the type of managed disk to create the compute target: `Standard_LRS`, `StandardSSD_LRS` or `Premium_LRS`. |
-| `clt.disk_cache` | `string` | `None` | Specifies the caching requirements for the compute target: `None`, `ReadOnly` or `ReadWrite`. |
+| `clt.disk_type` | `string` | `Standard_LRS` | Specifies the type of managed disk to create the compute target: <ul><li>`Standard_LRS`</li><li>`StandardSSD_LRS`</li><li>`Premium_LRS`</li></ul> |
+| `clt.disk_cache` | `string` | `None` | Specifies the caching requirements for the compute target: <ul><li>`None`</li><li>`ReadOnly`</li><li>`ReadWrite`</li></ul> |
 | `clt.disk_size` | `integer` | `32` | Specifies the size of the compute target in GB. |
 | `clt.disk_count` | `integer` | `0` | Specifies the number of compute targets. |
 
@@ -560,8 +551,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.3.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.3/az
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.4/az
 ```
 
 Copy the terraform.tfstate file from the existing Terraform directory:

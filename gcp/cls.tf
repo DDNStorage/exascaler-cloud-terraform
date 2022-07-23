@@ -56,7 +56,7 @@ resource "google_compute_instance" "cls" {
   metadata = {
     enable-oslogin         = var.security.enable_os_login
     block-project-ssh-keys = var.security.block_project_keys
-    startup-script         = data.template_file.startup_script.rendered
+    startup-script         = local.script
     ssh-keys               = local.ssh_key
   }
 

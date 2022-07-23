@@ -52,14 +52,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.2/gcp
+cd exascaler-cloud-terraform-scripts-2.1.4/gcp
 vi terraform.tfvars
 ```
 
@@ -447,8 +447,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.2.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.2/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.4/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:

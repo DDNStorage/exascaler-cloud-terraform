@@ -18,7 +18,7 @@ fsname = "exacloud"
 
 # Subscription ID
 # https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade
-subscription = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+subscription = "00000000-0000-0000-0000-000000000000"
 
 # The Azure region to manage resources
 # https://azure.microsoft.com/global-infrastructure/geographies
