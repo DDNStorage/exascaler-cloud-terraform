@@ -311,7 +311,7 @@ variable "image" {
   }
 
   validation {
-    condition     = contains(["exascaler_cloud_6_0_centos", "exascaler_cloud_6_0_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat"], var.image.sku)
+    condition     = contains(["exascaler_cloud_5_2_centos", "exascaler_cloud_5_2_redhat", "exascaler_cloud_6_0_centos", "exascaler_cloud_6_0_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat"], var.image.sku)
     error_message = "The image.sku value should be exascaler_cloud_6_0_centos, exascaler_cloud_6_0_redhat, exascaler_cloud_6_1_centos or exascaler_cloud_6_1_redhat."
   }
 

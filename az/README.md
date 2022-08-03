@@ -41,6 +41,8 @@ The steps below will show how to create a EXAScaler Cloud environment on Microso
 
 | Product | Version | Base OS | Stock Keeping Unit (`SKU`) |
 | ------- | ------- | ------- | -------------------------- |
+| EXAScaler Cloud | 5.2.6 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_5_2_redhat` |
+| EXAScaler Cloud | 5.2.6 | CentOS Linux 7.9 | `exascaler_cloud_5_2_centos` |
 | EXAScaler Cloud | 6.0.1 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_0_redhat` |
 | EXAScaler Cloud | 6.0.1 | CentOS Linux 7.9 | `exascaler_cloud_6_0_centos` |
 | EXAScaler Cloud | 6.1.0 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_1_redhat` |
@@ -112,6 +114,16 @@ Please use the value of `id` property as an Azure subscription ID for Terraform 
 
 To deploy DDN EXAScaler Cloud, you need to accept the Azure Marketplace image terms so that the image can be used to create a deployment.
 
+* For EXAScaler Cloud 5.2 and CentOS Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_5_2_centos:latest
+```
+
+* For EXAScaler Cloud 5.2 and Red Hat Enterprise Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_5_2_redhat:latest
+```
+
 * For EXAScaler Cloud 6.0 and CentOS Linux based image:
 ```shell
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_0_centos:latest
@@ -136,14 +148,14 @@ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_c
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz):
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz):
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.4/az
+cd exascaler-cloud-terraform-scripts-2.1.5/az
 vi terraform.tfvars
 ```
 
@@ -223,7 +235,7 @@ vi terraform.tfvars
 | -------- | ---- | ------- | ----------- |
 | `image.publisher` | `string` | `ddn-whamcloud-5345716` | Specifies the publisher of the image used to create the virtual machine. |
 | `image.offer` | `string` | `exascaler_cloud` | Specifies the offer of the image used to create the virtual machine. |
-| `image.sku` | `string` | `exascaler_cloud_6_1_centos` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 6.0 images: <ul><li>`exascaler_cloud_6_0_centos`</li><li>`exascaler_cloud_6_0_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul> |
+| `image.sku` | `string` | `exascaler_cloud_6_1_centos` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler_cloud_5_2_centos`</li><li>`exascaler_cloud_5_2_redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler_cloud_6_0_centos`</li><li>`exascaler_cloud_6_0_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul> |
 | `image.version` | `string` | `latest` | Specifies the version of the image used to create the virtual machine. |
 | `image.accept`  | `bool` | `false` | Allows automatically accepting the legal terms for a Marketplace image. |
 
@@ -551,8 +563,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.4/az
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.5/az
 ```
 
 Copy the terraform.tfstate file from the existing Terraform directory:
