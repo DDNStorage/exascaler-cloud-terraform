@@ -1,6 +1,51 @@
 # Terraform scripts for EXAScaler Cloud on Google Cloud Platform
 
+* [Supported products](#supported-products)
+* [Prerequisites](#prerequisites)
+* [Authentication](#authentication)
+* [IAM permissions required to deploy EXAScaler Cloud](#iam-permissions-required-to-deploy-exascaler-cloud)
+* [Enable Google Cloud API Services](#enable-google-cloud-api-services)
+* [Configure Terraform](#configure-terraform)
+  + [List of available variables](#list-of-available-variables)
+    - [Common options](#common-options)
+    - [Service account](#service-account)
+    - [Waiter to check progress and result for deployment](#waiter-to-check-progress-and-result-for-deployment)
+    - [Security options](#security-options)
+    - [Network options](#network-options)
+    - [Subnetwork options](#subnetwork-options)
+    - [Boot disk options](#boot-disk-options)
+    - [Boot image options](#boot-image-options)
+    - [Management server options](#management-server-options)
+    - [Management target options](#management-target-options)
+    - [Monitoring target options](#monitoring-target-options)
+    - [Metadata server options](#metadata-server-options)
+    - [Metadata target options](#metadata-target-options)
+    - [Object Storage server options](#object-storage-server-options)
+    - [Object Storage target options](#object-storage-target-options)
+    - [Compute client options](#compute-client-options)
+    - [Compute client target options](#compute-client-target-options)
+* [Deploy an EXAScaler Cloud environment](#deploy-an-exascaler-cloud-environment)
+* [Access the EXAScaler Cloud environment](#access-the-exascaler-cloud-environment)
+* [Add storage capacity in an existing EXAScaler Cloud environment](#add-storage-capacity-in-an-existing-exascaler-cloud-environment)
+* [Upgrade an existing EXAScaler Cloud environment](#upgrade-an-existing-exascaler-cloud-environment)
+* [Run benchmarks](#run-benchmarks)
+* [Install new EXAScaler Cloud clients](#install-new-exascaler-cloud-clients)
+* [Client-side encryption](#client-side-encryption)
+* [Collect inventory and support bundle](#collect-inventory-and-support-bundle)
+* [Destroy the EXAScaler Cloud environment](#destroy-the-exascaler-cloud-environment)
+
 The steps below will show how to create a EXAScaler Cloud environment on [Google Cloud Platform](https://cloud.google.com) using [Terraform](https://www.terraform.io).
+
+## Supported products
+
+| Product | Version | Base OS | Image family |
+| ------- | ------- | ------- | ------------ |
+| EXAScaler Cloud | 5.2.6 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-5-2-redhat` |
+| EXAScaler Cloud | 5.2.6 | CentOS Linux 7.9 | `exascaler-cloud-5-2-centos` |
+| EXAScaler Cloud | 6.0.1 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-0-redhat` |
+| EXAScaler Cloud | 6.0.1 | CentOS Linux 7.9 | `exascaler-cloud-6-0-centos` |
+| EXAScaler Cloud | 6.1.0 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-1-redhat` |
+| EXAScaler Cloud | 6.1.0 | CentOS Linux 7.9 | `exascaler-cloud-6-1-centos` |
 
 ## Prerequisites
 
@@ -52,14 +97,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.4/gcp
+cd exascaler-cloud-terraform-scripts-2.1.6/gcp
 vi terraform.tfvars
 ```
 
@@ -131,13 +176,14 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 #### Boot disk options
 | Variable         | Type     | Default       | Description |
 | ---------------: | -------: | ------------: | ----------- |
-| `boot.disk_type` | `string` | `pd-standard` | Boot disk type: `pd-standard`, `pd-ssd` or `pd-balanced`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `boot.disk_type` | `string` | `pd-standard` | Boot disk type: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `boot.script_url` | `string` | `null` | User defined startup script that is stored in Cloud Storage. [Learn more](https://cloud.google.com/compute/docs/instances/startup-scripts/linux). |
 
 #### Boot image options
 | Variable        | Type     | Default      | Description |
 | --------------: | -------: | -----------: | ----------- |
 | `image.project` | `string` | `ddn-public` | Source project name. [Learn more](https://cloud.google.com/compute/docs/images). |
-| `image.name`    | `string` | `exascaler-cloud-v523-centos7` | Source image name. [Learn more](https://cloud.google.com/compute/docs/images). |
+| `image.family`    | `string` | `exascaler-cloud-6-1-centos7` | Source image family to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler-cloud-5-2-centos`</li><li>`exascaler-cloud-5-2-redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler-cloud-6-0-centos`</li><li>`exascaler-cloud-6-0-redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler-cloud-6-1-centos`</li><li>`exascaler-cloud-6-1-redhat`</li></ul> [Learn more](https://cloud.google.com/compute/docs/images). |
 
 #### Management server options
 | Variable         | Type      | Default              | Description |
@@ -152,7 +198,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         |  Type    | <img width=100/> Default | Description |
 | ---------------: | -------: | ------------: | ----------- |
 | `mgt.disk_bus`   | `string` | `SCSI`        | Type of management target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mgt.disk_type`  | `string` | `pd-standard` | Type of management target: `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mgt.disk_type`  | `string` | `pd-standard` | Type of management target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mgt.disk_size`  | `integer` | `128`        | Size of management target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mgt.disk_count` | `integer` | `1`          | Number of management targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mgt.disk_raid`  | `bool`    | `false`      | Create striped management target: `true` or `false`. |
@@ -161,7 +207,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `mnt.disk_bus`   | `string`  | `SCSI`        | Type of monitoring target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mnt.disk_type`  | `string`  | `pd-standard` | Type of monitoring target: `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mnt.disk_type`  | `string`  | `pd-standard` | Type of monitoring target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mnt.disk_size`  | `integer` | `128`         | Size of monitoring target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mnt.disk_count` | `integer` | `1`           | Number of monitoring targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mnt.disk_raid`  | `bool`    | `false`       | Create striped management target: `true` or `false`. |
@@ -179,7 +225,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default  | Description |
 | ---------------: | --------: | -------: | ----------- |
 | `mdt.disk_bus`   | `string`  | `SCSI`   | Type of metadata target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mdt.disk_type`  | `string`  | `pd-ssd` | Type of metadata target: `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mdt.disk_type`  | `string`  | `pd-ssd` | Type of metadata target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mdt.disk_size`  | `integer` | `256`    | Size of metadata target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mdt.disk_count` | `integer` | `1`      | Number of metadata targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mdt.disk_raid`  | `bool`    | `false`  | Create striped metadata target: `true` or `false`. |
@@ -197,7 +243,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `ost.disk_bus`   | `string`  | `SCSI`        | Type of object storage target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `ost.disk_type`  | `string`  | `pd-standard` | Type of object storage target: `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `ost.disk_type`  | `string`  | `pd-standard` | Type of object storage target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `ost.disk_size`  | `integer` | `512`         | Size of object storage target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `ost.disk_count` | `integer` | `1`           | Number of object storage targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `ost.disk_raid`  | `bool`    | `false`       | Create striped object storage target: `true` or `false`. |
@@ -215,7 +261,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `clt.disk_bus`   | `string`  | `SCSI`        | Type of compute target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `clt.disk_type`  | `string`  | `pd-standard` | Type of compute target: `pd-standard`, `pd-ssd`, `pd-balanced` or `scratch`. [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `clt.disk_type`  | `string`  | `pd-standard` | Type of compute target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `clt.disk_size`  | `integer` | `256`         | Size of compute target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `clt.disk_count` | `integer` | `0`           | Number of compute targets: `0-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 
@@ -447,8 +493,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.4.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.4/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.6/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:
@@ -689,6 +735,184 @@ Created result tarball ./results/io500-exascaler-cloud-2db9-cls0-2021.12.01-18.2
 2021.12.01-18.23.49  io500-exascaler-cloud-2db9-cls0-2021.12.01-18.23.49.tgz
 ```
 
+## Install new EXAScaler Cloud clients
+
+New EXAScaler Cloud client instances must be in the same location and connected to the virtual network and subnet. The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/esc-client.cfg` using the actual IP address of the management server:
+```shell
+{
+    "Version": "2.0.0",
+    "MountConfig": {
+        "ClientDevice": "10.0.0.10@tcp:/exacloud",
+        "Mountpoint": "/mnt/exacloud",
+        "PackageSource": "http://10.0.0.10/client-packages"
+    }
+}
+```
+
+To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:
+```shell
+curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
+chmod +x /usr/sbin/esc-client
+esc-client auto setup --config /etc/esc-client.cfg
+```
+
+#### Output for Ubuntu Linux:
+```shell
+# lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04 LTS
+Release:	22.04
+Codename:	jammy
+
+# esc-client auto setup --config /etc/esc-client.cfg
+Discovering platform ... Done.
+Configuring firewall rules for Lustre ... Done.
+Configuring Lustre client package source ... Done.
+Installing Lustre client packages and building DKMS modules ... Done.
+Mounting 10.0.0.10@tcp0:/exacloud at /mnt/exacloud ... Done.
+
+# mount -t lustre
+10.0.0.10@tcp:/exacloud on /mnt/exacloud type lustre (rw,flock,user_xattr,lazystatfs,encrypt)
+```
+
+#### Output for Alma Linux:
+```shell
+# cat /etc/redhat-release
+AlmaLinux release 8.6 (Sky Tiger)
+
+# esc-client auto setup --config /etc/esc-client.cfg
+Discovering platform ... Done.
+Configuring firewall rules for Lustre ... Done.
+Configuring Lustre client package source ... Done.
+Installing Lustre client packages ... Done.
+Mounting 10.0.0.10@tcp0:/exacloud at /mnt/exacloud ... Done.
+
+# mount -t lustre
+10.0.0.10@tcp:/exacloud on /mnt/exacloud type lustre (rw,seclabel,flock,user_xattr,lazystatfs,encrypt)
+```
+
+## Client-side encryption
+
+The purpose that client-side encryption wants to serve is to be able to provide a special directory for each user, to safely store sensitive files. The goals are to protect data in transit between clients and servers, and protect data at rest.
+
+This feature is implemented directly at the Lustre client level. Lustre client-side encryption relies on kernel fscrypt. fscrypt is a library which filesystems can hook into to support transparent encryption of files and directories. As a consequence, the key points described below are extracted from [fscrypt](https://github.com/google/fscrypt) documentation.
+
+The client-side encryption feature is available natively on Lustre clients running a Linux distributions, including RHEL/CentOS 8.1 and later, Ubuntu 18.04 and later.
+
+Client-side encryption supports data encryption and file and directory names encryption. Ability to encrypt file and directory names is governed by parameter named `enable_filename_encryption` and set to `0` by default. When this parameter is `0`, new empty directories configured as encrypted use content encryption only, and not name encryption. This mode is inherited for all subdirectories and files. When `enable_filename_encryption` parameter is set to `1`, new empty directories configured as encrypted use full encryption capabilities by encrypting file content and also file and directory names. This mode is inherited for all subdirectories and files. To set the `enable_filename_encryption` parameter globally for all clients, one can do on the management server:
+```shell
+lctl set_param -P llite.*.enable_filename_encryption=1
+```
+
+The fscrypt package is included in the EXAScaler Cloud client toolkit and can be installed using esc-client.
+
+Steps to install Lustre client and fscrypt packages:
+```shell
+cat > /etc/esc-client.cfg <<EOF
+{
+    "Version": "2.0.0",
+    "MountConfig": {
+        "ClientDevice": "10.0.0.10@tcp:/exacloud",
+        "Mountpoint": "/mnt/exacloud",
+        "PackageSource": "http://10.0.0.10/client-packages"
+    }
+}
+EOF
+
+curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
+chmod +x /usr/sbin/esc-client
+esc-client auto setup --config /etc/esc-client.cfg
+```
+
+Output:
+```shell
+# esc-client auto setup --config /etc/esc-client.cfg
+Discovering platform ... Done.
+Configuring firewall rules for Lustre ... Done.
+Configuring Lustre client package source ... Done.
+Installing Lustre client packages ... Done.
+Mounting 10.0.0.10@tcp0:/exacloud at /mnt/exacloud ... Done.
+
+# rpm -q fscrypt lustre-client kmod-lustre-client
+fscrypt-0.3.3-1.wc2.x86_64
+lustre-client-2.14.0_ddn52-1.el8.x86_64
+kmod-lustre-client-2.14.0_ddn52-1.el8.x86_64
+```
+
+Steps to configure client-side encryption:
+```shell
+$ sudo fscrypt setup
+Defaulting to policy_version 2 because kernel supports it.
+Customizing passphrase hashing difficulty for this system...
+Created global config file at "/etc/fscrypt.conf".
+Allow users other than root to create fscrypt metadata on the root filesystem? (See
+https://github.com/google/fscrypt#setting-up-fscrypt-on-a-filesystem) [y/N]
+Metadata directories created at "/.fscrypt", writable by root only.
+
+$ sudo fscrypt setup /mnt/exacloud
+Allow users other than root to create fscrypt metadata on this filesystem? (See
+https://github.com/google/fscrypt#setting-up-fscrypt-on-a-filesystem) [y/N] y
+Metadata directories created at "/mnt/exacloud/.fscrypt", writable by everyone.
+```
+
+Steps to encrypt directory:
+```shell
+$ sudo install -v -d -m 0755 -o stack -g stack /mnt/exacloud/stack
+install: creating directory '/mnt/exacloud/stack'
+
+$ fscrypt encrypt /mnt/exacloud/stack
+The following protector sources are available:
+1 - Your login passphrase (pam_passphrase)
+2 - A custom passphrase (custom_passphrase)
+3 - A raw 256-bit key (raw_key)
+Enter the source number for the new protector [2 - custom_passphrase]:
+Enter a name for the new protector: test
+Enter custom passphrase for protector "test":
+Confirm passphrase:
+"/mnt/exacloud/stack" is now encrypted, unlocked, and ready for use.
+
+$ cp -v /etc/passwd /mnt/exacloud/stack/
+'/etc/passwd' -> '/mnt/exacloud/stack/passwd'
+
+$ ls -l /mnt/exacloud/stack/
+total 1
+-rw-r--r--. 1 stack stack 1610 Jul 13 20:34 passwd
+
+$ md5sum /mnt/exacloud/stack/passwd
+867541523c51f8cfd4af91988e9f8794  /mnt/exacloud/stack/passwd
+```
+
+Lock the directory:
+```shell
+$ fscrypt lock /mnt/exacloud/stack
+"/mnt/exacloud/stack" is now locked.
+
+$ ls -l /mnt/exacloud/stack
+total 4
+-rw-r--r--. 1 stack stack 4096 Jul 13 20:34 ydpdwRP7MiXzsTkYhg0mW3DNacDlsUJdJa2e9l6AQKL
+
+$ md5sum /mnt/exacloud/stack/ydpdwRP7MiXzsTkYhg0mW3DNacDlsUJdJa2e9l6AQKL
+md5sum: /mnt/exacloud/stack/ydpdwRP7MiXzsTkYhg0mW3DNacDlsUJdJa2e9l6AQKL: Required key not available
+```
+
+Unlock the directory:
+```shell
+$ fscrypt unlock /mnt/exacloud/stack
+Enter custom passphrase for protector "test":
+"/mnt/exacloud/stack" is now unlocked and ready for use.
+
+$ ls -l /mnt/exacloud/stack
+total 4
+-rw-r--r--. 1 stack stack 1610 Jul 13 20:34 passwd
+
+$ md5sum /mnt/exacloud/stack/passwd
+867541523c51f8cfd4af91988e9f8794  /mnt/exacloud/stack/passwd
+```
+
+[Learn more about client-side encryption](https://doc.lustre.org/lustre_manual.xhtml#managingSecurity.clientencryption).
+
+
 ## Collect inventory and support bundle
 
 Steps to collect a support bundle on the EXAScaler Cloud deployment:
@@ -902,7 +1126,7 @@ The following archive has been created. Please provide it to your support team.
     /var/tmp/sos-collector-2021-12-01-lyowl.tar.gz
 ```
 
-## Destroy the EXAScaler Cloud environment:
+## Destroy the EXAScaler Cloud environment
 
 The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration:
 ```shell

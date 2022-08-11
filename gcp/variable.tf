@@ -189,30 +189,37 @@ variable "security" {
 
 variable "boot" {
   type = object({
-    disk_type = string
+    disk_type  = string
+    script_url = string
   })
 
   default = {
-    disk_type = "pd-standard"
+    disk_type  = "pd-standard"
+    script_url = null
   }
 
-  description = "Boot disk options"
+  description = "Boot options"
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced"], var.boot.disk_type)
-    error_message = "The boot.disk_type value must be pd-standard, pd-ssd or pd-balanced."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme"], var.boot.disk_type)
+    error_message = "The boot.disk_type value must be pd-standard, pd-balanced, pd-ssd or pd-extreme."
+  }
+
+  validation {
+    condition     = var.boot.script_url == null ? true : can(regex("^gs://[a-z][0-9a-z._-]{2,62}/[0-9a-zA-Z._-]{1,1000}$", var.boot.script_url))
+    error_message = "The boot.script_url value must be a valid Google Storage URL in the format: gs://bucket_name/file_name, bucket_name value must be 3 to 63 lowercase characters in length and file_name value must be 1 to 1024 characters in length."
   }
 }
 
 variable "image" {
   type = object({
     project = string
-    name    = string
+    family  = string
   })
 
   default = {
     project = "ddn-public"
-    name    = "exascaler-cloud-v523-centos7"
+    family  = "exascaler-cloud-6-1-centos"
   }
 
   description = "Source image options"
@@ -223,8 +230,8 @@ variable "image" {
   }
 
   validation {
-    condition     = can(regex("^[a-z][0-9a-z-]{4,61}[0-9a-z]$", var.image.name))
-    error_message = "The image.name value must be alphanumeric characters and 6-63 characters long."
+    condition     = can(regex("^[a-z][0-9a-z-]{4,61}[0-9a-z]$", var.image.family))
+    error_message = "The image.family value must be alphanumeric characters and 6-63 characters long."
   }
 }
 
@@ -405,13 +412,13 @@ variable "mgt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced", "scratch"], var.mgt.disk_type)
-    error_message = "The mgt.disk_type value must be pd-standard, pd-ssd, pd-balanced or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mgt.disk_type)
+    error_message = "The mgt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
   }
 
   validation {
-    condition     = var.mgt.disk_size >= 8 && var.mgt.disk_size <= 65536
-    error_message = "The mgt.disk_size value must be between 8 and 65536."
+    condition     = var.mgt.disk_size >= 4 && var.mgt.disk_size <= 65536
+    error_message = "The mgt.disk_size value must be between 4 and 65536."
   }
 
   validation {
@@ -470,13 +477,13 @@ variable "mnt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced", "scratch"], var.mnt.disk_type)
-    error_message = "The mnt.disk_type value must be pd-standard, pd-ssd, pd-balanced or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mnt.disk_type)
+    error_message = "The mnt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
   }
 
   validation {
-    condition     = var.mnt.disk_size >= 8 && var.mnt.disk_size <= 65536
-    error_message = "The mnt.disk_size value must be between 8 and 65536."
+    condition     = var.mnt.disk_size >= 4 && var.mnt.disk_size <= 65536
+    error_message = "The mnt.disk_size value must be between 4 and 65536."
   }
 
   validation {
@@ -590,13 +597,13 @@ variable "mdt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced", "scratch"], var.mdt.disk_type)
-    error_message = "The mdt.disk_type value must be pd-standard, pd-ssd, pd-balanced or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mdt.disk_type)
+    error_message = "The mdt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
   }
 
   validation {
-    condition     = var.mdt.disk_size >= 8 && var.mdt.disk_size <= 65536
-    error_message = "The mdt.disk_size value must be between 8 and 65536."
+    condition     = var.mdt.disk_size >= 4 && var.mdt.disk_size <= 65536
+    error_message = "The mdt.disk_size value must be between 4 and 65536."
   }
 
   validation {
@@ -710,13 +717,13 @@ variable "ost" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced", "scratch"], var.ost.disk_type)
-    error_message = "The ost.disk_type value must be pd-standard, pd-ssd, pd-balanced or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.ost.disk_type)
+    error_message = "The ost.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
   }
 
   validation {
-    condition     = var.ost.disk_size >= 8 && var.ost.disk_size <= 65536
-    error_message = "The ost.disk_size value must be between 8 and 65536."
+    condition     = var.ost.disk_size >= 4 && var.ost.disk_size <= 65536
+    error_message = "The ost.disk_size value must be between 4 and 65536."
   }
 
   validation {
@@ -828,13 +835,13 @@ variable "clt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-ssd", "pd-balanced", "scratch"], var.clt.disk_type)
-    error_message = "The clt.disk_type value must be pd-standard, pd-ssd, pd-balanced or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.clt.disk_type)
+    error_message = "The clt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
   }
 
   validation {
-    condition     = var.clt.disk_size >= 8 && var.clt.disk_size <= 65536
-    error_message = "The clt.disk_size value must be between 8 and 65536."
+    condition     = var.clt.disk_size >= 4 && var.clt.disk_size <= 65536
+    error_message = "The clt.disk_size value must be between 4 and 65536."
   }
 
   validation {

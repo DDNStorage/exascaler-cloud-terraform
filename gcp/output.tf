@@ -33,3 +33,7 @@ output "http_console" {
     ]
   ) : null
 }
+
+output "client_config" {
+  value = local.client
+}

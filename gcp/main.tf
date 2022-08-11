@@ -31,6 +31,13 @@ resource "google_deployment_manager_deployment" "exa" {
       content = local.waiter
     }
   }
+  depends_on = [
+    google_runtimeconfig_config.startup_config,
+    google_compute_instance.mgs,
+    google_compute_instance.mds,
+    google_compute_instance.oss,
+    google_compute_instance.cls
+  ]
 }
 
 resource "null_resource" "waiter" {
@@ -105,14 +112,12 @@ resource "google_project_iam_binding" "exa" {
 
 data "google_compute_image" "exa" {
   provider = google-beta
-  name     = var.image.name
   project  = var.image.project
+  family   = var.image.family
 }
 
-
-
 locals {
-  loci       = "1.9.1"
+  loci       = "2.0.0"
   product    = "EXAScaler Cloud"
   profile    = "custom"
   scripts    = "scripts"
@@ -183,6 +188,19 @@ locals {
       timeout    = format("%ss", local.node_count * local.timeout)
       waiter     = format("%s-%s", local.prefix, "startup-waiter")
       parent     = google_runtimeconfig_config.startup_config.id
+    }
+  )
+
+  client = templatefile(
+    format("%s/%s/%s", path.module, local.templates, "client-script.tftpl"),
+    {
+      mgs        = google_compute_address.mgs_int.0.address
+      zone       = var.zone
+      loci       = local.loci
+      fsname     = var.fsname
+      network    = local.network.id
+      subnetwork = local.subnetwork.id
+      deployment = local.prefix
     }
   )
 

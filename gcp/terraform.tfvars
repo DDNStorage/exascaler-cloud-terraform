@@ -114,18 +114,22 @@ subnetwork = {
   new     = true
 }
 
-# Boot disk properties
+# Boot properties
 # disk_type: pd-standard, pd-ssd or pd-balanced
+# https://cloud.google.com/compute/docs/disks
+# boot_script: gs://bucket_name/file_name
+# https://cloud.google.com/compute/docs/instances/startup-scripts/linux
 boot = {
-  disk_type = "pd-standard"
+  disk_type  = "pd-standard"
+  script_url = null
 }
 
 # Source image properties
 # project: project name
-# name: image name
+# family: image family
 image = {
   project = "ddn-public"
-  name    = "exascaler-cloud-v523-centos7"
+  family  = "exascaler-cloud-6-1-redhat"
 }
 
 # Management server properties
@@ -148,7 +152,7 @@ mgs = {
 # Management target properties
 # https://cloud.google.com/compute/docs/disks
 # disk_bus: type of management target interface, SCSI or NVME (NVME is for scratch disks only)
-# disk_type: type of management target, pd-standard, pd-ssd, pd-balanced or scratch
+# disk_type: type of management target, pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch
 # disk_size: size of management target in GB (scratch disk size must be exactly 375)
 # disk_count: number of management targets
 # disk_raid: create striped management target, true or false
@@ -163,7 +167,7 @@ mgt = {
 # Monitoring target properties
 # https://cloud.google.com/compute/docs/disks
 # disk_bus: type of monitoring target interface, SCSI or NVME (NVME is for scratch disks only)
-# disk_type: type of monitoring target, pd-standard, pd-ssd, pd-balanced or scratch
+# disk_type: type of monitoring target, pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch
 # disk_size: size of monitoring target in GB (scratch disk size must be exactly 375)
 # disk_count: number of monitoring targets
 # disk_raid: create striped monitoring target, true or false
@@ -195,7 +199,7 @@ mds = {
 # Metadata target properties
 # https://cloud.google.com/compute/docs/disks
 # disk_bus: type of metadata target interface, SCSI or NVME (NVME is for scratch disks only)
-# disk_type: type of metadata target, pd-standard, pd-ssd, pd-balanced or scratch
+# disk_type: type of metadata target, pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch
 # disk_size: size of metadata target in GB (scratch disk size must be exactly 375)
 # disk_count: number of metadata targets
 # disk_raid: create striped metadata target, true or false
@@ -227,7 +231,7 @@ oss = {
 # Object Storage target properties
 # https://cloud.google.com/compute/docs/disks
 # disk_bus: type of storage target interface, SCSI or NVME (NVME is for scratch disks only)
-# disk_type: type of storage target, pd-standard, pd-ssd, pd-balanced or scratch
+# disk_type: type of storage target, pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch
 # disk_size: size of storage target in GB (scratch disk size must be exactly 375)
 # disk_count: number of storage targets
 # disk_raid: create striped storage target, true or false
@@ -259,7 +263,7 @@ cls = {
 # Compute client target properties
 # https://cloud.google.com/compute/docs/disks
 # disk_bus: type of compute target interface, SCSI or NVME (NVME is for scratch disks only)
-# disk_type: type of compute target, pd-standard, pd-ssd, pd-balanced or scratch
+# disk_type: type of compute target, pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch
 # disk_size: size of compute target in GB (scratch disk size must be exactly 375)
 # disk_count: number of compute targets
 clt = {
