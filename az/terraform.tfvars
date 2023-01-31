@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 # EXAScaler Cloud custom deployment prefix
 # set this option to add a custom prefix to all created objects
 # only lowercase alphanumeric characters are allowed,
