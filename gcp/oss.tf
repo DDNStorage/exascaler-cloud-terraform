@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "google_compute_disk" "oss" {
   provider = google-beta
   count    = var.oss.node_count

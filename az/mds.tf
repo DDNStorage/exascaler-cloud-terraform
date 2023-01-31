@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "azurerm_public_ip" "mds" {
   count               = var.mds.public_ip ? var.mds.node_count : 0
   name                = format("%s-%s%d-%s", local.prefix, "mds", count.index, "public-ip")

@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 data "azurerm_virtual_network" "exa" {
   count               = var.network.new ? 0 : 1
   resource_group_name = local.resource_group.name

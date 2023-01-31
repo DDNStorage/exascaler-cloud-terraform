@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "azurerm_public_ip" "cls" {
   count               = var.cls.public_ip ? var.cls.node_count : 0
   name                = format("%s-%s%d-%s", local.prefix, "cls", count.index, "public-ip")

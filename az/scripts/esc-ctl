@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
 
 set +o xtrace
 set -o nounset

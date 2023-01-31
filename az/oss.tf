@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "azurerm_public_ip" "oss" {
   count               = var.oss.public_ip ? var.oss.node_count : 0
   name                = format("%s-%s%d-%s", local.prefix, "oss", count.index, "public-ip")

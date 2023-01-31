@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "google_compute_disk" "mgs" {
   provider = google-beta
   count    = var.mgs.node_count

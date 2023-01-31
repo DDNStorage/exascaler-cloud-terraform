@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "google_compute_network" "exa" {
   provider                = google-beta
   count                   = var.network.new ? 1 : 0

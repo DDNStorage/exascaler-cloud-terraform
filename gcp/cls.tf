@@ -1,3 +1,6 @@
+# Copyright (c) 2023 DataDirect Networks, Inc.
+# All Rights Reserved.
+
 resource "google_compute_disk" "cls" {
   provider = google-beta
   count    = var.cls.node_count
