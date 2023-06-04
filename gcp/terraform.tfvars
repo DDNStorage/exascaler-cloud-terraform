@@ -130,9 +130,23 @@ boot = {
 # Source image properties
 # project: project name
 # family: image family
+# available families:
+# exascaler-cloud-5-2-centos: EXAScaler Cloud 5.2 (CentOS 7)
+# exascaler-cloud-5-2-redhat: EXAScaler Cloud 5.2 (RHEL 7)
+# exascaler-cloud-6-0-centos: EXAScaler Cloud 6.0 (CentOS 7)
+# exascaler-cloud-6-0-redhat: EXAScaler Cloud 6.0 (RHEL 7)
+# exascaler-cloud-6-1-centos: EXAScaler Cloud 6.1 (CentOS 7)
+# exascaler-cloud-6-1-redhat: EXAScaler Cloud 6.1 (RHEL 7)
+# exascaler-cloud-6-2-rocky-linux-8: EXAScaler Cloud 6.2 (Rocky Linux 8)
+# exascaler-cloud-6-2-rocky-linux-8-optimized-gcp: EXAScaler Cloud 6.2 (Rocky Linux 8 optimized for GCP)
+# exascaler-cloud-6-2-cis-rocky8-l1: EXAScaler Cloud 6.2 (CIS Rocky Linux 8 Benchmark v1.0.0 Level 1)
+# exascaler-cloud-6-2-rhel-8: EXAScaler Cloud 6.2 (RHEL 8)
+# exascaler-cloud-6-2-cis-rhel8-l1: EXAScaler Cloud 6.2 (CIS RHEL 8 Benchmark v2.0.0 Level 1)
+# exascaler-cloud-6-2-cis-rhel8-l2: EXAScaler Cloud 6.2 (CIS RHEL 8 Benchmark v2.0.0 Level 2)
+# exascaler-cloud-6-2-cis-rhel8-stig: EXAScaler Cloud 6.2 (CIS RHEL 8 STIG Benchmark v1.0.0)
 image = {
   project = "ddn-public"
-  family  = "exascaler-cloud-6-1-redhat"
+  family  = "exascaler-cloud-6-2-rocky-linux-8"
 }
 
 # Management server properties

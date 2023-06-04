@@ -38,14 +38,49 @@ The steps below will show how to create a EXAScaler Cloud environment on [Google
 
 ## Supported products
 
-| Product | Version | Base OS | Image family |
-| ------- | ------- | ------- | ------------ |
-| EXAScaler Cloud | 5.2.6 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-5-2-redhat` |
-| EXAScaler Cloud | 5.2.6 | CentOS Linux 7.9 | `exascaler-cloud-5-2-centos` |
-| EXAScaler Cloud | 6.0.1 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-0-redhat` |
-| EXAScaler Cloud | 6.0.1 | CentOS Linux 7.9 | `exascaler-cloud-6-0-centos` |
-| EXAScaler Cloud | 6.1.0 | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-1-redhat` |
-| EXAScaler Cloud | 6.1.0 | CentOS Linux 7.9 | `exascaler-cloud-6-1-centos` |
+| Product         | Version | Base OS | Image family |
+| --------------- | ------- | ------- | ------------ |
+| EXAScaler Cloud | 5.2.6   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-5-2-redhat` |
+| EXAScaler Cloud | 5.2.6   | CentOS Linux 7.9 | `exascaler-cloud-5-2-centos` |
+| EXAScaler Cloud | 6.0.1   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-0-redhat` |
+| EXAScaler Cloud | 6.0.1   | CentOS Linux 7.9 | `exascaler-cloud-6-0-centos` |
+| EXAScaler Cloud | 6.1.0   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-1-redhat` |
+| EXAScaler Cloud | 6.1.0   | CentOS Linux 7.9 | `exascaler-cloud-6-1-centos` |
+| EXAScaler Cloud | 6.2.0   | Red Hat Enterprise Linux 8.7 | `exascaler-cloud-6-2-rhel-8` |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-2-cis-rhel8-l1` |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-2-cis-rhel8-l2` |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 STIG Benchmark v1.0.0 | `exascaler-cloud-6-2-cis-rhel8-stig` |
+| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 | `exascaler-cloud-6-2-rocky-linux-8` |
+| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 optimized for GCP | `exascaler-cloud-6-2-rocky-linux-8-optimized-gcp` |
+| EXAScaler Cloud | 6.2.0   | CIS Rocky Linux 8.7 Benchmark v1.0.0 Level 1 | `exascaler-cloud-6-2-cis-rocky8-l1` |
+
+## Client packages
+
+EXAScaler Cloud deployment provides support for installing and configuring third-party clients.
+EXAScaler Cloud client software comprises a set of kernel modules which must be compatible with the running kernel, as well as userspace tools for interacting with the filesystem.
+
+| OS Vendor | OS Version       | Kernel Version for binary package | Kernel Version for DKMS package |
+| --------- | ---------------- | --------------------------------- | ------------------------------- |
+| Red Hat   | RHEL 7.6         | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
+| Red Hat   | RHEL 7.7         | `3.10.0-1062.71.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 7.8         | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 7.9         | `3.10.0-1160.90.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 8.0         | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
+| Red Hat   | RHEL 8.1         | `4.18.0-147.83.1.el8_1.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.2         | `4.18.0-193.105.1.el8_2.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL 8.3         | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.4         | `4.18.0-305.88.1.el8_4.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.5         | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.6         | `4.18.0-372.52.1.el8_6.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.7         | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.8         | `4.18.0-477.10.1.el8_8.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 9.0         | `5.14.0-70.53.1.el9_0.x86_64`     | `5.14.0`                        |
+| Red Hat   | RHEL 9.1         | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL 9.2         | `5.14.0-284.11.1.el9_2.x86_64`    | `5.14.0`                        |
+| Canonical | Ubuntu 16.04 LTS | —                                 | `4.4 - 4.15`                    |
+| Canonical | Ubuntu 18.04 LTS | —                                 | `4.15 - 5.4`                    |
+| Canonical | Ubuntu 20.04 LTS | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu 22.04 LTS | —                                 | `5.15 - 5.18`                   |
 
 ## Prerequisites
 
@@ -97,14 +132,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.7.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.7.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.6/gcp
+cd exascaler-cloud-terraform-scripts-2.1.7/gcp
 vi terraform.tfvars
 ```
 
@@ -183,7 +218,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable        | Type     | Default      | Description |
 | --------------: | -------: | -----------: | ----------- |
 | `image.project` | `string` | `ddn-public` | Source project name. [Learn more](https://cloud.google.com/compute/docs/images). |
-| `image.family`    | `string` | `exascaler-cloud-6-1-centos7` | Source image family to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler-cloud-5-2-centos`</li><li>`exascaler-cloud-5-2-redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler-cloud-6-0-centos`</li><li>`exascaler-cloud-6-0-redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler-cloud-6-1-centos`</li><li>`exascaler-cloud-6-1-redhat`</li></ul> [Learn more](https://cloud.google.com/compute/docs/images). |
+| `image.family`    | `string` | `exascaler-cloud-6-2-rocky-linux-8` | Source image family to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler-cloud-5-2-centos`</li><li>`exascaler-cloud-5-2-redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler-cloud-6-0-centos`</li><li>`exascaler-cloud-6-0-redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler-cloud-6-1-centos`</li><li>`exascaler-cloud-6-1-redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler-cloud-6-2-rhel-8`</li><li>`exascaler-cloud-6-2-cis-rhel8-l1`</li><li>`exascaler-cloud-6-2-cis-rhel8-l2`</li><li>`exascaler-cloud-6-2-cis-rhel8-stig`</li><li>`exascaler-cloud-6-2-rocky-linux-8`</li><li>`exascaler-cloud-6-2-rocky-linux-8-optimized-gcp`</li><li>`exascaler-cloud-6-2-cis-rocky8-l1`</li></ul> [Learn more](https://cloud.google.com/compute/docs/images). |
 
 #### Management server options
 | Variable         | Type      | Default              | Description |
@@ -493,8 +528,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.6.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.6/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.7.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.7/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:
@@ -737,10 +772,10 @@ Created result tarball ./results/io500-exascaler-cloud-2db9-cls0-2021.12.01-18.2
 
 ## Install new EXAScaler Cloud clients
 
-New EXAScaler Cloud client instances must be in the same location and connected to the virtual network and subnet. The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/esc-client.cfg` using the actual IP address of the management server:
+New EXAScaler Cloud client instances must be created in the same location and connected to the same virtual network and subnet. To allow network connections from new clients to EXAScaler Cloud servers, you must assign a specific network tag to client instances and the tag name is the same as the deployment prefix (for example, `exascaler-cloud-2db9`). The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/esc-client.cfg` using the actual IP address of the management server:
 ```shell
 {
-    "Version": "2.0.0",
+    "Version": "2.1.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",
@@ -811,7 +846,7 @@ Steps to install Lustre client and fscrypt packages:
 ```shell
 cat > /etc/esc-client.cfg <<EOF
 {
-    "Version": "2.0.0",
+    "Version": "2.1.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",

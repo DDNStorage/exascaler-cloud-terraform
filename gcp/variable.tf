@@ -3,7 +3,7 @@
 
 variable "prefix" {
   type        = string
-  default     = ""
+  default     = null
   description = "EXAScaler Cloud deployment prefix"
 
   validation {
@@ -222,7 +222,7 @@ variable "image" {
 
   default = {
     project = "ddn-public"
-    family  = "exascaler-cloud-6-1-centos"
+    family  = "exascaler-cloud-6-2-rocky-linux-8"
   }
 
   description = "Source image options"
