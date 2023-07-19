@@ -18,11 +18,27 @@ resource "random_id" "exa" {
 resource "google_runtimeconfig_config" "fs_config" {
   provider = google-beta
   name     = format("%s-%s", local.prefix, "fs-config")
+  lifecycle {
+    replace_triggered_by = [
+      google_compute_disk.mgs,
+      google_compute_disk.mds,
+      google_compute_disk.oss,
+      google_compute_disk.cls
+    ]
+  }
 }
 
 resource "google_runtimeconfig_config" "startup_config" {
   provider = google-beta
   name     = format("%s-%s", local.prefix, "startup-config")
+  lifecycle {
+    replace_triggered_by = [
+      google_compute_disk.mgs,
+      google_compute_disk.mds,
+      google_compute_disk.oss,
+      google_compute_disk.cls
+    ]
+  }
 }
 
 resource "google_deployment_manager_deployment" "exa" {
@@ -41,6 +57,14 @@ resource "google_deployment_manager_deployment" "exa" {
     google_compute_instance.oss,
     google_compute_instance.cls
   ]
+  lifecycle {
+    replace_triggered_by = [
+      google_compute_disk.mgs,
+      google_compute_disk.mds,
+      google_compute_disk.oss,
+      google_compute_disk.cls
+    ]
+  }
 }
 
 resource "null_resource" "waiter" {
@@ -120,7 +144,7 @@ data "google_compute_image" "exa" {
 }
 
 locals {
-  loci       = "2.0.0"
+  loci       = "2.1.0"
   product    = "EXAScaler Cloud"
   profile    = "custom"
   scripts    = "scripts"
