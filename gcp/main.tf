@@ -18,27 +18,11 @@ resource "random_id" "exa" {
 resource "google_runtimeconfig_config" "fs_config" {
   provider = google-beta
   name     = format("%s-%s", local.prefix, "fs-config")
-  lifecycle {
-    replace_triggered_by = [
-      google_compute_disk.mgs,
-      google_compute_disk.mds,
-      google_compute_disk.oss,
-      google_compute_disk.cls
-    ]
-  }
 }
 
 resource "google_runtimeconfig_config" "startup_config" {
   provider = google-beta
   name     = format("%s-%s", local.prefix, "startup-config")
-  lifecycle {
-    replace_triggered_by = [
-      google_compute_disk.mgs,
-      google_compute_disk.mds,
-      google_compute_disk.oss,
-      google_compute_disk.cls
-    ]
-  }
 }
 
 resource "google_deployment_manager_deployment" "exa" {
@@ -57,14 +41,6 @@ resource "google_deployment_manager_deployment" "exa" {
     google_compute_instance.oss,
     google_compute_instance.cls
   ]
-  lifecycle {
-    replace_triggered_by = [
-      google_compute_disk.mgs,
-      google_compute_disk.mds,
-      google_compute_disk.oss,
-      google_compute_disk.cls
-    ]
-  }
 }
 
 resource "null_resource" "waiter" {
