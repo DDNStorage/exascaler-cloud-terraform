@@ -1,6 +1,7 @@
 # Terraform scripts for EXAScaler Cloud on Microsoft Azure
 
   * [Supported products](#supported-products)
+  * [Client packages](#client-packages)
   * [Prerequisites](#prerequisites)
   * [Steps to authenticate via Microsoft account](#steps-to-authenticate-via-microsoft-account)
   * [Steps to accept the terms of use for DDN EXAScaler Cloud images](#steps-to-accept-the-terms-of-use-for-ddn-exascaler-cloud-images)
@@ -39,14 +40,42 @@ The steps below will show how to create a EXAScaler Cloud environment on Microso
 
 ## Supported products
 
-| Product | Version | Base OS | Stock Keeping Unit (`SKU`) |
-| ------- | ------- | ------- | -------------------------- |
-| EXAScaler Cloud | 5.2.6 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_5_2_redhat` |
-| EXAScaler Cloud | 5.2.6 | CentOS Linux 7.9 | `exascaler_cloud_5_2_centos` |
-| EXAScaler Cloud | 6.0.1 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_0_redhat` |
-| EXAScaler Cloud | 6.0.1 | CentOS Linux 7.9 | `exascaler_cloud_6_0_centos` |
-| EXAScaler Cloud | 6.1.0 | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_1_redhat` |
-| EXAScaler Cloud | 6.1.0 | CentOS Linux 7.9 | `exascaler_cloud_6_1_centos` |
+| Product         | Version | Base OS Vendor and Version   | Stock Keeping Unit (`SKU`)   |
+| --------------- | ------- | ---------------------------- | ---------------------------- |
+| EXAScaler Cloud | 5.2.6   | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_5_2_redhat` |
+| EXAScaler Cloud | 5.2.6   | CentOS Linux 7.9             | `exascaler_cloud_5_2_centos` |
+| EXAScaler Cloud | 6.1.0   | Red Hat Enterprise Linux 7.9 | `exascaler_cloud_6_1_redhat` |
+| EXAScaler Cloud | 6.1.0   | CentOS Linux 7.9             | `exascaler_cloud_6_1_centos` |
+| EXAScaler Cloud | 6.2.0   | Red Hat Enterprise Linux 8.7 | `exascaler_cloud_6_2_redhat` |
+| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7              | `exascaler_cloud_6_2_rocky`  |
+
+## Client packages
+
+EXAScaler Cloud deployment provides support for installing and configuring third-party clients.
+EXAScaler Cloud client software comprises a set of kernel modules which must be compatible with the running kernel, as well as userspace tools for interacting with the filesystem.
+
+| OS Vendor | OS Version       | Kernel Version for binary package | Kernel Version for DKMS package |
+| --------- | ---------------- | --------------------------------- | ------------------------------- |
+| Red Hat   | RHEL 7.6         | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
+| Red Hat   | RHEL 7.7         | `3.10.0-1062.71.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 7.8         | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 7.9         | `3.10.0-1160.90.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL 8.0         | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
+| Red Hat   | RHEL 8.1         | `4.18.0-147.83.1.el8_1.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.2         | `4.18.0-193.105.1.el8_2.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL 8.3         | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.4         | `4.18.0-305.88.1.el8_4.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.5         | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.6         | `4.18.0-372.52.1.el8_6.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.7         | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 8.8         | `4.18.0-477.10.1.el8_8.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL 9.0         | `5.14.0-70.53.1.el9_0.x86_64`     | `5.14.0`                        |
+| Red Hat   | RHEL 9.1         | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL 9.2         | `5.14.0-284.11.1.el9_2.x86_64`    | `5.14.0`                        |
+| Canonical | Ubuntu 16.04 LTS | —                                 | `4.4 - 4.15`                    |
+| Canonical | Ubuntu 18.04 LTS | —                                 | `4.15 - 5.4`                    |
+| Canonical | Ubuntu 20.04 LTS | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu 22.04 LTS | —                                 | `5.15 - 5.18`                   |
 
 ## Prerequisites
 
@@ -124,16 +153,6 @@ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_c
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_5_2_redhat:latest
 ```
 
-* For EXAScaler Cloud 6.0 and CentOS Linux based image:
-```shell
-az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_0_centos:latest
-```
-
-* For EXAScaler Cloud 6.0 and Red Hat Enterprise Linux based image:
-```shell
-az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_0_redhat:latest
-```
-
 * For EXAScaler Cloud 6.1 and CentOS Linux based image:
 ```shell
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_centos:latest
@@ -144,18 +163,28 @@ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_c
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_1_redhat:latest
 ```
 
+* For EXAScaler Cloud 6.2 and Rocky Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_2_rocky:latest
+```
+
+* For EXAScaler Cloud 6.2 and Red Hat Enterprise Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_2_redhat:latest
+```
+
 [Learn more about the image terms](https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_DDN%253a2DWHAMCLOUD%253a2D5345716%253a24EXASCALER%253a5FCLOUD%253a24EXASCALER%253a5F520%253a24RI46C54X4ZEJTZXVGNKQTMOOLKIMCBELLB75XRKMA6KZU63OEITXAF4VOL2MD4M4BTNGHGCYM4NAH2P7REASLOTOHK72WYRNBCHH5WI.txt).
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz):
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz):
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.5/az
+cd exascaler-cloud-terraform-scripts-2.1.8/az
 vi terraform.tfvars
 ```
 
@@ -235,7 +264,7 @@ vi terraform.tfvars
 | -------- | ---- | ------- | ----------- |
 | `image.publisher` | `string` | `ddn-whamcloud-5345716` | Specifies the publisher of the image used to create the virtual machine. |
 | `image.offer` | `string` | `exascaler_cloud` | Specifies the offer of the image used to create the virtual machine. |
-| `image.sku` | `string` | `exascaler_cloud_6_1_centos` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler_cloud_5_2_centos`</li><li>`exascaler_cloud_5_2_redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler_cloud_6_0_centos`</li><li>`exascaler_cloud_6_0_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul> |
+| `image.sku` | `string` | `exascaler_cloud_6_2_rocky` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler_cloud_5_2_centos`</li><li>`exascaler_cloud_5_2_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler_cloud_6_2_rocky`</li><li>`exascaler_cloud_6_2_redhat`</li></ul> |
 | `image.version` | `string` | `latest` | Specifies the version of the image used to create the virtual machine. |
 | `image.accept`  | `bool` | `false` | Allows automatically accepting the legal terms for a Marketplace image. |
 
@@ -423,7 +452,7 @@ client_config = <<EOT
 
 cat >/etc/esc-client.conf<<EOF
 {
-  "Version": "2.0.0",
+  "Version": "2.1.0",
   "MountConfig": {
     "ClientDevice": "10.0.0.10@tcp:/exacloud",
     "Mountpoint": "/mnt/exacloud",
@@ -563,8 +592,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.5.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.5/az
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.1.8/az
 ```
 
 Copy the terraform.tfstate file from the existing Terraform directory:
