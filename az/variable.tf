@@ -3,7 +3,7 @@
 
 variable "prefix" {
   type        = string
-  default     = ""
+  default     = null
   description = "EXAScaler Cloud deployment prefix"
 
   validation {
@@ -296,7 +296,7 @@ variable "image" {
   default = {
     publisher = "ddn-whamcloud-5345716"
     offer     = "exascaler_cloud"
-    sku       = "exascaler_cloud_6_1_centos"
+    sku       = "exascaler_cloud_6_2_rocky"
     version   = "latest"
     accept    = false
   }
@@ -314,8 +314,8 @@ variable "image" {
   }
 
   validation {
-    condition     = contains(["exascaler_cloud_5_2_centos", "exascaler_cloud_5_2_redhat", "exascaler_cloud_6_0_centos", "exascaler_cloud_6_0_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat"], var.image.sku)
-    error_message = "The image.sku value should be exascaler_cloud_6_0_centos, exascaler_cloud_6_0_redhat, exascaler_cloud_6_1_centos or exascaler_cloud_6_1_redhat."
+    condition     = contains(["exascaler_cloud_5_2_centos", "exascaler_cloud_5_2_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat", "exascaler_cloud_6_2_rocky", "exascaler_cloud_6_2_redhat"], var.image.sku)
+    error_message = "The image.sku value should be exascaler_cloud_5_2_centos, exascaler_cloud_5_2_redhat, exascaler_cloud_6_1_centos, exascaler_cloud_6_1_redhat, exascaler_cloud_6_2_rocky or exascaler_cloud_6_2_redhat."
   }
 
   validation {
