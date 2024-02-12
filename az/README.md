@@ -48,34 +48,51 @@ The steps below will show how to create a EXAScaler Cloud environment on Microso
 | EXAScaler Cloud | 6.1.0   | CentOS Linux 7.9             | `exascaler_cloud_6_1_centos` |
 | EXAScaler Cloud | 6.2.0   | Red Hat Enterprise Linux 8.7 | `exascaler_cloud_6_2_redhat` |
 | EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7              | `exascaler_cloud_6_2_rocky`  |
+| EXAScaler Cloud | 6.3.0   | Red Hat Enterprise Linux 8.8 | `exascaler_cloud_6_3_redhat` |
+| EXAScaler Cloud | 6.3.0   | Rocky Linux 8.8              | `exascaler_cloud_6_3_rocky`  |
 
 ## Client packages
 
 EXAScaler Cloud deployment provides support for installing and configuring third-party clients.
 EXAScaler Cloud client software comprises a set of kernel modules which must be compatible with the running kernel, as well as userspace tools for interacting with the filesystem.
 
-| OS Vendor | OS Version       | Kernel Version for binary package | Kernel Version for DKMS package |
-| --------- | ---------------- | --------------------------------- | ------------------------------- |
-| Red Hat   | RHEL 7.6         | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
-| Red Hat   | RHEL 7.7         | `3.10.0-1062.71.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 7.8         | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 7.9         | `3.10.0-1160.90.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 8.0         | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
-| Red Hat   | RHEL 8.1         | `4.18.0-147.83.1.el8_1.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.2         | `4.18.0-193.105.1.el8_2.x86_64`   | `4.18.0`                        |
-| Red Hat   | RHEL 8.3         | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.4         | `4.18.0-305.88.1.el8_4.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.5         | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.6         | `4.18.0-372.52.1.el8_6.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.7         | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.8         | `4.18.0-477.10.1.el8_8.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 9.0         | `5.14.0-70.53.1.el9_0.x86_64`     | `5.14.0`                        |
-| Red Hat   | RHEL 9.1         | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL 9.2         | `5.14.0-284.11.1.el9_2.x86_64`    | `5.14.0`                        |
-| Canonical | Ubuntu 16.04 LTS | —                                 | `4.4 - 4.15`                    |
-| Canonical | Ubuntu 18.04 LTS | —                                 | `4.15 - 5.4`                    |
-| Canonical | Ubuntu 20.04 LTS | —                                 | `5.4 - 5.15`                    |
-| Canonical | Ubuntu 22.04 LTS | —                                 | `5.15 - 5.18`                   |
+| Vendor    | Product | Version     | Arch      | Kernel Version for binary package | Kernel Version for DKMS package |
+| --------- | ------- | ----------- | --------- | --------------------------------- | ------------------------------- |
+| Red Hat   | RHEL    | `7.6`       | `x86_64`  | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.7`       | `x86_64`  | `3.10.0-1062.77.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.8`       | `x86_64`  | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.9`       | `x86_64`  | `3.10.0-1160.108.1.el7.x86_64`    | `3.10.0`                        |
+| Red Hat   | RHEL    | `8.0`       | `x86_64`  | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.1`       | `x86_64`  | `4.18.0-147.94.1.el8_1.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.2`       | `x86_64`  | `4.18.0-193.120.1.el8_2.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.3`       | `x86_64`  | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.120.1.el8_4.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.5`       | `x86_64`  | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.87.1.el8_6.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.7`       | `aarch64` | `4.18.0-425.19.2.el8_7.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.7`       | `x86_64`  | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `aarch64` | `4.18.0-477.43.1.el8_8.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.43.1.el8_8.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.9`       | `aarch64` | `4.18.0-513.11.1.el8_9.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.9`       | `x86_64`  | `4.18.0-513.11.1.el8_9.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `aarch64` | `5.14.0-70.85.1.el9_0.aarch64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.85.1.el9_0.x86_64`     | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.1`       | `aarch64` | `5.14.0-162.23.1.el9_1.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.1`       | `x86_64`  | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.48.1.el9_2.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.48.1.el9_2.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.3`       | `aarch64` | `5.14.0-362.18.1.el9_3.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.3`       | `x86_64`  | `5.14.0-362.18.1.el9_3.x86_64`    | `5.14.0`                        |
+| Canonical | Ubuntu  | `16.04 LTS` | `amd64`   | —                                 | `4.4 - 4.15`                    |
+| Canonical | Ubuntu  | `18.04 LTS` | `amd64`   | —                                 | `4.15 - 5.4`                    |
+| Canonical | Ubuntu  | `20.04 LTS` | `amd64`   | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `20.04 LTS` | `arm64`   | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `amd64`   | —                                 | `5.15 - 6.2`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `arm64`   | —                                 | `5.15 - 6.2`                    |
+
+Notes:
+* Client packages for `aarch64` and `arm64` architectures are available only for EXAScaler Cloud 6.3
+* Client packages for Canonical Ubuntu `16.04 LTS` are not available for EXAScaler Cloud 6.3
 
 ## Prerequisites
 
@@ -173,18 +190,28 @@ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_c
 az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_2_redhat:latest
 ```
 
+* For EXAScaler Cloud 6.3 and Rocky Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_3_rocky:latest
+```
+
+* For EXAScaler Cloud 6.3 and Red Hat Enterprise Linux based image:
+```shell
+az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_cloud_6_3_redhat:latest
+```
+
 [Learn more about the image terms](https://mpcprodsa.blob.core.windows.net/legalterms/3E5ED_legalterms_DDN%253a2DWHAMCLOUD%253a2D5345716%253a24EXASCALER%253a5FCLOUD%253a24EXASCALER%253a5F520%253a24RI46C54X4ZEJTZXVGNKQTMOOLKIMCBELLB75XRKMA6KZU63OEITXAF4VOL2MD4M4BTNGHGCYM4NAH2P7REASLOTOHK72WYRNBCHH5WI.txt).
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.9.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.9.tar.gz):
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz):
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.9.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.9/az
+cd exascaler-cloud-terraform-scripts-2.2.0/az
 vi terraform.tfvars
 ```
 
@@ -260,13 +287,13 @@ vi terraform.tfvars
 [Learn more about Azure disks types](https://docs.microsoft.com/azure/virtual-machines/disks-types).
 
 #### Source image options
-| Variable | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `image.publisher` | `string` | `ddn-whamcloud-5345716` | Specifies the publisher of the image used to create the virtual machine. |
-| `image.offer` | `string` | `exascaler_cloud` | Specifies the offer of the image used to create the virtual machine. |
-| `image.sku` | `string` | `exascaler_cloud_6_2_rocky` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler_cloud_5_2_centos`</li><li>`exascaler_cloud_5_2_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler_cloud_6_2_rocky`</li><li>`exascaler_cloud_6_2_redhat`</li></ul> |
-| `image.version` | `string` | `latest` | Specifies the version of the image used to create the virtual machine. |
-| `image.accept`  | `bool` | `false` | Allows automatically accepting the legal terms for a Marketplace image. |
+| Variable          | Type     | Default                     | Description |
+| ----------------- | -------- | --------------------------- | ----------- |
+| `image.publisher` | `string` | `ddn-whamcloud-5345716`     | Specifies the publisher of the image used to create the virtual machine. |
+| `image.offer`     | `string` | `exascaler_cloud`           | Specifies the offer of the image used to create the virtual machine. |
+| `image.sku`       | `string` | `exascaler_cloud_6_3_rocky` | Specifies the `SKU` of the image used to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler_cloud_5_2_centos`</li><li>`exascaler_cloud_5_2_redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler_cloud_6_1_centos`</li><li>`exascaler_cloud_6_1_redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler_cloud_6_2_rocky`</li><li>`exascaler_cloud_6_2_redhat`</li></ul>EXAScaler Cloud 6.3 images: <ul><li>`exascaler_cloud_6_3_rocky`</li><li>`exascaler_cloud_6_3_redhat`</li></ul> |
+| `image.version`   | `string` | `latest`                    | Specifies the version of the image used to create the virtual machine. |
+| `image.accept`    | `bool`   | `false`                     | Allows automatically accepting the legal terms for a Marketplace image. |
 
 [Learn more about Azure disk images](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/imaging).
 
@@ -443,16 +470,16 @@ azure_dashboard = "https://portal.azure.com/#@00000000-0000-0000-0000-0000000000
 
 client_config = <<EOT
 #!/bin/sh
-# install new EXAScaler Cloud clients:
-# all instances must be in the same location westus
+# Install new EXAScaler Cloud clients:
+# Create a client instance with disabled secure boot (security type: standard).
+# The client instance must be in the same location westus
 # and connected to the network exascaler-cloud-a108-virtual-network
-# and subnet exascaler-cloud-a108-subnet
-# to set up EXAScaler Cloud filesystem on a new client instance,
+# and subnet exascaler-cloud-a108-subnet.
+# To set up EXAScaler Cloud filesystem on a new client instance,
 # run the folowing commands on the client with root privileges:
 
-cat >/etc/esc-client.conf<<EOF
+cat >/etc/exascaler-cloud-client.cfg<<EOF
 {
-  "Version": "2.1.0",
   "MountConfig": {
     "ClientDevice": "10.0.0.10@tcp:/exacloud",
     "Mountpoint": "/mnt/exacloud",
@@ -461,9 +488,9 @@ cat >/etc/esc-client.conf<<EOF
 }
 EOF
 
-curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
-chmod +x /usr/sbin/esc-client
-esc-client auto setup --config /etc/esc-client.conf
+curl -fsSL http://10.0.0.10/exascaler-cloud-client-$(arch) -o /usr/sbin/exascaler-cloud-client
+chmod +x /usr/sbin/exascaler-cloud-client
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 
 EOT
 
@@ -592,8 +619,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.9.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.9/az
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.2.0/az
 ```
 
 Copy the terraform.tfstate file from the existing Terraform directory:
@@ -612,31 +639,31 @@ Review the execution plan to make sure all changes are expected:
 terraform plan
 ```
 
-Unmount the existing EXAScaler Cloud filesystem using the provided [esc-ctl](https://github.com/DDNStorage/exascaler-cloud-terraform/az/scripts/esc-ctl) script. This step is required to ensure data consistency during the upgrade:
+Unmount the existing EXAScaler Cloud filesystem using the provided [exascaler-cloud-ctl](https://github.com/DDNStorage/exascaler-cloud-terraform/az/scripts/exascaler-cloud-ctl) script. This step is required to ensure data consistency during the upgrade:
 ```shell
-$ ./scripts/esc-ctl
+$ ./scripts/exascaler-cloud-ctl
 
 Usage:
 
-List resource groups : ./scripts/esc-ctl list
-List deployments     : ./scripts/esc-ctl <resource_group> list
-List instances       : ./scripts/esc-ctl <resource_group> <deployment> list
-Stop instances       : ./scripts/esc-ctl <resource_group> <deployment> stop
-Start instances      : ./scripts/esc-ctl <resource_group> <deployment> start
-Unmount filesystem   : ./scripts/esc-ctl <resource_group> <deployment> umount
+List resource groups : ./scripts/exascaler-cloud-ctl list
+List deployments     : ./scripts/exascaler-cloud-ctl <resource_group> list
+List instances       : ./scripts/exascaler-cloud-ctl <resource_group> <deployment> list
+Stop instances       : ./scripts/exascaler-cloud-ctl <resource_group> <deployment> stop
+Start instances      : ./scripts/exascaler-cloud-ctl <resource_group> <deployment> start
+Unmount filesystem   : ./scripts/exascaler-cloud-ctl <resource_group> <deployment> umount
 
-$ ./scripts/esc-ctl list
+$ ./scripts/exascaler-cloud-ctl list
 Name                                 Location    Status
 -----------------------------------  ----------  ---------
 exascaler-cloud-f7cd-resource-group  eastus      Succeeded
 NetworkWatcherRG                     westus      Succeeded
 
-$ ./scripts/esc-ctl exascaler-cloud-f7cd-resource-group list
+$ ./scripts/exascaler-cloud-ctl exascaler-cloud-f7cd-resource-group list
 Name                            Created                    Status
 ------------------------------  -------------------------  ---------
 exascaler-cloud-f7cd            2021-08-21T01:19:36+00:00  Succeeded
 
-$ ./scripts/esc-ctl exascaler-cloud-f7cd-resource-group exascaler-cloud-f7cd umount
+$ ./scripts/exascaler-cloud-ctl exascaler-cloud-f7cd-resource-group exascaler-cloud-f7cd umount
 Umount compute client exascaler-cloud-f7cd-cls0
 Umount compute client exascaler-cloud-f7cd-cls1
 Umount storage server exascaler-cloud-f7cd-oss0
@@ -705,13 +732,13 @@ Destroy complete! Resources: 103 destroyed.
 * Run [ssh-agent](https://linux.die.net/man/1/ssh-agent)
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
-* Run [IOR](https://wiki.lustre.org/IOR) benchmark using `esc-ior` tool
+* Run [IOR](https://wiki.lustre.org/IOR) benchmark using the `exascaler-cloud-ior` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@exascaler-cloud-a108-mgs0.westus.cloudapp.azure.com
-esc-ior
+exascaler-cloud-ior
 ```
 
 Output:
@@ -724,7 +751,7 @@ Identity added: /home/user/.ssh/id_rsa
 
 $ ssh -A stack@exascaler-cloud-b59f-mgs0.westus.cloudapp.azure.com
 
-[stack@exascaler-cloud-a108-mgs0 ~]$ esc-ior
+[stack@exascaler-cloud-a108-mgs0 ~]$ exascaler-cloud-ior
 IOR-3.3.0: MPI Coordinated Test of Parallel I/O
 Began               : Mon Jul 11 12:04:24 2022
 Command line        : /usr/bin/ior -C -F -e -r -w -a POSIX -b 16777216 -t 1048576 -s 321 -o /mnt/exacloud/d19aea2d56d13401/d19aea2d56d13401
@@ -774,13 +801,13 @@ Finished            : Mon Jul 11 12:09:48 2022
 * Run [ssh-agent](https://linux.die.net/man/1/ssh-agent)
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
-* Run [mdtest](https://wiki.lustre.org/MDTest) benchmark using `esc-mdtest` tool
+* Run [mdtest](https://wiki.lustre.org/MDTest) benchmark using the `exascaler-cloud-mdtest` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@exascaler-cloud-a108-mgs0.westus.cloudapp.azure.com
-esc-mdtest
+exascaler-cloud-mdtest
 ```
 
 Output:
@@ -793,7 +820,7 @@ Identity added: /home/user/.ssh/id_rsa
 
 $ ssh -A stack@exascaler-cloud-b59f-mgs0.westus.cloudapp.azure.com
 
-[stack@exascaler-cloud-a108-mgs0 ~]$ esc-mdtest
+[stack@exascaler-cloud-a108-mgs0 ~]$ exascaler-cloud-mdtest
 -- started at 07/11/2022 12:11:32 --
 
 mdtest-3.3.0 was launched with 64 total task(s) on 4 node(s)
@@ -824,7 +851,7 @@ SUMMARY rate: (of 3 iterations)
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
 * Open an SSH session to the any EXAScaler Cloud compute host
-* Run [IO500](https://github.com/IO500/io500) benchmark using `esc-io500` tool
+* Run [IO500](https://github.com/IO500/io500) benchmark using the `exascaler-cloud-io500` command
 
 ```shell
 eval $(ssh-agent)
@@ -832,7 +859,7 @@ ssh-add
 ssh -A stack@exascaler-cloud-a108-mgs0.westus.cloudapp.azure.com
 loci hosts -c
 ssh -A exascaler-cloud-a108-cls0
-esc-io500
+exascaler-cloud-io500
 ```
 
 Output:
@@ -853,7 +880,7 @@ $ ssh -A stack@exascaler-cloud-b59f-mgs0.westus.cloudapp.azure.com
 
 [stack@exascaler-cloud-a108-mgs0 ~]$ ssh -A exascaler-cloud-a108-cls0
 
-[stack@exascaler-cloud-a108-cls0 ~]$ esc-io500
+[stack@exascaler-cloud-a108-cls0 ~]$ exascaler-cloud-io500
 ...
 Start IO500 benchmark with options:
 
@@ -893,10 +920,9 @@ Created result tarball ./results/io500-exascaler-cloud-a108-cls0-2022.07.11-12.4
 
 ## Install new EXAScaler Cloud clients
 
-New EXAScaler Cloud client instances must be in the same location and connected to the virtual network and subnet. The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/esc-client.cfg` using the actual IP address of the management server:
+New EXAScaler Cloud client instances must be created with disabled secure boot feature and in the same location and connected to the existing EXAScaler Cloud virtual network and subnet. The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/exascaler-cloud-client.cfg` using the actual IP address of the management server:
 ```shell
 {
-    "Version": "2.0.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",
@@ -907,9 +933,9 @@ New EXAScaler Cloud client instances must be in the same location and connected 
 
 To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:
 ```shell
-curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
-chmod +x /usr/sbin/esc-client
-esc-client auto setup --config /etc/esc-client.cfg
+curl -fsSL http://10.0.0.10/exascaler-cloud-client-$(arch) -o /usr/sbin/exascaler-cloud-client
+chmod +x /usr/sbin/exascaler-cloud-client
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 ```
 
 #### Output for Ubuntu Linux:
@@ -921,7 +947,7 @@ Description:	Ubuntu 22.04 LTS
 Release:	22.04
 Codename:	jammy
 
-# esc-client auto setup --config /etc/esc-client.cfg
+# /usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -937,7 +963,7 @@ Mounting 10.0.0.10@tcp0:/exacloud at /mnt/exacloud ... Done.
 # cat /etc/redhat-release
 AlmaLinux release 8.6 (Sky Tiger)
 
-# esc-client auto setup --config /etc/esc-client.cfg
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -961,13 +987,12 @@ Client-side encryption supports data encryption and file and directory names enc
 lctl set_param -P llite.*.enable_filename_encryption=1
 ```
 
-The fscrypt package is included in the EXAScaler Cloud client toolkit and can be installed using esc-client.
+The fscrypt package is included in the EXAScaler Cloud client toolkit and can be installed using the `exascaler-cloud-client` command.
 
 Steps to install Lustre client and fscrypt packages:
 ```shell
-cat > /etc/esc-client.cfg <<EOF
+cat > /etc/exascaler-cloud-client.cfg <<EOF
 {
-    "Version": "2.0.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",
@@ -976,14 +1001,14 @@ cat > /etc/esc-client.cfg <<EOF
 }
 EOF
 
-curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
-chmod +x /usr/sbin/esc-client
-esc-client auto setup --config /etc/esc-client.cfg
+curl -fsSL http://10.0.0.10/exascaler-cloud-client-$(arch) -o /usr/sbin/exascaler-cloud-client
+chmod +x /usr/sbin/exascaler-cloud-client
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 ```
 
 Output:
 ```shell
-# esc-client auto setup --config /etc/esc-client.cfg
+# /usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -1076,14 +1101,14 @@ Steps to collect a support bundle on the EXAScaler Cloud deployment:
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
 * Collect an inventory using `about_this_deployment` tool
-* Collect a support bundle using `esc-collector` tool
+* Collect a support bundle using the `exascaler-cloud-collector` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@exascaler-cloud-a108-mgs0.westus.cloudapp.azure.com
 about_this_deployment
-esc-collector
+exascaler-cloud-collector
 ```
 
 Output:
@@ -1157,7 +1182,7 @@ instances:
       bandwidthMBps: 60
 ...
 
-[stack@exascaler-cloud-a108-mgs0 ~]$ esc-collector
+[stack@exascaler-cloud-a108-mgs0 ~]$ exascaler-cloud-collector
 
 sos-collector (version 1.8)
 

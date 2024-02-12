@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DataDirect Networks, Inc.
+# Copyright (c) 2024 DataDirect Networks, Inc.
 # All Rights Reserved.
 
 variable "prefix" {
@@ -222,7 +222,7 @@ variable "image" {
 
   default = {
     project = "ddn-public"
-    family  = "exascaler-cloud-6-2-rocky-linux-8"
+    family  = "exascaler-cloud-6-3-rocky-linux-8"
   }
 
   description = "Source image options"
@@ -394,6 +394,8 @@ variable "mgt" {
   type = object({
     disk_bus   = string
     disk_type  = string
+    disk_iops  = number
+    disk_mbps  = number
     disk_size  = number
     disk_count = number
     disk_raid  = bool
@@ -402,6 +404,8 @@ variable "mgt" {
   default = {
     disk_bus   = "SCSI"
     disk_type  = "pd-standard"
+    disk_iops  = null
+    disk_mbps  = null
     disk_size  = 128
     disk_count = 1
     disk_raid  = false
@@ -415,8 +419,8 @@ variable "mgt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mgt.disk_type)
-    error_message = "The mgt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "hyperdisk-balanced", "hyperdisk-extreme", "hyperdisk-throughput", "scratch"], var.mgt.disk_type)
+    error_message = "The mgt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme, hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput or scratch."
   }
 
   validation {
@@ -459,6 +463,8 @@ variable "mnt" {
   type = object({
     disk_bus   = string
     disk_type  = string
+    disk_iops  = number
+    disk_mbps  = number
     disk_size  = number
     disk_count = number
     disk_raid  = bool
@@ -467,6 +473,8 @@ variable "mnt" {
   default = {
     disk_bus   = "SCSI"
     disk_type  = "pd-standard"
+    disk_iops  = null
+    disk_mbps  = null
     disk_size  = 128
     disk_count = 1
     disk_raid  = false
@@ -480,8 +488,8 @@ variable "mnt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mnt.disk_type)
-    error_message = "The mnt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "hyperdisk-balanced", "hyperdisk-extreme", "hyperdisk-throughput", "scratch"], var.mnt.disk_type)
+    error_message = "The mnt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme, hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput or scratch."
   }
 
   validation {
@@ -579,6 +587,8 @@ variable "mdt" {
   type = object({
     disk_bus   = string
     disk_type  = string
+    disk_iops  = number
+    disk_mbps  = number
     disk_size  = number
     disk_count = number
     disk_raid  = bool
@@ -587,6 +597,8 @@ variable "mdt" {
   default = {
     disk_bus   = "SCSI"
     disk_type  = "pd-ssd"
+    disk_iops  = null
+    disk_mbps  = null
     disk_size  = 256
     disk_count = 1
     disk_raid  = false
@@ -600,8 +612,8 @@ variable "mdt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.mdt.disk_type)
-    error_message = "The mdt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "hyperdisk-balanced", "hyperdisk-extreme", "hyperdisk-throughput", "scratch"], var.mdt.disk_type)
+    error_message = "The mdt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme, hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput or scratch."
   }
 
   validation {
@@ -699,6 +711,8 @@ variable "ost" {
   type = object({
     disk_bus   = string
     disk_type  = string
+    disk_iops  = number
+    disk_mbps  = number
     disk_size  = number
     disk_count = number
     disk_raid  = bool
@@ -707,6 +721,8 @@ variable "ost" {
   default = {
     disk_bus   = "SCSI"
     disk_type  = "pd-standard"
+    disk_iops  = null
+    disk_mbps  = null
     disk_size  = 512
     disk_count = 1
     disk_raid  = false
@@ -720,8 +736,8 @@ variable "ost" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.ost.disk_type)
-    error_message = "The ost.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "hyperdisk-balanced", "hyperdisk-extreme", "hyperdisk-throughput", "scratch"], var.ost.disk_type)
+    error_message = "The ost.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme, hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput or scratch."
   }
 
   validation {
@@ -819,6 +835,8 @@ variable "clt" {
   type = object({
     disk_bus   = string
     disk_type  = string
+    disk_iops  = number
+    disk_mbps  = number
     disk_size  = number
     disk_count = number
   })
@@ -826,6 +844,8 @@ variable "clt" {
   default = {
     disk_bus   = "SCSI"
     disk_type  = "pd-standard"
+    disk_iops  = null
+    disk_mbps  = null
     disk_size  = 256
     disk_count = 0
   }
@@ -838,8 +858,8 @@ variable "clt" {
   }
 
   validation {
-    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "scratch"], var.clt.disk_type)
-    error_message = "The clt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme or scratch."
+    condition     = contains(["pd-standard", "pd-balanced", "pd-ssd", "pd-extreme", "hyperdisk-balanced", "hyperdisk-extreme", "hyperdisk-throughput", "scratch"], var.clt.disk_type)
+    error_message = "The clt.disk_type value must be pd-standard, pd-balanced, pd-ssd, pd-extreme, hyperdisk-balanced, hyperdisk-extreme, hyperdisk-throughput or scratch."
   }
 
   validation {

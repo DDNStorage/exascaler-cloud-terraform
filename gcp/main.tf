@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DataDirect Networks, Inc.
+# Copyright (c) 2024 DataDirect Networks, Inc.
 # All Rights Reserved.
 
 terraform {
@@ -120,7 +120,7 @@ data "google_compute_image" "exa" {
 }
 
 locals {
-  loci       = "2.1.0"
+  loci       = "2.2.0"
   product    = "EXAScaler Cloud"
   profile    = "custom"
   scripts    = "scripts"
@@ -221,6 +221,8 @@ locals {
       nodes = var.mgs.node_count,
       disks = var.mgt.disk_count,
       type  = var.mgt.disk_type,
+      iops  = var.mgt.disk_iops,
+      mbps  = var.mgt.disk_mbps,
       size  = var.mgt.disk_size,
       bus   = var.mgt.disk_bus
     },
@@ -229,6 +231,8 @@ locals {
       nodes = var.mgs.node_count,
       disks = var.mnt.disk_count,
       type  = var.mnt.disk_type,
+      iops  = var.mnt.disk_iops,
+      mbps  = var.mnt.disk_mbps,
       size  = var.mnt.disk_size,
       bus   = var.mnt.disk_bus
     },
@@ -237,6 +241,8 @@ locals {
       nodes = var.mds.node_count,
       disks = var.mdt.disk_count,
       type  = var.mdt.disk_type,
+      iops  = var.mdt.disk_iops,
+      mbps  = var.mdt.disk_mbps,
       size  = var.mdt.disk_size,
       bus   = var.mdt.disk_bus
     },
@@ -245,6 +251,8 @@ locals {
       nodes = var.oss.node_count,
       disks = var.ost.disk_count,
       type  = var.ost.disk_type,
+      iops  = var.ost.disk_iops,
+      mbps  = var.ost.disk_mbps,
       size  = var.ost.disk_size,
       bus   = var.ost.disk_bus
     },
@@ -253,6 +261,8 @@ locals {
       nodes = var.cls.node_count,
       disks = var.clt.disk_count,
       type  = var.clt.disk_type,
+      iops  = var.clt.disk_iops,
+      mbps  = var.clt.disk_mbps,
       size  = var.clt.disk_size,
       bus   = var.clt.disk_bus
     }
@@ -269,6 +279,8 @@ locals {
         disk  = pair[1]
         role  = role
         type  = data.type
+        iops  = data.iops
+        mbps  = data.mbps
         size  = data.size
         index = data.disks * pair[0] + pair[1]
       }
