@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DataDirect Networks, Inc.
+# Copyright (c) 2024 DataDirect Networks, Inc.
 # All Rights Reserved.
 
 resource "azurerm_public_ip" "oss" {

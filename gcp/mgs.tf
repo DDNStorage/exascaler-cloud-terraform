@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DataDirect Networks, Inc.
+# Copyright (c) 2024 DataDirect Networks, Inc.
 # All Rights Reserved.
 
 resource "google_compute_disk" "mgs" {
@@ -12,12 +12,14 @@ resource "google_compute_disk" "mgs" {
 }
 
 resource "google_compute_disk" "mgt" {
-  provider = google-beta
-  for_each = local.compute_disk.mgt
-  type     = each.value.type
-  size     = each.value.size
-  name     = each.value.name
-  zone     = var.zone
+  provider               = google-beta
+  for_each               = local.compute_disk.mgt
+  type                   = each.value.type
+  provisioned_iops       = each.value.iops
+  provisioned_throughput = each.value.mbps
+  size                   = each.value.size
+  name                   = each.value.name
+  zone                   = var.zone
   labels = merge(
     local.labels,
     {
@@ -30,12 +32,14 @@ resource "google_compute_disk" "mgt" {
 }
 
 resource "google_compute_disk" "mnt" {
-  provider = google-beta
-  for_each = local.compute_disk.mnt
-  type     = each.value.type
-  size     = each.value.size
-  name     = each.value.name
-  zone     = var.zone
+  provider               = google-beta
+  for_each               = local.compute_disk.mnt
+  type                   = each.value.type
+  provisioned_iops       = each.value.iops
+  provisioned_throughput = each.value.mbps
+  size                   = each.value.size
+  name                   = each.value.name
+  zone                   = var.zone
   labels = merge(
     local.labels,
     {

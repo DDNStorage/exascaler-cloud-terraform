@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DataDirect Networks, Inc.
+# Copyright (c) 2024 DataDirect Networks, Inc.
 # All Rights Reserved.
 
 variable "prefix" {
@@ -296,7 +296,7 @@ variable "image" {
   default = {
     publisher = "ddn-whamcloud-5345716"
     offer     = "exascaler_cloud"
-    sku       = "exascaler_cloud_6_2_rocky"
+    sku       = "exascaler_cloud_6_3_rocky"
     version   = "latest"
     accept    = false
   }
@@ -314,8 +314,8 @@ variable "image" {
   }
 
   validation {
-    condition     = contains(["exascaler_cloud_5_2_centos", "exascaler_cloud_5_2_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat", "exascaler_cloud_6_2_rocky", "exascaler_cloud_6_2_redhat"], var.image.sku)
-    error_message = "The image.sku value should be exascaler_cloud_5_2_centos, exascaler_cloud_5_2_redhat, exascaler_cloud_6_1_centos, exascaler_cloud_6_1_redhat, exascaler_cloud_6_2_rocky or exascaler_cloud_6_2_redhat."
+    condition     = contains(["exascaler_cloud_5_2_centos", "exascaler_cloud_5_2_redhat", "exascaler_cloud_6_1_centos", "exascaler_cloud_6_1_redhat", "exascaler_cloud_6_2_rocky", "exascaler_cloud_6_2_redhat", "exascaler_cloud_6_3_rocky", "exascaler_cloud_6_3_redhat"], var.image.sku)
+    error_message = "The image.sku value should be exascaler_cloud_5_2_centos, exascaler_cloud_5_2_redhat, exascaler_cloud_6_1_centos, exascaler_cloud_6_1_redhat, exascaler_cloud_6_2_rocky, exascaler_cloud_6_2_redhat, exascaler_cloud_6_3_rocky or exascaler_cloud_6_3_redhat."
   }
 
   validation {

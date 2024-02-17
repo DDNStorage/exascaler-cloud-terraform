@@ -38,49 +38,71 @@ The steps below will show how to create a EXAScaler Cloud environment on [Google
 
 ## Supported products
 
-| Product         | Version | Base OS | Image family |
-| --------------- | ------- | ------- | ------------ |
-| EXAScaler Cloud | 5.2.6   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-5-2-redhat` |
-| EXAScaler Cloud | 5.2.6   | CentOS Linux 7.9 | `exascaler-cloud-5-2-centos` |
-| EXAScaler Cloud | 6.0.1   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-0-redhat` |
-| EXAScaler Cloud | 6.0.1   | CentOS Linux 7.9 | `exascaler-cloud-6-0-centos` |
-| EXAScaler Cloud | 6.1.0   | Red Hat Enterprise Linux 7.9 | `exascaler-cloud-6-1-redhat` |
-| EXAScaler Cloud | 6.1.0   | CentOS Linux 7.9 | `exascaler-cloud-6-1-centos` |
-| EXAScaler Cloud | 6.2.0   | Red Hat Enterprise Linux 8.7 | `exascaler-cloud-6-2-rhel-8` |
-| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-2-cis-rhel8-l1` |
-| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-2-cis-rhel8-l2` |
-| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 STIG Benchmark v1.0.0 | `exascaler-cloud-6-2-cis-rhel8-stig` |
-| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 | `exascaler-cloud-6-2-rocky-linux-8` |
-| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 optimized for GCP | `exascaler-cloud-6-2-rocky-linux-8-optimized-gcp` |
-| EXAScaler Cloud | 6.2.0   | CIS Rocky Linux 8.7 Benchmark v1.0.0 Level 1 | `exascaler-cloud-6-2-cis-rocky8-l1` |
+| Product         | Version | Base OS                                                   | Image family                                      |
+| --------------- | ------- | --------------------------------------------------------- | ------------------------------------------------- |
+| EXAScaler Cloud | 5.2.6   | Red Hat Enterprise Linux 7.9                              | `exascaler-cloud-5-2-redhat`                      |
+| EXAScaler Cloud | 5.2.6   | CentOS Linux 7.9                                          | `exascaler-cloud-5-2-centos`                      |
+| EXAScaler Cloud | 6.0.1   | Red Hat Enterprise Linux 7.9                              | `exascaler-cloud-6-0-redhat`                      |
+| EXAScaler Cloud | 6.0.1   | CentOS Linux 7.9                                          | `exascaler-cloud-6-0-centos`                      |
+| EXAScaler Cloud | 6.1.0   | Red Hat Enterprise Linux 7.9                              | `exascaler-cloud-6-1-redhat`                      |
+| EXAScaler Cloud | 6.1.0   | CentOS Linux 7.9                                          | `exascaler-cloud-6-1-centos`                      |
+| EXAScaler Cloud | 6.2.0   | Red Hat Enterprise Linux 8.7                              | `exascaler-cloud-6-2-rhel-8`                      |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-2-cis-rhel8-l1`                |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-2-cis-rhel8-l2`                |
+| EXAScaler Cloud | 6.2.0   | CIS Red Hat Enterprise Linux 8.7 STIG Benchmark v1.0.0    | `exascaler-cloud-6-2-cis-rhel8-stig`              |
+| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7                                           | `exascaler-cloud-6-2-rocky-linux-8`               |
+| EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 optimized for GCP                         | `exascaler-cloud-6-2-rocky-linux-8-optimized-gcp` |
+| EXAScaler Cloud | 6.2.0   | CIS Rocky Linux 8.7 Benchmark v1.0.0 Level 1              | `exascaler-cloud-6-2-cis-rocky8-l1`               |
+| EXAScaler Cloud | 6.3.0   | Red Hat Enterprise Linux 8.8                              | `exascaler-cloud-6-3-rhel-8`                      |
+| EXAScaler Cloud | 6.3.0   | CIS Red Hat Enterprise Linux 8.8 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-3-cis-rhel8-l1`                |
+| EXAScaler Cloud | 6.3.0   | CIS Red Hat Enterprise Linux 8.8 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-3-cis-rhel8-l2`                |
+| EXAScaler Cloud | 6.3.0   | CIS Red Hat Enterprise Linux 8.8 STIG Benchmark v1.0.0    | `exascaler-cloud-6-3-cis-rhel8-stig`              |
+| EXAScaler Cloud | 6.3.0   | Rocky Linux 8.8                                           | `exascaler-cloud-6-3-rocky-linux-8`               |
+| EXAScaler Cloud | 6.3.0   | Rocky Linux 8.8 optimized for GCP                         | `exascaler-cloud-6-3-rocky-linux-8-optimized-gcp` |
+| EXAScaler Cloud | 6.3.0   | CIS Rocky Linux 8.8 Benchmark v1.0.0 Level 1              | `exascaler-cloud-6-3-cis-rocky8-l1`               |
 
 ## Client packages
 
 EXAScaler Cloud deployment provides support for installing and configuring third-party clients.
 EXAScaler Cloud client software comprises a set of kernel modules which must be compatible with the running kernel, as well as userspace tools for interacting with the filesystem.
 
-| OS Vendor | OS Version       | Kernel Version for binary package | Kernel Version for DKMS package |
-| --------- | ---------------- | --------------------------------- | ------------------------------- |
-| Red Hat   | RHEL 7.6         | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
-| Red Hat   | RHEL 7.7         | `3.10.0-1062.71.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 7.8         | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 7.9         | `3.10.0-1160.90.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL 8.0         | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
-| Red Hat   | RHEL 8.1         | `4.18.0-147.83.1.el8_1.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.2         | `4.18.0-193.105.1.el8_2.x86_64`   | `4.18.0`                        |
-| Red Hat   | RHEL 8.3         | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.4         | `4.18.0-305.88.1.el8_4.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.5         | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.6         | `4.18.0-372.52.1.el8_6.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.7         | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 8.8         | `4.18.0-477.10.1.el8_8.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL 9.0         | `5.14.0-70.53.1.el9_0.x86_64`     | `5.14.0`                        |
-| Red Hat   | RHEL 9.1         | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL 9.2         | `5.14.0-284.11.1.el9_2.x86_64`    | `5.14.0`                        |
-| Canonical | Ubuntu 16.04 LTS | —                                 | `4.4 - 4.15`                    |
-| Canonical | Ubuntu 18.04 LTS | —                                 | `4.15 - 5.4`                    |
-| Canonical | Ubuntu 20.04 LTS | —                                 | `5.4 - 5.15`                    |
-| Canonical | Ubuntu 22.04 LTS | —                                 | `5.15 - 5.18`                   |
+| Vendor    | Product | Version     | Arch      | Kernel Version for binary package | Kernel Version for DKMS package |
+| --------- | ------- | ----------- | --------- | --------------------------------- | ------------------------------- |
+| Red Hat   | RHEL    | `7.6`       | `x86_64`  | `3.10.0-957.99.1.el7.x86_64`      | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.7`       | `x86_64`  | `3.10.0-1062.77.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.8`       | `x86_64`  | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.9`       | `x86_64`  | `3.10.0-1160.108.1.el7.x86_64`    | `3.10.0`                        |
+| Red Hat   | RHEL    | `8.0`       | `x86_64`  | `4.18.0-80.31.1.el8_0.x86_64`     | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.1`       | `x86_64`  | `4.18.0-147.94.1.el8_1.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.2`       | `x86_64`  | `4.18.0-193.120.1.el8_2.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.3`       | `x86_64`  | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.120.1.el8_4.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.5`       | `x86_64`  | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.87.1.el8_6.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.7`       | `aarch64` | `4.18.0-425.19.2.el8_7.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.7`       | `x86_64`  | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `aarch64` | `4.18.0-477.43.1.el8_8.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.43.1.el8_8.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.9`       | `aarch64` | `4.18.0-513.11.1.el8_9.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.9`       | `x86_64`  | `4.18.0-513.11.1.el8_9.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `aarch64` | `5.14.0-70.85.1.el9_0.aarch64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.85.1.el9_0.x86_64`     | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.1`       | `aarch64` | `5.14.0-162.23.1.el9_1.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.1`       | `x86_64`  | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.48.1.el9_2.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.48.1.el9_2.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.3`       | `aarch64` | `5.14.0-362.18.1.el9_3.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.3`       | `x86_64`  | `5.14.0-362.18.1.el9_3.x86_64`    | `5.14.0`                        |
+| Canonical | Ubuntu  | `16.04 LTS` | `amd64`   | —                                 | `4.4 - 4.15`                    |
+| Canonical | Ubuntu  | `18.04 LTS` | `amd64`   | —                                 | `4.15 - 5.4`                    |
+| Canonical | Ubuntu  | `20.04 LTS` | `amd64`   | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `20.04 LTS` | `arm64`   | —                                 | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `amd64`   | —                                 | `5.15 - 6.2`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `arm64`   | —                                 | `5.15 - 6.2`                    |
+
+Notes:
+* Client packages for `aarch64` and `arm64` architectures are available only for EXAScaler Cloud 6.3
+* Client packages for Canonical Ubuntu `16.04 LTS` are not available for EXAScaler Cloud 6.3
 
 ## Prerequisites
 
@@ -132,14 +154,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.zip) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.zip) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.1.8/gcp
+cd exascaler-cloud-terraform-scripts-2.2.0/gcp
 vi terraform.tfvars
 ```
 
@@ -218,7 +240,7 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable        | Type     | Default      | Description |
 | --------------: | -------: | -----------: | ----------- |
 | `image.project` | `string` | `ddn-public` | Source project name. [Learn more](https://cloud.google.com/compute/docs/images). |
-| `image.family`    | `string` | `exascaler-cloud-6-2-rocky-linux-8` | Source image family to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler-cloud-5-2-centos`</li><li>`exascaler-cloud-5-2-redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler-cloud-6-0-centos`</li><li>`exascaler-cloud-6-0-redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler-cloud-6-1-centos`</li><li>`exascaler-cloud-6-1-redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler-cloud-6-2-rhel-8`</li><li>`exascaler-cloud-6-2-cis-rhel8-l1`</li><li>`exascaler-cloud-6-2-cis-rhel8-l2`</li><li>`exascaler-cloud-6-2-cis-rhel8-stig`</li><li>`exascaler-cloud-6-2-rocky-linux-8`</li><li>`exascaler-cloud-6-2-rocky-linux-8-optimized-gcp`</li><li>`exascaler-cloud-6-2-cis-rocky8-l1`</li></ul> [Learn more](https://cloud.google.com/compute/docs/images). |
+| `image.family`    | `string` | `exascaler-cloud-6-3-rocky-linux-8` | Source image family to create the virtual machine. EXAScaler Cloud 5.2 images: <ul><li>`exascaler-cloud-5-2-centos`</li><li>`exascaler-cloud-5-2-redhat`</li></ul>EXAScaler Cloud 6.0 images: <ul><li>`exascaler-cloud-6-0-centos`</li><li>`exascaler-cloud-6-0-redhat`</li></ul>EXAScaler Cloud 6.1 images: <ul><li>`exascaler-cloud-6-1-centos`</li><li>`exascaler-cloud-6-1-redhat`</li></ul>EXAScaler Cloud 6.2 images: <ul><li>`exascaler-cloud-6-2-rhel-8`</li><li>`exascaler-cloud-6-2-cis-rhel8-l1`</li><li>`exascaler-cloud-6-2-cis-rhel8-l2`</li><li>`exascaler-cloud-6-2-cis-rhel8-stig`</li><li>`exascaler-cloud-6-2-rocky-linux-8`</li><li>`exascaler-cloud-6-2-rocky-linux-8-optimized-gcp`</li><li>`exascaler-cloud-6-2-cis-rocky8-l1`</li></ul>EXAScaler Cloud 6.3 images: <ul><li>`exascaler-cloud-6-3-rhel-8`</li><li>`exascaler-cloud-6-3-cis-rhel8-l1`</li><li>`exascaler-cloud-6-3-cis-rhel8-l2`</li><li>`exascaler-cloud-6-3-cis-rhel8-stig`</li><li>`exascaler-cloud-6-3-rocky-linux-8`</li><li>`exascaler-cloud-6-3-rocky-linux-8-optimized-gcp`</li><li>`exascaler-cloud-6-3-cis-rocky8-l1`</li></ul> [Learn more](https://cloud.google.com/compute/docs/images). |
 
 #### Management server options
 | Variable         | Type      | Default              | Description |
@@ -233,7 +255,9 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         |  Type    | <img width=100/> Default | Description |
 | ---------------: | -------: | ------------: | ----------- |
 | `mgt.disk_bus`   | `string` | `SCSI`        | Type of management target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mgt.disk_type`  | `string` | `pd-standard` | Type of management target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mgt.disk_type`  | `string` | `pd-standard` | Type of management target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`hyperdisk-balanced`</li><li>`hyperdisk-extreme`</li><li>`hyperdisk-throughput`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mgt.disk_iops`  | `integer` | `null`       | Provisioned IOPS, only for use with disks of type `pd-extreme`, `hyperdisk-balanced` or `hyperdisk-extreme`. |
+| `mgt.disk_mbps`  | `integer` | `null`       | Provisioned throughput in MB per second, only for use with disks of type `hyperdisk-balanced` or `hyperdisk-throughput`. |
 | `mgt.disk_size`  | `integer` | `128`        | Size of management target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mgt.disk_count` | `integer` | `1`          | Number of management targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mgt.disk_raid`  | `bool`    | `false`      | Create striped management target: `true` or `false`. |
@@ -242,7 +266,9 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `mnt.disk_bus`   | `string`  | `SCSI`        | Type of monitoring target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mnt.disk_type`  | `string`  | `pd-standard` | Type of monitoring target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mnt.disk_type`  | `string`  | `pd-standard` | Type of monitoring target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`hyperdisk-balanced`</li><li>`hyperdisk-extreme`</li><li>`hyperdisk-throughput`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mnt.disk_iops`  | `integer` | `null`       | Provisioned IOPS, only for use with disks of type `pd-extreme`, `hyperdisk-balanced` or `hyperdisk-extreme`. |
+| `mnt.disk_mbps`  | `integer` | `null`       | Provisioned throughput in MB per second, only for use with disks of type `hyperdisk-balanced` or `hyperdisk-throughput`. |
 | `mnt.disk_size`  | `integer` | `128`         | Size of monitoring target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mnt.disk_count` | `integer` | `1`           | Number of monitoring targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mnt.disk_raid`  | `bool`    | `false`       | Create striped management target: `true` or `false`. |
@@ -260,7 +286,9 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default  | Description |
 | ---------------: | --------: | -------: | ----------- |
 | `mdt.disk_bus`   | `string`  | `SCSI`   | Type of metadata target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `mdt.disk_type`  | `string`  | `pd-ssd` | Type of metadata target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mdt.disk_type`  | `string`  | `pd-ssd` | Type of metadata target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`hyperdisk-balanced`</li><li>`hyperdisk-extreme`</li><li>`hyperdisk-throughput`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `mdt.disk_iops`  | `integer` | `null`   | Provisioned IOPS, only for use with disks of type `pd-extreme`, `hyperdisk-balanced` or `hyperdisk-extreme`. |
+| `mdt.disk_mbps`  | `integer` | `null`   | Provisioned throughput in MB per second, only for use with disks of type `hyperdisk-balanced` or `hyperdisk-throughput`. |
 | `mdt.disk_size`  | `integer` | `256`    | Size of metadata target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `mdt.disk_count` | `integer` | `1`      | Number of metadata targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `mdt.disk_raid`  | `bool`    | `false`  | Create striped metadata target: `true` or `false`. |
@@ -278,7 +306,9 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `ost.disk_bus`   | `string`  | `SCSI`        | Type of object storage target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `ost.disk_type`  | `string`  | `pd-standard` | Type of object storage target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `ost.disk_type`  | `string`  | `pd-standard` | Type of object storage target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`hyperdisk-balanced`</li><li>`hyperdisk-extreme`</li><li>`hyperdisk-throughput`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `ost.disk_iops`  | `integer` | `null`        | Provisioned IOPS, only for use with disks of type `pd-extreme`, `hyperdisk-balanced` or `hyperdisk-extreme`. |
+| `ost.disk_mbps`  | `integer` | `null`        | Provisioned throughput in MB per second, only for use with disks of type `hyperdisk-balanced` or `hyperdisk-throughput`. |
 | `ost.disk_size`  | `integer` | `512`         | Size of object storage target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `ost.disk_count` | `integer` | `1`           | Number of object storage targets: `1-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 | `ost.disk_raid`  | `bool`    | `false`       | Create striped object storage target: `true` or `false`. |
@@ -296,7 +326,9 @@ Note: to provide access to the Google Cloud API, one of the following conditions
 | Variable         | Type      | <img width=100/> Default       | Description |
 | ---------------: | --------: | ------------: | ----------- |
 | `clt.disk_bus`   | `string`  | `SCSI`        | Type of compute target interface: `SCSI` or `NVME` (`NVME` can be used for `scratch` disks only). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
-| `clt.disk_type`  | `string`  | `pd-standard` | Type of compute target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `clt.disk_type`  | `string`  | `pd-standard` | Type of compute target: <ul><li>`pd-standard`</li><li>`pd-balanced`</li><li>`pd-ssd`</li><li>`pd-extreme`</li><li>`hyperdisk-balanced`</li><li>`hyperdisk-extreme`</li><li>`hyperdisk-throughput`</li><li>`scratch`</li></ul> [Learn more](https://cloud.google.com/compute/docs/disks). |
+| `clt.disk_iops`  | `integer` | `null`        | Provisioned IOPS, only for use with disks of type `pd-extreme`, `hyperdisk-balanced` or `hyperdisk-extreme`. |
+| `clt.disk_mbps`  | `integer` | `null`        | Provisioned throughput in MB per second, only for use with disks of type `hyperdisk-balanced` or `hyperdisk-throughput`. |
 | `clt.disk_size`  | `integer` | `256`         | Size of compute target in GB (ignored for `scratch` disks: local SSD size is 375GB). [Learn more](https://cloud.google.com/compute/docs/disks/local-ssd). |
 | `clt.disk_count` | `integer` | `0`           | Number of compute targets: `0-128`. [Learn more](https://cloud.google.com/compute/docs/disks). |
 
@@ -528,8 +560,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.1.8.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.1.8/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.0.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.2.0/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:
@@ -560,13 +592,13 @@ Steps to run [IOR](https://ior.readthedocs.io) benchmark on the EXAScaler Cloud 
 * Run [ssh-agent](https://linux.die.net/man/1/ssh-agent)
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
-* Run [IOR](https://wiki.lustre.org/IOR) benchmark using `esc-ior` tool
+* Run [IOR](https://wiki.lustre.org/IOR) benchmark using the `exascaler-cloud-ior` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@35.208.94.252
-esc-ior
+exascaler-cloud-ior
 ```
 
 Output:
@@ -579,7 +611,7 @@ Identity added: /home/user/.ssh/id_rsa
 
 $ ssh -A stack@35.208.94.252
 
-[stack@exascaler-cloud-2db9-mgs0 ~]$ esc-ior
+[stack@exascaler-cloud-2db9-mgs0 ~]$ exascaler-cloud-ior
 IOR-3.3.0: MPI Coordinated Test of Parallel I/O
 Began               : Wed Dec  1 17:29:55 2021
 Command line        : /usr/bin/ior -C -F -e -r -w -a POSIX -b 16777216 -t 1048576 -s 539 -o /mnt/exacloud/ceb67656ef7da04e/ceb67656ef7da04e
@@ -629,13 +661,13 @@ Steps to run [mdtest](https://wiki.lustre.org/MDTest) benchmark on the EXAScaler
 * Run [ssh-agent](https://linux.die.net/man/1/ssh-agent)
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
-* Run [mdtest](https://wiki.lustre.org/MDTest) benchmark using `esc-mdtest` tool
+* Run [mdtest](https://wiki.lustre.org/MDTest) benchmark using the `exascaler-cloud-mdtest` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@35.208.94.252
-esc-mdtest
+exascaler-cloud-mdtest
 ```
 
 Output:
@@ -648,7 +680,7 @@ Identity added: /home/user/.ssh/id_rsa
 
 $ ssh -A stack@35.208.94.252
 
-[stack@exascaler-cloud-2db9-mgs0 ~]$ esc-mdtest
+[stack@exascaler-cloud-2db9-mgs0 ~]$ exascaler-cloud-mdtest
 -- started at 12/01/2021 17:34:01 --
 
 mdtest-3.3.0 was launched with 64 total task(s) on 8 node(s)
@@ -680,7 +712,7 @@ Steps to run [IO500](https://io500.org) benchmark on the EXAScaler Cloud deploym
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
 * Open an SSH session to the any EXAScaler Cloud compute host
-* Run [IO500](https://github.com/IO500/io500) benchmark using `esc-io500` tool
+* Run [IO500](https://github.com/IO500/io500) benchmark using the `exascaler-cloud-io500` command
 
 ```shell
 eval $(ssh-agent)
@@ -688,7 +720,7 @@ ssh-add
 ssh -A stack@35.208.94.252
 loci hosts -c
 ssh -A exascaler-cloud-2db9-cls0
-esc-io500
+exascaler-cloud-io500
 ```
 
 Output:
@@ -731,7 +763,7 @@ $ ssh -A stack@35.208.94.252
 
 $ ssh -A exascaler-cloud-2db9-cls0
 
-[stack@exascaler-cloud-2db9-cls0 ~]$ esc-io500
+[stack@exascaler-cloud-2db9-cls0 ~]$ exascaler-cloud-io500
 Build IO500 package
 
 Start IO500 benchmark with options:
@@ -772,10 +804,9 @@ Created result tarball ./results/io500-exascaler-cloud-2db9-cls0-2021.12.01-18.2
 
 ## Install new EXAScaler Cloud clients
 
-New EXAScaler Cloud client instances must be created in the same location and connected to the same virtual network and subnet. To allow network connections from new clients to EXAScaler Cloud servers, you must assign a specific network tag to client instances and the tag name is the same as the deployment prefix (for example, `exascaler-cloud-2db9`). The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/esc-client.cfg` using the actual IP address of the management server:
+New EXAScaler Cloud client instances must be created in the same location and connected to the same virtual network and subnet. To allow network connections from new clients to EXAScaler Cloud servers, you must assign a specific network tag to client instances and the tag name is the same as the deployment prefix (for example, `exascaler-cloud-2db9`). The process of installing and configuring new clients can be performed automatically. All required information is contained in the Terraform output. To configure EXAScaler Cloud filesystem on a new client instance create a configuration file `/etc/exascaler-cloud-client.cfg` using the actual IP address of the management server:
 ```shell
 {
-    "Version": "2.1.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",
@@ -786,9 +817,9 @@ New EXAScaler Cloud client instances must be created in the same location and co
 
 To install and setup EXAScaler Cloud filesystem on a new client run the following commands on the client with root privileges:
 ```shell
-curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
-chmod +x /usr/sbin/esc-client
-esc-client auto setup --config /etc/esc-client.cfg
+curl -fsSL http://10.0.0.10/exascaler-cloud-client-$(arch) -o /usr/sbin/exascaler-cloud-client
+chmod +x /usr/sbin/exascaler-cloud-client
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 ```
 
 #### Output for Ubuntu Linux:
@@ -800,7 +831,7 @@ Description:	Ubuntu 22.04 LTS
 Release:	22.04
 Codename:	jammy
 
-# esc-client auto setup --config /etc/esc-client.cfg
+# /usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -816,7 +847,7 @@ Mounting 10.0.0.10@tcp0:/exacloud at /mnt/exacloud ... Done.
 # cat /etc/redhat-release
 AlmaLinux release 8.6 (Sky Tiger)
 
-# esc-client auto setup --config /etc/esc-client.cfg
+# /usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -840,13 +871,12 @@ Client-side encryption supports data encryption and file and directory names enc
 lctl set_param -P llite.*.enable_filename_encryption=1
 ```
 
-The fscrypt package is included in the EXAScaler Cloud client toolkit and can be installed using esc-client.
+The fscrypt package is included in the EXAScaler Cloud client toolkit and can be installed using the `exascaler-cloud-client` command.
 
 Steps to install Lustre client and fscrypt packages:
 ```shell
-cat > /etc/esc-client.cfg <<EOF
+cat > /etc/exascaler-cloud-client.cfg <<EOF
 {
-    "Version": "2.1.0",
     "MountConfig": {
         "ClientDevice": "10.0.0.10@tcp:/exacloud",
         "Mountpoint": "/mnt/exacloud",
@@ -855,14 +885,14 @@ cat > /etc/esc-client.cfg <<EOF
 }
 EOF
 
-curl -fsSL http://10.0.0.10/client-setup-tool -o /usr/sbin/esc-client
-chmod +x /usr/sbin/esc-client
-esc-client auto setup --config /etc/esc-client.cfg
+curl -fsSL http://10.0.0.10/exascaler-cloud-client-$(arch) -o /usr/sbin/exascaler-cloud-client
+chmod +x /usr/sbin/exascaler-cloud-client
+/usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 ```
 
 Output:
 ```shell
-# esc-client auto setup --config /etc/esc-client.cfg
+# /usr/sbin/exascaler-cloud-client auto setup --config /etc/exascaler-cloud-client.cfg
 Discovering platform ... Done.
 Configuring firewall rules for Lustre ... Done.
 Configuring Lustre client package source ... Done.
@@ -956,14 +986,14 @@ Steps to collect a support bundle on the EXAScaler Cloud deployment:
 * Add [ssh private key](https://linux.die.net/man/1/ssh-add)
 * Open an SSH session to the EXAScaler Cloud management server
 * Collect an inventory using `about_this_deployment` tool
-* Collect a support bundle using `esc-collector` tool
+* Collect a support bundle using the `exascaler-cloud-collector` command
 
 ```shell
 eval $(ssh-agent)
 ssh-add
 ssh -A stack@35.208.94.252
 about_this_deployment
-esc-collector
+exascaler-cloud-collector
 ```
 
 Output:
@@ -1029,7 +1059,7 @@ instances:
     value: true
  ...
 
-[stack@exascaler-cloud-2db9-mgs0 ~]$ esc-collector
+[stack@exascaler-cloud-2db9-mgs0 ~]$ exascaler-cloud-collector
 sos-collector (version 1.8)
 
 This utility is used to collect sosreports from multiple nodes simultaneously.
