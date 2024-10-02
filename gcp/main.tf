@@ -120,7 +120,7 @@ data "google_compute_image" "exa" {
 }
 
 locals {
-  loci       = "2.2.0"
+  loci       = "2.2.1"
   product    = "EXAScaler Cloud"
   profile    = "custom"
   scripts    = "scripts"
