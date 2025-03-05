@@ -6,7 +6,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.10.0"
+      version = ">= 4.0.0"
     }
   }
 }
@@ -137,7 +137,7 @@ resource "azurerm_portal_dashboard" "exa" {
 }
 
 locals {
-  loci      = "2.2.0"
+  loci      = "2.2.2"
   product   = "EXAScaler Cloud"
   profile   = "custom"
   templates = "templates"

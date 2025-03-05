@@ -20,11 +20,11 @@ resource "azurerm_public_ip" "cls" {
 }
 
 resource "azurerm_network_interface" "cls" {
-  count                         = var.cls.node_count
-  name                          = format("%s-%s%d-%s", local.prefix, "cls", count.index, "network-interface")
-  location                      = local.resource_group.location
-  resource_group_name           = local.resource_group.name
-  enable_accelerated_networking = var.cls.accelerated_network
+  count                          = var.cls.node_count
+  name                           = format("%s-%s%d-%s", local.prefix, "cls", count.index, "network-interface")
+  location                       = local.resource_group.location
+  resource_group_name            = local.resource_group.name
+  accelerated_networking_enabled = var.cls.accelerated_network
   ip_configuration {
     name                          = format("%s-%s%d-%s", local.prefix, "cls", count.index, "private-ip")
     subnet_id                     = local.subnet.id

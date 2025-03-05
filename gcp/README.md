@@ -53,13 +53,13 @@ The steps below will show how to create a EXAScaler Cloud environment on [Google
 | EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7                                            | `exascaler-cloud-6-2-rocky-linux-8`               |
 | EXAScaler Cloud | 6.2.0   | Rocky Linux 8.7 optimized for GCP                          | `exascaler-cloud-6-2-rocky-linux-8-optimized-gcp` |
 | EXAScaler Cloud | 6.2.0   | CIS Rocky Linux 8.7 Benchmark v1.0.0 Level 1               | `exascaler-cloud-6-2-cis-rocky8-l1`               |
-| EXAScaler Cloud | 6.3.1   | Red Hat Enterprise Linux 8.10                              | `exascaler-cloud-6-3-rhel-8`                      |
-| EXAScaler Cloud | 6.3.1   | CIS Red Hat Enterprise Linux 8.10 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-3-cis-rhel8-l1`                |
-| EXAScaler Cloud | 6.3.1   | CIS Red Hat Enterprise Linux 8.10 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-3-cis-rhel8-l2`                |
-| EXAScaler Cloud | 6.3.1   | CIS Red Hat Enterprise Linux 8.10 STIG Benchmark v1.0.0    | `exascaler-cloud-6-3-cis-rhel8-stig`              |
-| EXAScaler Cloud | 6.3.1   | Rocky Linux 8.10                                           | `exascaler-cloud-6-3-rocky-linux-8`               |
-| EXAScaler Cloud | 6.3.1   | Rocky Linux 8.10 optimized for GCP                         | `exascaler-cloud-6-3-rocky-linux-8-optimized-gcp` |
-| EXAScaler Cloud | 6.3.1   | CIS Rocky Linux 8.10 Benchmark v1.0.0 Level 1              | `exascaler-cloud-6-3-cis-rocky8-l1`               |
+| EXAScaler Cloud | 6.3.2   | Red Hat Enterprise Linux 8.10                              | `exascaler-cloud-6-3-rhel-8`                      |
+| EXAScaler Cloud | 6.3.2   | CIS Red Hat Enterprise Linux 8.10 Benchmark v2.0.0 Level 1 | `exascaler-cloud-6-3-cis-rhel8-l1`                |
+| EXAScaler Cloud | 6.3.2   | CIS Red Hat Enterprise Linux 8.10 Benchmark v2.0.0 Level 2 | `exascaler-cloud-6-3-cis-rhel8-l2`                |
+| EXAScaler Cloud | 6.3.2   | CIS Red Hat Enterprise Linux 8.10 STIG Benchmark v1.0.0    | `exascaler-cloud-6-3-cis-rhel8-stig`              |
+| EXAScaler Cloud | 6.3.2   | Rocky Linux 8.10                                           | `exascaler-cloud-6-3-rocky-linux-8`               |
+| EXAScaler Cloud | 6.3.2   | Rocky Linux 8.10 optimized for GCP                         | `exascaler-cloud-6-3-rocky-linux-8-optimized-gcp` |
+| EXAScaler Cloud | 6.3.2   | CIS Rocky Linux 8.10 Benchmark v1.0.0 Level 1              | `exascaler-cloud-6-3-cis-rocky8-l1`               |
 
 ## Client packages
 
@@ -76,28 +76,30 @@ EXAScaler Cloud client software comprises a set of kernel modules which must be 
 | Red Hat   | RHEL    | `8.1`       | `x86_64`  | `4.18.0-147.94.1.el8_1.x86_64`    | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.2`       | `x86_64`  | `4.18.0-193.138.1.el8_2.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.3`       | `x86_64`  | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.139.1.el8_4.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.148.1.el8_4.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.5`       | `x86_64`  | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.6`       | `aarch64` | `4.18.0-372.105.1.el8_6.aarch64`  | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.121.1.el8_6.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.134.1.el8_6.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.7`       | `aarch64` | `4.18.0-425.19.2.el8_7.aarch64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.7`       | `x86_64`  | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.8`       | `aarch64` | `4.18.0-477.70.1.el8_8.aarch64`   | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.70.1.el8_8.x86_64`    | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `aarch64` | `4.18.0-477.86.1.el8_8.aarch64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.86.1.el8_8.x86_64`    | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.9`       | `aarch64` | `4.18.0-513.24.1.el8_9.aarch64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.9`       | `x86_64`  | `4.18.0-513.24.1.el8_9.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.10`      | `aarch64` | `4.18.0-553.16.1.el8_10.aarch64`  | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.10`      | `x86_64`  | `4.18.0-553.16.1.el8_10.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.10`      | `aarch64` | `4.18.0-553.40.1.el8_10.aarch64`  | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.10`      | `x86_64`  | `4.18.0-553.40.1.el8_10.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `9.0`       | `aarch64` | `5.14.0-70.101.1.el9_0.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.112.1.el9_0.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.122.1.el9_0.x86_64`    | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.1`       | `aarch64` | `5.14.0-162.23.1.el9_1.aarch64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.1`       | `x86_64`  | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.82.1.el9_2.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.84.1.el9_2.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.99.1.el9_2.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.99.1.el9_2.x86_64`    | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.3`       | `aarch64` | `5.14.0-362.24.1.el9_3.aarch64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.3`       | `x86_64`  | `5.14.0-362.24.1.el9_3.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.4`       | `aarch64` | `5.14.0-427.35.1.el9_4.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.4`       | `x86_64`  | `5.14.0-427.35.1.el9_4.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.4`       | `aarch64` | `5.14.0-427.50.1.el9_4.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.4`       | `x86_64`  | `5.14.0-427.50.1.el9_4.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.5`       | `aarch64` | `5.14.0-503.26.1.el9_5.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.5`       | `x86_64`  | `5.14.0-503.26.1.el9_5.x86_64`    | `5.14.0`                        |
 | Canonical | Ubuntu  | `16.04 LTS` | `amd64`   | —                                 | `4.4 - 4.15`                    |
 | Canonical | Ubuntu  | `18.04 LTS` | `amd64`   | —                                 | `4.15 - 5.4`                    |
 | Canonical | Ubuntu  | `20.04 LTS` | `amd64`   | —                                 | `5.4 - 5.15`                    |
@@ -161,14 +163,14 @@ For a list of services available, visit the [API library page](https://console.c
 
 ## Configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.1.tar.gz) and extract tarball:
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.2.tar.gz) and extract tarball:
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.1.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.2.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.2.1/gcp
+cd exascaler-cloud-terraform-scripts-2.2.2/gcp
 vi terraform.tfvars
 ```
 
@@ -567,8 +569,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.1.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.2.1/gcp
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.2.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.2.2/gcp
 ```
 
 Copy the `terraform.tfstate` file from the existing Terraform directory:
