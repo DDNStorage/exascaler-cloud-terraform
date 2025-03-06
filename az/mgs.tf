@@ -20,11 +20,11 @@ resource "azurerm_public_ip" "mgs" {
 }
 
 resource "azurerm_network_interface" "mgs" {
-  count                         = var.mgs.node_count
-  name                          = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "network-interface")
-  location                      = local.resource_group.location
-  resource_group_name           = local.resource_group.name
-  enable_accelerated_networking = var.mgs.accelerated_network
+  count                          = var.mgs.node_count
+  name                           = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "network-interface")
+  location                       = local.resource_group.location
+  resource_group_name            = local.resource_group.name
+  accelerated_networking_enabled = var.mgs.accelerated_network
   ip_configuration {
     name                          = format("%s-%s%d-%s", local.prefix, "mgs", count.index, "private-ip")
     subnet_id                     = local.subnet.id

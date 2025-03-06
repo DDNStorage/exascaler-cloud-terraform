@@ -20,11 +20,11 @@ resource "azurerm_public_ip" "oss" {
 }
 
 resource "azurerm_network_interface" "oss" {
-  count                         = var.oss.node_count
-  name                          = format("%s-%s%d-%s", local.prefix, "oss", count.index, "network-interface")
-  location                      = local.resource_group.location
-  resource_group_name           = local.resource_group.name
-  enable_accelerated_networking = var.oss.accelerated_network
+  count                          = var.oss.node_count
+  name                           = format("%s-%s%d-%s", local.prefix, "oss", count.index, "network-interface")
+  location                       = local.resource_group.location
+  resource_group_name            = local.resource_group.name
+  accelerated_networking_enabled = var.oss.accelerated_network
   ip_configuration {
     name                          = format("%s-%s%d-%s", local.prefix, "oss", count.index, "private-ip")
     subnet_id                     = local.subnet.id
