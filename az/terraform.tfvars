@@ -130,14 +130,8 @@ boot = {
 # offer: the offer of the image used to create the virtual machine
 # sku: the SKU of the image used to create the virtual machine
 # available sku's:
-# - exascaler_cloud_5_2_redhat: EXAScaler Cloud 5.2 (RHEL 7.9)
-# - exascaler_cloud_5_2_centos: EXAScaler Cloud 5.2 (CentOS 7.9)
-# - exascaler_cloud_6_1_redhat: EXAScaler Cloud 6.1 (RHEL 7.9)
-# - exascaler_cloud_6_1_centos: EXAScaler Cloud 6.1 (CentOS 7.9)
-# - exascaler_cloud_6_2_redhat: EXAScaler Cloud 6.2 (RHEL 8.7)
-# - exascaler_cloud_6_2_rocky:  EXAScaler Cloud 6.2 (Rocky Linux 8.7)
-# - exascaler_cloud_6_3_redhat: EXAScaler Cloud 6.3 (RHEL 8.8)
-# - exascaler_cloud_6_3_rocky:  EXAScaler Cloud 6.3 (Rocky Linux 8.8)
+# - exascaler_cloud_6_3_redhat: EXAScaler Cloud 6.3 (RHEL 8.10)
+# - exascaler_cloud_6_3_rocky:  EXAScaler Cloud 6.3 (Rocky Linux 8.10)
 # version: the version of the image used to create the virtual machine
 # accept: true or false, allows accepting the legal terms for a Marketplace image
 image = {
