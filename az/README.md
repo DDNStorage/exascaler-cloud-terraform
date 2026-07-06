@@ -42,8 +42,8 @@ The steps below will show how to create a EXAScaler Cloud environment on Microso
 
 | Product         | Version | Base OS Vendor and Version    | Stock Keeping Unit (`SKU`)   |
 | --------------- | ------- | ----------------------------- | ---------------------------- |
-| EXAScaler Cloud | 6.3.6   | Red Hat Enterprise Linux 8.10 | `exascaler_cloud_6_3_redhat` |
-| EXAScaler Cloud | 6.3.6   | Rocky Linux 8.10              | `exascaler_cloud_6_3_rocky`  |
+| EXAScaler Cloud | 6.3.8   | Red Hat Enterprise Linux 8.10 | `exascaler_cloud_6_3_redhat` |
+| EXAScaler Cloud | 6.3.8   | Rocky Linux 8.10              | `exascaler_cloud_6_3_rocky`  |
 
 ## Client packages
 
@@ -54,44 +54,54 @@ EXAScaler Cloud client software comprises a set of kernel modules which must be 
 | --------- | ------- | ----------- | --------- | --------------------------------- | ------------------------------- |
 | Red Hat   | RHEL    | `7.7`       | `x86_64`  | `3.10.0-1062.99.1.el7.x86_64`     | `3.10.0`                        |
 | Red Hat   | RHEL    | `7.8`       | `x86_64`  | `3.10.0-1127.19.1.el7.x86_64`     | `3.10.0`                        |
-| Red Hat   | RHEL    | `7.9`       | `x86_64`  | `3.10.0-1160.146.1.el7.x86_64`    | `3.10.0`                        |
+| Red Hat   | RHEL    | `7.9`       | `x86_64`  | `3.10.0-1160.153.1.el7.x86_64`    | `3.10.0`                        |
 | Red Hat   | RHEL    | `8.1`       | `x86_64`  | `4.18.0-147.94.1.el8_1.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.2`       | `x86_64`  | `4.18.0-193.187.1.el8_2.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.2`       | `x86_64`  | `4.18.0-193.195.1.el8_2.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.3`       | `x86_64`  | `4.18.0-240.22.1.el8_3.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.186.1.el8_4.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.4`       | `x86_64`  | `4.18.0-305.195.1.el8_4.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.5`       | `x86_64`  | `4.18.0-348.23.1.el8_5.x86_64`    | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.6`       | `aarch64` | `4.18.0-372.105.1.el8_6.aarch64`  | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.181.1.el8_6.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.6`       | `x86_64`  | `4.18.0-372.197.1.el8_6.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.7`       | `aarch64` | `4.18.0-425.19.2.el8_7.aarch64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.7`       | `x86_64`  | `4.18.0-425.19.2.el8_7.x86_64`    | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.8`       | `aarch64` | `4.18.0-477.97.1.el8_8.aarch64`   | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.130.1.el8_8.x86_64`   | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.8`       | `x86_64`  | `4.18.0-477.148.1.el8_8.x86_64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.9`       | `aarch64` | `4.18.0-513.24.1.el8_9.aarch64`   | `4.18.0`                        |
 | Red Hat   | RHEL    | `8.9`       | `x86_64`  | `4.18.0-513.24.1.el8_9.x86_64`    | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.10`      | `aarch64` | `4.18.0-553.107.1.el8_10.aarch64` | `4.18.0`                        |
-| Red Hat   | RHEL    | `8.10`      | `x86_64`  | `4.18.0-553.107.1.el8_10.x86_64`  | `4.18.0`                        |
-| Red Hat   | RHEL    | `9.0`       | `aarch64` | `5.14.0-70.167.1.el9_0.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.167.1.el9_0.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `8.10`      | `aarch64` | `4.18.0-553.137.1.el8_10.aarch64` | `4.18.0`                        |
+| Red Hat   | RHEL    | `8.10`      | `x86_64`  | `4.18.0-553.137.1.el8_10.x86_64`  | `4.18.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `aarch64` | `5.14.0-70.180.1.el9_0.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.0`       | `x86_64`  | `5.14.0-70.180.1.el9_0.x86_64`    | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.1`       | `aarch64` | `5.14.0-162.23.1.el9_1.aarch64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.1`       | `x86_64`  | `5.14.0-162.23.1.el9_1.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.158.1.el9_2.aarch64`  | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.158.1.el9_2.x86_64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `aarch64` | `5.14.0-284.177.1.el9_2.aarch64`  | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.2`       | `x86_64`  | `5.14.0-284.177.1.el9_2.x86_64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.3`       | `aarch64` | `5.14.0-362.24.1.el9_3.aarch64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.3`       | `x86_64`  | `5.14.0-362.24.1.el9_3.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.4`       | `aarch64` | `5.14.0-427.111.1.el9_4.aarch64`  | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.4`       | `x86_64`  | `5.14.0-427.111.1.el9_4.x86_64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.4`       | `aarch64` | `5.14.0-427.127.1.el9_4.aarch64`  | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.4`       | `x86_64`  | `5.14.0-427.127.1.el9_4.x86_64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.5`       | `aarch64` | `5.14.0-503.40.1.el9_5.aarch64`   | `5.14.0`                        |
 | Red Hat   | RHEL    | `9.5`       | `x86_64`  | `5.14.0-503.40.1.el9_5.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.6`       | `aarch64` | `5.14.0-570.92.1.el9_6.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.6`       | `x86_64`  | `5.14.0-570.92.1.el9_6.x86_64`    | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.7`       | `aarch64` | `5.14.0-611.35.1.el9_7.aarch64`   | `5.14.0`                        |
-| Red Hat   | RHEL    | `9.7`       | `x86_64`  | `5.14.0-611.35.1.el9_7.x86_64`    | `5.14.0`                        |
-| Canonical | Ubuntu  | `20.04 LTS` | `amd64`   | —                                 | `5.4 - 5.15`                    |
-| Canonical | Ubuntu  | `20.04 LTS` | `arm64`   | —                                 | `5.4 - 5.15`                    |
-| Canonical | Ubuntu  | `22.04 LTS` | `amd64`   | —                                 | `5.15 - 6.8`                    |
-| Canonical | Ubuntu  | `22.04 LTS` | `arm64`   | —                                 | `5.15 - 6.8`                    |
-| Canonical | Ubuntu  | `24.04 LTS` | `amd64`   | —                                 | `6.8 - 6.14`                    |
-| Canonical | Ubuntu  | `24.04 LTS` | `arm64`   | —                                 | `6.8 - 6.14`                    |
+| Red Hat   | RHEL    | `9.6`       | `aarch64` | `5.14.0-570.123.1.el9_6.aarch64`  | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.6`       | `x86_64`  | `5.14.0-570.123.1.el9_6.x86_64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.7`       | `aarch64` | `5.14.0-611.55.1.el9_7.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.7`       | `x86_64`  | `5.14.0-611.55.1.el9_7.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.8`       | `aarch64` | `5.14.0-687.17.1.el9_8.aarch64`   | `5.14.0`                        |
+| Red Hat   | RHEL    | `9.8`       | `x86_64`  | `5.14.0-687.17.1.el9_8.x86_64`    | `5.14.0`                        |
+| Red Hat   | RHEL    | `10.0`      | `aarch64` | `6.12.0-55.82.1.el10_0.aarch64`   | `6.12.0`                        |
+| Red Hat   | RHEL    | `10.0`      | `x86_64`  | `6.12.0-55.82.1.el10_0.x86_64`    | `6.12.0`                        |
+| Red Hat   | RHEL    | `10.1`      | `aarch64` | `6.12.0-124.56.1.el10_1.aarch64`  | `6.12.0`                        |
+| Red Hat   | RHEL    | `10.1`      | `x86_64`  | `6.12.0-124.56.1.el10_1.x86_64`   | `6.12.0`                        |
+| Red Hat   | RHEL    | `10.2`      | `aarch64` | `6.12.0-211.28.1.el10_2.aarch64`  | `6.12.0`                        |
+| Red Hat   | RHEL    | `10.2`      | `x86_64`  | `6.12.0-211.28.1.el10_2.x86_64`   | `6.12.0`                        |
+| Canonical | Ubuntu  | `20.04 LTS` | `amd64`   | `5.15.0-1114-azure`               | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `20.04 LTS` | `arm64`   | `5.15.0-1089-azure`               | `5.4 - 5.15`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `amd64`   | `6.8.0-1059-azure`                | `5.15 - 6.8`                    |
+| Canonical | Ubuntu  | `22.04 LTS` | `arm64`   | `6.8.0-1059-azure`                | `5.15 - 6.8`                    |
+| Canonical | Ubuntu  | `24.04 LTS` | `amd64`   | `6.17.0-1018-azure`               | `6.8 - 6.17`                    |
+| Canonical | Ubuntu  | `24.04 LTS` | `arm64`   | `6.17.0-1018-azure`               | `6.8 - 6.17`                    |
+| Canonical | Ubuntu  | `26.04 LTS` | `amd64`   | `7.0.0-1007-azure`                | `7.0.0`                         |
+| Canonical | Ubuntu  | `26.04 LTS` | `arm64`   | `7.0.0-1007-azure`                | `7.0.0`                         |
 
 ## Prerequisites
 
@@ -173,14 +183,14 @@ az vm image terms accept --urn ddn-whamcloud-5345716:exascaler_cloud:exascaler_c
 
 ## Steps to configure Terraform
 
-Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.3.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.3.tar.gz):
+Download Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.4.tar.gz) and extract the [tarball](https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.4.tar.gz):
 ```shell
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.3.tar.gz | tar xz
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.4.tar.gz | tar xz
 ```
 
 Change Terraform variables according you requirements:
 ```shell
-cd exascaler-cloud-terraform-scripts-2.2.3/az
+cd exascaler-cloud-terraform-scripts-2.2.4/az
 vi terraform.tfvars
 ```
 
@@ -588,8 +598,8 @@ tar pcfz backup.tgz *.tf terraform.tfvars terraform.tfstate
 Update Terraform scripts using the latest available EXAScaler Cloud Terraform [scripts](https://github.com/DDNStorage/exascaler-cloud-terraform):
 ```shell
 cd /path/to
-curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.3.tar.gz | tar xz
-cd exascaler-cloud-terraform-scripts-2.2.3/az
+curl -sL https://github.com/DDNStorage/exascaler-cloud-terraform/archive/refs/tags/scripts/2.2.4.tar.gz | tar xz
+cd exascaler-cloud-terraform-scripts-2.2.4/az
 ```
 
 Copy the terraform.tfstate file from the existing Terraform directory:

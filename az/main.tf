@@ -137,7 +137,7 @@ resource "azurerm_portal_dashboard" "exa" {
 }
 
 locals {
-  loci      = "2.2.3"
+  loci      = "2.2.4"
   product   = "EXAScaler Cloud"
   profile   = "custom"
   templates = "templates"
